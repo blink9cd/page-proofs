@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>browser_pass sample: a clean page</title>
+    <style>
+      body {
+        margin: 0;
+        font:
+          16px/1.5 system-ui,
+          sans-serif;
+      }
+      main {
+        padding: 16px;
+      }
+      button {
+        min-width: 44px;
+        min-height: 44px;
+      }
+      /* A layout-shift reserve: the element keeps its box, unseen, until a script reveals it. */
+      .reserve[hidden] {
+        display: block;
+        visibility: hidden;
+      }
+      .shelf {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+      }
+      .shelf > p {
+        flex: 0 0 200px;
+        margin: 0;
+        height: 80px;
+        background: #ddd;
+      }
+    </style>
+    <!-- Runs after the first paint, and reveals the reserved paragraph without moving anything. -->
+    <script type="module" src="reveal.js"></script>
+  </head>
+  <body>
+    <main>
+      <h1>A clean page</h1>
+      <p>
+        Every detector stays silent here. This sentence holds
+        <a href="faulty.html">an inline link</a>, which the target-size rule exempts.
+      </p>
+      <button type="button">Tap</button>
+      <p hidden>Hidden, and it stays hidden.</p>
+      <p class="reserve" hidden>Hidden, but held in the layout unseen, to reserve its space.</p>
+      <section class="shelf" aria-label="A shelf that scrolls sideways" tabindex="0">
+        <p>One</p>
+        <p>Two</p>
+        <p>Three</p>
+      </section>
+    </main>
+  </body>
+</html>

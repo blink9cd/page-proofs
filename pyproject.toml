@@ -1,0 +1,229 @@
+# Declared so that `pip install ".[test]"` is the one install step the README gives for the
+# tests. With no backend named, pip falls back to an implicit setuptools it fetches unasked.
+[build-system]
+# 77 is the first setuptools to accept the SPDX `license` string in [project] (PEP 639).
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+# The repository's name. package.json, package-lock.json's two top-level "name" fields and
+# the README's title carry it too, so a rename changes all four.
+name = "page-proofs"
+version = "0.1.0"
+description = "Tools that check a built static site's pages on your own machine, with a pinned Lighthouse and pinned browser engines."
+readme = "README.md"
+license = "AGPL-3.0-or-later"
+# The oldest interpreter the tools are written and type-checked for, not the newest one on the
+# machine that built it: a newer target silently accepts syntax and APIs that crash on an
+# older one.
+requires-python = ">=3.12"
+# Deliberately empty: lighthouse_run runs on the standard library and the folders beside it,
+# and so does every library here. Lighthouse is a Node program, pinned in package.json and
+# installed with `npm ci`. browser_pass's one runtime package, Playwright, is the `browser`
+# extra below, so a lighthouse_run user never installs it.
+dependencies = []
+
+[project.optional-dependencies]
+# browser_pass drives the real engines through Playwright. Each Playwright release pins its own
+# engine revisions, so this one pin also pins Chromium, Firefox and WebKit; the engine builds
+# themselves are not Python packages, and `python -m playwright install` fetches them.
+# greenlet and pyee are playwright's whole closure, pinned beside it so the resolver never
+# picks either; each is an exact pin, which a live test holds every entry to.
+browser = ["playwright==1.63.0", "greenlet==3.5.6", "pyee==13.0.1"]
+# The test-only library, pinned exactly: hypothesis drives the property tests, and nothing at
+# runtime imports it. The `browser` extra's pins are repeated, since browser_pass's and
+# csp_watch's suites import Playwright; the two lists must agree, entry for entry.
+test = [
+  "hypothesis==6.165.10",
+  "playwright==1.63.0",
+  "greenlet==3.5.6",
+  "pyee==13.0.1",
+]
+
+[tool.setuptools]
+# Deliberately empty. The tool is run directly and puts its own sibling folders on sys.path,
+# so nothing here is imported from an installed location: installing this distribution
+# installs its metadata and test dependencies, never code. Left to auto-discovery,
+# setuptools refuses this flat layout of sibling folders outright.
+packages = []
+
+[tool.ruff]
+target-version = "py312"
+
+[tool.ruff.format]
+# The docs are Markdown; ruff's formatter is for the Python sources only.
+exclude = ["*.md"]
+
+[tool.ruff.lint]
+# E4/E7/E9/F are ruff's classic default set, written out so the enabled rules are a function
+# of this file rather than of whichever ruff release is installed. PGH003/PGH004 require
+# every suppression to carry a rule code. D adds the docstring rules (pep257), minus D401's
+# imperative-mood opinion, which rewords valid noun-phrase summaries.
+select = ["E4", "E7", "E9", "F", "PGH003", "PGH004", "D"]
+ignore = ["D401"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "pep257"
+
+[tool.ruff.lint.per-file-ignores]
+# Test method names self-document; a docstring per test would be noise.
+"**/test_*.py" = ["D"]
+
+[tool.mypy]
+python_version = "3.12"
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+# Each tool and its tests reach the library folders beside it, and their own src/, through a
+# sys.path insert at run time. mypy cannot see a runtime insert, so these entries are what make
+# those imports resolve.
+mypy_path = [
+  "$MYPY_CONFIG_FILE_DIR/lighthouse_run",
+  "$MYPY_CONFIG_FILE_DIR/lighthouse_run/src",
+  "$MYPY_CONFIG_FILE_DIR/lighthouse_run/tests",
+  "$MYPY_CONFIG_FILE_DIR/browser_pass",
+  "$MYPY_CONFIG_FILE_DIR/browser_pass/src",
+  "$MYPY_CONFIG_FILE_DIR/browser_pass/tests",
+  "$MYPY_CONFIG_FILE_DIR/csp_watch",
+  "$MYPY_CONFIG_FILE_DIR/csp_watch/tests",
+  "$MYPY_CONFIG_FILE_DIR/suite_select",
+  "$MYPY_CONFIG_FILE_DIR/commit_facts",
+  "$MYPY_CONFIG_FILE_DIR/bounded_run",
+  "$MYPY_CONFIG_FILE_DIR/bounded_run/src",
+  "$MYPY_CONFIG_FILE_DIR/loopback_site",
+  "$MYPY_CONFIG_FILE_DIR/loopback_site/src",
+  "$MYPY_CONFIG_FILE_DIR/stdio_utf8",
+  "$MYPY_CONFIG_FILE_DIR/help_formatter",
+  "$MYPY_CONFIG_FILE_DIR/live_pid_guard",
+]
+
+[tool.prose_terms]
+# Words this repository's prose must not use, so they cannot creep back in. The first credits
+# a decision to a person the reader does not know; the rest name tools, a test convention and
+# a folder from the larger repository this was developed in, none of which ship here.
+# State the rule or the measured fact instead. Each entry waives itself: the declaration is
+# not prose. The license text and the npm lockfile are not this repository's prose.
+terms = [
+  # prose: ignore[owner] the declaration itself
+  "owner",
+  # prose: ignore[print_pass] the declaration itself
+  "print_pass",
+  # prose: ignore[site_package] the declaration itself
+  "site_package",
+  # prose: ignore[python_gate] the declaration itself
+  "python_gate",
+  # prose: ignore[fuzz_gate] the declaration itself
+  "fuzz_gate",
+  # prose: ignore[tool_subdirs] the declaration itself
+  "tool_subdirs",
+  # prose: ignore[monorepo] the declaration itself
+  "monorepo",
+  # prose: ignore[js_test_gate] the declaration itself
+  "js_test_gate",
+  # prose: ignore[tools/web] the declaration itself
+  "tools/web",
+]
+exclude = ["LICENSE", "package-lock.json"]
+
+# Shapes no single word can express: a backlog or site tracking number, a review named by
+# its date or finding, the standards file and notes folder of that larger repository, and two
+# phrases from its own setup. Each is a pointer that resolves for no reader of this one.
+[tool.prose_terms.patterns]
+item-tag = '(?<![0-9A-Za-z_])(?:items?|site)\s+(?:item\s+)?\d+'  # prose: ignore[item-tag] the declaration itself
+review-tag = '''(?<![0-9A-Za-z_])review(?:'s)?\W+(?:[a-z]+\W+){0,2}?(?:20\d\d-\d\d-\d\d|(?-i:[A-Z])\d+(?![0-9A-Za-z_]))'''
+agents-file = '(?<![0-9A-Za-z_])AGENTS\.md'  # prose: ignore[agents-file] the declaration itself
+docs-path = '(?<![0-9A-Za-z_./])docs/'  # prose: ignore[docs-path] the declaration itself
+primary-checkout = '(?<![0-9A-Za-z_])primary\s+checkout'  # prose: ignore[primary-checkout] the declaration itself
+gate-interpreter = '(?<![0-9A-Za-z_])gate\s+interpreter'  # prose: ignore[gate-interpreter] the declaration itself
+
+[tool.dep_audit]
+# Pinning checks only in the inner loop; the network audit is run on demand.
+offline = "skip"
+
+[tool.pii_scan]
+# The license names its copyright holder, which is its purpose.
+exclude = ["LICENSE"]
+
+# prose: ignore[python_gate] the table this gate reads, named for it
+[tool.python_gate]
+# bounded_run ships two fixtures its live boundary tests launch, gc_child.py and
+# nest_child.py, and a human can run either by hand to watch the bound hold. Each is an
+# INPUT a test drives, not a module of the library -- and each does its work at import,
+# gc_child.py never exiting and nest_child.py waiting on it, so neither could be imported
+# by a paired test even in principle.
+exclude = ["bounded_run/samples"]
+
+[tool.samples_presence]
+# Folders that turn no input into an output a human could diff against a sample.
+exempt = [
+  # A library with no CLI whose output is a fact about whatever repository it is pointed
+  # at. A committed sample could not hold a repository to point it at, and the cases worth
+  # checking by hand -- a status that fails, a git that hangs -- are states a healthy
+  # repository cannot be put in. Its suite builds the repositories and fakes the failing
+  # git instead.
+  "commit_facts",
+  # A library with no CLI whose input is a page loaded in a live engine and whose output is a
+  # Python log of what that engine reported, never a file. What is worth checking by hand,
+  # that each engine reports a policy page's one violation and catches the plant, is what its
+  # live suite runs against tests/fixture/ in all three engines.
+  "csp_watch",
+  # A single argparse formatter class a CLI binds as its formatter_class: it transforms no
+  # input into an output.
+  "help_formatter",
+  # lighthouse_run measures rather than transforms: its output is the timing of a live
+  # Chrome run against a served tree, different on every run and every machine, so no
+  # committed input and output pair could be run again by hand and diffed. The part a
+  # reader would want to check by hand, the font bytes by first paint join, is pinned in
+  # its suite.
+  "lighthouse_run",
+  # A test library, imported only by bounded_run's own tests to reap what they start: no
+  # CLI, no transform.
+  "live_pid_guard",
+  # A server: it serves the directory it is pointed at rather than turning an input into an
+  # output, so there is no output a human could diff against a sample.
+  "loopback_site",
+  # A stream-policy library with no CLI: nothing in it is run by hand on an input to produce
+  # an output.
+  "stdio_utf8",
+  # A test library with no CLI: the names and helpers a grouped suite's aggregator shares with
+  # a runner that splits it, which no input and output pair could show.
+  "suite_select",
+]
+
+[tool.stdio_policy]
+# The whole tree, the vendored libraries included: a library is exactly where a stray
+# print() does not belong.
+paths = ["."]
+
+[tool.claim_check.allow_absent]
+# `npm ci` creates node_modules/.bin from the lockfile, so a fresh clone has none until the
+# reference's own first step has run. allow_absent rather than an ignore keeps a respelling
+# failing.
+"lighthouse_run/lighthouse_run.md" = ["node_modules/.bin"]
+
+[tool.claim_check.ignore_paths]
+# "samples/" names the folder a tool ships its hand-verification sample in, as a class:
+# help_formatter has no CLI and ships none, so the token is not a path in this tree.
+"help_formatter/help_formatter.md" = ["samples/"]
+# "text/html" is the Content-Type the server answers a miss with, and "x/" a hypothetical
+# folder in an example request path: neither is a file in this tree.
+"loopback_site/loopback_site.md" = ["text/html", "x/"]
+# "utilities/" names one of the two layouts the library can be found in -- a folder of
+# shared libraries -- which this repository does not use: it vendors the copy at its root.
+"stdio_utf8/stdio_utf8.md" = ["utilities/"]
+
+[tool.coverage.run]
+# Branch coverage, not line coverage: a line can run while one side of its condition never
+# does.
+branch = true
+
+[tool.coverage.report]
+# `# pragma: only-on posix` marks a line only a POSIX host runs, and
+# `# pragma: only-on win32` one only Windows runs. Each is excluded on the other kind of
+# host alone, so both stay measured where they run. coverage.py's configuration can read
+# environment variables but not the platform, so it keys on OS: Windows sets it to
+# Windows_NT in every process and POSIX systems leave it unset. exclude_also adds to
+# coverage.py's default patterns, so `# pragma: no cover` keeps working.
+exclude_also = [
+  'pragma:\s*only-on\s+posix\b(?!${OS-})',
+  'pragma:\s*only-on\s+win32\b${OS-}',
+]

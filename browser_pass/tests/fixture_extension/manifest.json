@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "browser_pass fixture extension",
+  "version": "1.0.0",
+  "description": "Marks every page it runs in, for browser_pass's live extension suite.",
+  "background": { "service_worker": "worker.js" },
+  "content_scripts": [
+    { "matches": ["<all_urls>"], "js": ["mark.js"], "run_at": "document_start" }
+  ]
+}

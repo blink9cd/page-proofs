@@ -1,0 +1,14 @@
+# prettier checks the JavaScript and HTML here, and nothing else: every file is ignored, then
+# each folder and the three web extensions are let back in.
+*
+!*/
+!*.js
+!*.mjs
+!*.html
+
+# Installed and generated folders, ignored after the lines above so nothing in them is let
+# back in. prettier reads its ignore file from the directory it is run in, so a .gitignore
+# entry alone does not keep them out.
+node_modules/
+lighthouse_runs/
+browser_pass_runs/

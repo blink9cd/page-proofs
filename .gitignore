@@ -1,0 +1,20 @@
+__pycache__/
+*.py[cod]
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.hypothesis/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+.venv/
+# `npm ci` installs the pinned Lighthouse here.
+node_modules
+# Where a run writes its reports and summary when --out is not given.
+lighthouse_runs/
+# Where a browser_pass run writes its reports when --out is not given: beside its targets file.
+browser_pass_runs/
+# `pip install ".[test]"` builds in place, leaving these beside the sources.
+build/
+*.egg-info/

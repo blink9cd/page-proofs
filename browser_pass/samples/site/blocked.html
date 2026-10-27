@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>browser_pass sample: a late script that blocks rendering</title>
+    <style>
+      body {
+        margin: 0;
+        font:
+          16px/1.5 system-ui,
+          sans-serif;
+      }
+      main {
+        padding: 16px;
+      }
+      .banner {
+        min-height: 120px;
+        margin: 0;
+        background: #eef;
+      }
+    </style>
+    <!-- The same script faulty.html loads, told to hold the first paint until it has run. -->
+    <script type="module" blocking="render" src="late.js"></script>
+  </head>
+  <body>
+    <main>
+      <h1>A script that blocks rendering</h1>
+      <p>
+        The banner above this heading is added by the same script that moves the faulty page. Here it runs before
+        anything is painted, so nothing on screen ever moves.
+      </p>
+    </main>
+  </body>
+</html>

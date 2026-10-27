@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>browser_pass sample: a fault only a click reveals</title>
+    <style>
+      body {
+        margin: 0;
+        font:
+          16px/1.5 system-ui,
+          sans-serif;
+      }
+      main {
+        padding: 16px;
+      }
+      button {
+        min-width: 44px;
+        min-height: 44px;
+      }
+      #panel {
+        max-width: 240px;
+        padding: 16px;
+      }
+      .tiny {
+        box-sizing: border-box;
+        width: 16px;
+        height: 16px;
+        min-width: 0;
+        min-height: 0;
+        padding: 0;
+        border: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>A fault only a click reveals</h1>
+      <p>
+        The button opens a panel, with no script: the browser's own popover. The panel holds a button too small to tap.
+      </p>
+      <button type="button" id="open" popovertarget="panel">Open the panel</button>
+    </main>
+    <div id="panel" popover>
+      <p>Opened by a click.</p>
+      <button type="button" class="tiny" popovertarget="panel" popovertargetaction="hide" aria-label="Close"></button>
+    </div>
+  </body>
+</html>

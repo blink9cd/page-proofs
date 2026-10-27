@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Fixture extension welcome</title>
+  </head>
+  <body>
+    <p>Welcome.</p>
+    <!-- Inline, so the extension's own default policy (script-src 'self') refuses it: a
+         violation in a page the pass did not open, which must never become its finding. -->
+    <script>
+      document.title = "refused";
+    </script>
+  </body>
+</html>

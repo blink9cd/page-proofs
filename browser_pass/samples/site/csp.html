@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>browser_pass sample: a policy, and one style attribute it refuses</title>
+  </head>
+  <body>
+    <main>
+      <h1>A page that breaks its own policy</h1>
+      <!-- [html-validate-disable-next no-inline-style -- the one violation this page exists to cause] -->
+      <p style="color: rgb(160, 0, 0)">This paragraph's style attribute breaks the policy above.</p>
+    </main>
+  </body>
+</html>

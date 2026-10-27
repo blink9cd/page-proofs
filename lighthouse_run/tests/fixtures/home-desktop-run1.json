@@ -1,0 +1,798 @@
+{
+  "lighthouseVersion": "13.4.1",
+  "requestedUrl": "http://127.0.0.1:8000/",
+  "mainDocumentUrl": "http://127.0.0.1:8000/",
+  "finalDisplayedUrl": "http://127.0.0.1:8000/",
+  "audits": {
+    "render-blocking-insight": {
+      "id": "render-blocking-insight",
+      "score": 0,
+      "scoreDisplayMode": "metricSavings",
+      "metricSavings": {
+        "FCP": 150,
+        "LCP": 0
+      },
+      "details": {
+        "type": "table",
+        "items": [
+          {
+            "url": "http://127.0.0.1:8000/index.js",
+            "totalBytes": 1529,
+            "wastedMs": 55
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-09.css",
+            "totalBytes": 3471,
+            "wastedMs": 55
+          },
+          {
+            "url": "http://127.0.0.1:8000/widget/style-10.css",
+            "totalBytes": 1846,
+            "wastedMs": 55
+          },
+          {
+            "url": "http://127.0.0.1:8000/widget/style-11.css",
+            "totalBytes": 868,
+            "wastedMs": 55
+          },
+          {
+            "url": "http://127.0.0.1:8000/widget/style-12.css",
+            "totalBytes": 3429,
+            "wastedMs": 55
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-02.css",
+            "totalBytes": 2776,
+            "wastedMs": 55
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-03.css",
+            "totalBytes": 2877,
+            "wastedMs": 55
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-13.css",
+            "totalBytes": 2065,
+            "wastedMs": 55
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-14.css",
+            "totalBytes": 644,
+            "wastedMs": 55
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-15.css",
+            "totalBytes": 1173,
+            "wastedMs": 55
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-16.css",
+            "totalBytes": 1810,
+            "wastedMs": 55
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-17.css",
+            "totalBytes": 3204,
+            "wastedMs": 55
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-04.css",
+            "totalBytes": 2240,
+            "wastedMs": 95
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-18.css",
+            "totalBytes": 842,
+            "wastedMs": 95
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-05.css",
+            "totalBytes": 3450,
+            "wastedMs": 95
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-06.css",
+            "totalBytes": 529,
+            "wastedMs": 95
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-08.css",
+            "totalBytes": 8340,
+            "wastedMs": 95
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-07.css",
+            "totalBytes": 3602,
+            "wastedMs": 95
+          }
+        ]
+      }
+    },
+    "network-dependency-tree-insight": {
+      "id": "network-dependency-tree-insight",
+      "score": 0,
+      "scoreDisplayMode": "numeric",
+      "metricSavings": {
+        "LCP": 0
+      },
+      "details": {
+        "type": "list",
+        "items": [
+          {
+            "type": "list-section",
+            "value": {
+              "type": "network-tree",
+              "chains": {
+                "A4D405FB3CE7C54F732397001D264922": {
+                  "url": "http://127.0.0.1:8000/",
+                  "isLongest": true,
+                  "children": {
+                    "14398.2": {
+                      "url": "http://127.0.0.1:8000/shared/style-08.css",
+                      "isLongest": true,
+                      "children": {
+                        "14398.39": {
+                          "url": "http://127.0.0.1:8000/assets/fonts/font-03.woff2",
+                          "isLongest": true,
+                          "children": {}
+                        },
+                        "14398.35": {
+                          "url": "http://127.0.0.1:8000/assets/fonts/font-02.woff2",
+                          "children": {}
+                        },
+                        "14398.33": {
+                          "url": "http://127.0.0.1:8000/assets/fonts/font-01.woff2",
+                          "children": {}
+                        }
+                      }
+                    },
+                    "14398.30": {
+                      "url": "http://127.0.0.1:8000/index.js",
+                      "children": {
+                        "14398.42": {
+                          "url": "http://127.0.0.1:8000/widget/widget-01.js",
+                          "children": {
+                            "14398.69": {
+                              "url": "http://127.0.0.1:8000/data/feed-d.json",
+                              "children": {}
+                            }
+                          }
+                        },
+                        "14398.44": {
+                          "url": "http://127.0.0.1:8000/shared/module-06.js",
+                          "children": {
+                            "14398.67": {
+                              "url": "http://127.0.0.1:8000/data/feed-c.json",
+                              "children": {}
+                            },
+                            "14398.68": {
+                              "url": "http://127.0.0.1:8000/data/feed-b.json",
+                              "children": {}
+                            },
+                            "14398.66": {
+                              "url": "http://127.0.0.1:8000/data/feed-a.json",
+                              "children": {}
+                            },
+                            "14398.59": {
+                              "url": "http://127.0.0.1:8000/shared/module-07.js",
+                              "children": {}
+                            },
+                            "14398.58": {
+                              "url": "http://127.0.0.1:8000/shared/module-08.js",
+                              "children": {}
+                            },
+                            "14398.57": {
+                              "url": "http://127.0.0.1:8000/shared/module-09.js",
+                              "children": {}
+                            },
+                            "14398.56": {
+                              "url": "http://127.0.0.1:8000/shared/module-10.js",
+                              "children": {}
+                            },
+                            "14398.55": {
+                              "url": "http://127.0.0.1:8000/shared/module-11.js",
+                              "children": {}
+                            }
+                          }
+                        },
+                        "14398.41": {
+                          "url": "http://127.0.0.1:8000/widget/widget-02.js",
+                          "children": {
+                            "14398.52": {
+                              "url": "http://127.0.0.1:8000/widget/widget-03.js",
+                              "children": {
+                                "14398.63": {
+                                  "url": "http://127.0.0.1:8000/widget/widget-04.js",
+                                  "children": {}
+                                }
+                              }
+                            },
+                            "14398.49": {
+                              "url": "http://127.0.0.1:8000/widget/widget-05.js",
+                              "children": {
+                                "14398.61": {
+                                  "url": "http://127.0.0.1:8000/widget/widget-06.js",
+                                  "children": {}
+                                },
+                                "14398.60": {
+                                  "url": "http://127.0.0.1:8000/widget/widget-07.js",
+                                  "children": {}
+                                }
+                              }
+                            },
+                            "14398.50": {
+                              "url": "http://127.0.0.1:8000/widget/widget-08.js",
+                              "children": {
+                                "14398.62": {
+                                  "url": "http://127.0.0.1:8000/widget/widget-09.js",
+                                  "children": {}
+                                }
+                              }
+                            },
+                            "14398.54": {
+                              "url": "http://127.0.0.1:8000/widget/widget-10.js",
+                              "children": {}
+                            },
+                            "14398.53": {
+                              "url": "http://127.0.0.1:8000/widget/widget-11.js",
+                              "children": {}
+                            },
+                            "14398.51": {
+                              "url": "http://127.0.0.1:8000/widget/widget-12.js",
+                              "children": {}
+                            },
+                            "14398.48": {
+                              "url": "http://127.0.0.1:8000/widget/widget-13.js",
+                              "children": {}
+                            },
+                            "14398.47": {
+                              "url": "http://127.0.0.1:8000/widget/widget-14.js",
+                              "children": {}
+                            },
+                            "14398.46": {
+                              "url": "http://127.0.0.1:8000/widget/widget-15.js",
+                              "children": {}
+                            }
+                          }
+                        },
+                        "14398.45": {
+                          "url": "http://127.0.0.1:8000/shared/module-12.js",
+                          "children": {}
+                        },
+                        "14398.43": {
+                          "url": "http://127.0.0.1:8000/shared/module-13.js",
+                          "children": {}
+                        }
+                      }
+                    },
+                    "14398.32": {
+                      "url": "http://127.0.0.1:8000/manifest.webmanifest",
+                      "children": {}
+                    },
+                    "14398.28": {
+                      "url": "http://127.0.0.1:8000/shared/module-14.js",
+                      "children": {}
+                    },
+                    "14398.29": {
+                      "url": "http://127.0.0.1:8000/shared/module-15.js",
+                      "children": {}
+                    },
+                    "14398.27": {
+                      "url": "http://127.0.0.1:8000/shared/module-16.js",
+                      "children": {}
+                    },
+                    "14398.26": {
+                      "url": "http://127.0.0.1:8000/shared/module-17.js",
+                      "children": {}
+                    },
+                    "14398.24": {
+                      "url": "http://127.0.0.1:8000/shared/module-18.js",
+                      "children": {}
+                    },
+                    "14398.25": {
+                      "url": "http://127.0.0.1:8000/shared/module-19.js",
+                      "children": {}
+                    },
+                    "14398.23": {
+                      "url": "http://127.0.0.1:8000/shared/module-20.js",
+                      "children": {}
+                    },
+                    "14398.22": {
+                      "url": "http://127.0.0.1:8000/shared/module-21.js",
+                      "children": {}
+                    },
+                    "14398.21": {
+                      "url": "http://127.0.0.1:8000/shared/module-03.js",
+                      "children": {}
+                    },
+                    "14398.20": {
+                      "url": "http://127.0.0.1:8000/shared/module-04.js",
+                      "children": {}
+                    },
+                    "14398.19": {
+                      "url": "http://127.0.0.1:8000/shared/module-22.js",
+                      "children": {}
+                    },
+                    "14398.18": {
+                      "url": "http://127.0.0.1:8000/shared/style-09.css",
+                      "children": {}
+                    },
+                    "14398.17": {
+                      "url": "http://127.0.0.1:8000/widget/style-10.css",
+                      "children": {}
+                    },
+                    "14398.16": {
+                      "url": "http://127.0.0.1:8000/widget/style-11.css",
+                      "children": {}
+                    },
+                    "14398.15": {
+                      "url": "http://127.0.0.1:8000/widget/style-12.css",
+                      "children": {}
+                    },
+                    "14398.14": {
+                      "url": "http://127.0.0.1:8000/shared/style-02.css",
+                      "children": {}
+                    },
+                    "14398.13": {
+                      "url": "http://127.0.0.1:8000/shared/style-03.css",
+                      "children": {}
+                    },
+                    "14398.12": {
+                      "url": "http://127.0.0.1:8000/shared/style-13.css",
+                      "children": {}
+                    },
+                    "14398.11": {
+                      "url": "http://127.0.0.1:8000/shared/style-14.css",
+                      "children": {}
+                    },
+                    "14398.10": {
+                      "url": "http://127.0.0.1:8000/shared/style-15.css",
+                      "children": {}
+                    },
+                    "14398.9": {
+                      "url": "http://127.0.0.1:8000/shared/style-16.css",
+                      "children": {}
+                    },
+                    "14398.8": {
+                      "url": "http://127.0.0.1:8000/shared/style-17.css",
+                      "children": {}
+                    },
+                    "14398.7": {
+                      "url": "http://127.0.0.1:8000/shared/style-04.css",
+                      "children": {}
+                    },
+                    "14398.6": {
+                      "url": "http://127.0.0.1:8000/shared/style-18.css",
+                      "children": {}
+                    },
+                    "14398.5": {
+                      "url": "http://127.0.0.1:8000/shared/style-05.css",
+                      "children": {}
+                    },
+                    "14398.4": {
+                      "url": "http://127.0.0.1:8000/shared/style-06.css",
+                      "children": {}
+                    },
+                    "14398.3": {
+                      "url": "http://127.0.0.1:8000/shared/style-07.css",
+                      "children": {}
+                    }
+                  }
+                }
+              },
+              "longestChain": {
+                "duration": 286
+              }
+            }
+          },
+          {
+            "type": "list-section",
+            "value": {
+              "type": "text",
+              "value": "no origins were preconnected"
+            }
+          },
+          {
+            "type": "list-section",
+            "value": {
+              "type": "text",
+              "value": "No additional origins are good candidates for preconnecting"
+            }
+          }
+        ]
+      }
+    },
+    "unused-css-rules": {
+      "id": "unused-css-rules",
+      "score": 1,
+      "scoreDisplayMode": "metricSavings",
+      "numericValue": 0,
+      "numericUnit": "millisecond",
+      "metricSavings": {
+        "FCP": 0,
+        "LCP": 0
+      },
+      "details": {
+        "type": "opportunity",
+        "items": [],
+        "overallSavingsMs": 0,
+        "overallSavingsBytes": 0,
+        "sortedBy": ["wastedBytes"],
+        "debugData": {
+          "type": "debugdata",
+          "metricSavings": {
+            "FCP": 0,
+            "LCP": 0
+          }
+        }
+      }
+    },
+    "lcp-breakdown-insight": {
+      "id": "lcp-breakdown-insight",
+      "score": 1,
+      "scoreDisplayMode": "informative",
+      "metricSavings": {
+        "LCP": 0
+      },
+      "details": {
+        "type": "list",
+        "items": [
+          {
+            "type": "table",
+            "items": [
+              {
+                "subpart": "timeToFirstByte",
+                "label": "Time to first byte",
+                "duration": 4.157
+              },
+              {
+                "subpart": "resourceLoadDelay",
+                "label": "Resource load delay",
+                "duration": 24.177
+              },
+              {
+                "subpart": "resourceLoadDuration",
+                "label": "Resource load duration",
+                "duration": 112.377
+              },
+              {
+                "subpart": "elementRenderDelay",
+                "label": "Element render delay",
+                "duration": 55.237
+              }
+            ]
+          },
+          {
+            "type": "node",
+            "lhId": "page-0-IMG",
+            "selector": "div.panel > figure.photo > div.frame > img.slide"
+          }
+        ]
+      }
+    },
+    "lcp-discovery-insight": {
+      "id": "lcp-discovery-insight",
+      "score": 0,
+      "scoreDisplayMode": "numeric",
+      "metricSavings": {
+        "LCP": 0
+      },
+      "details": {
+        "type": "list",
+        "items": [
+          {
+            "type": "checklist",
+            "items": {
+              "priorityHinted": {
+                "label": "fetchpriority=high should be applied",
+                "value": false
+              },
+              "requestDiscoverable": {
+                "label": "Request is discoverable in initial document",
+                "value": true
+              },
+              "eagerlyLoaded": {
+                "label": "LCP resources should not use loading=lazy",
+                "value": true
+              }
+            }
+          },
+          {
+            "type": "node",
+            "lhId": "page-0-IMG",
+            "selector": "div.panel > figure.photo > div.frame > img.slide"
+          }
+        ]
+      }
+    },
+    "cache-insight": {
+      "id": "cache-insight",
+      "score": 0.5,
+      "scoreDisplayMode": "metricSavings",
+      "metricSavings": {
+        "FCP": 0,
+        "LCP": 0
+      },
+      "details": {
+        "type": "table",
+        "items": [
+          {
+            "url": "https://images.example.invalid/image-1.jpg",
+            "wastedBytes": 39367
+          },
+          {
+            "url": "http://127.0.0.1:8000/assets/fonts/font-02.woff2",
+            "wastedBytes": 34961
+          },
+          {
+            "url": "http://127.0.0.1:8000/assets/fonts/font-01.woff2",
+            "wastedBytes": 32953
+          },
+          {
+            "url": "http://127.0.0.1:8000/assets/fonts/font-03.woff2",
+            "wastedBytes": 26325
+          },
+          {
+            "url": "https://images.example.invalid/image-2.jpg",
+            "wastedBytes": 25879
+          },
+          {
+            "url": "http://127.0.0.1:8000/assets/panel/1/1.jpg",
+            "wastedBytes": 16992
+          },
+          {
+            "url": "https://images.example.invalid/image-3.jpg",
+            "wastedBytes": 10595
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-08.css",
+            "wastedBytes": 8340
+          },
+          {
+            "url": "http://127.0.0.1:8000/widget/widget-03.js",
+            "wastedBytes": 5789
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/module-03.js",
+            "wastedBytes": 5022
+          },
+          {
+            "url": "http://127.0.0.1:8000/widget/widget-02.js",
+            "wastedBytes": 4784
+          },
+          {
+            "url": "http://127.0.0.1:8000/widget/widget-05.js",
+            "wastedBytes": 4690
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/module-12.js",
+            "wastedBytes": 4500
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/module-06.js",
+            "wastedBytes": 4004
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/module-19.js",
+            "wastedBytes": 3606
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-07.css",
+            "wastedBytes": 3602
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-09.css",
+            "wastedBytes": 3471
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/module-18.js",
+            "wastedBytes": 3471
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-05.css",
+            "wastedBytes": 3450
+          },
+          {
+            "url": "http://127.0.0.1:8000/widget/style-12.css",
+            "wastedBytes": 3429
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-17.css",
+            "wastedBytes": 3204
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/module-21.js",
+            "wastedBytes": 2960
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-03.css",
+            "wastedBytes": 2877
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-02.css",
+            "wastedBytes": 2776
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/module-10.js",
+            "wastedBytes": 2724
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/module-08.js",
+            "wastedBytes": 2589
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/module-04.js",
+            "wastedBytes": 2377
+          },
+          {
+            "url": "http://127.0.0.1:8000/widget/widget-12.js",
+            "wastedBytes": 2248
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-04.css",
+            "wastedBytes": 2240
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/module-09.js",
+            "wastedBytes": 2240
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/module-15.js",
+            "wastedBytes": 2213
+          },
+          {
+            "url": "http://127.0.0.1:8000/widget/widget-14.js",
+            "wastedBytes": 2203
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/module-07.js",
+            "wastedBytes": 2142
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-13.css",
+            "wastedBytes": 2065
+          },
+          {
+            "url": "http://127.0.0.1:8000/widget/widget-09.js",
+            "wastedBytes": 2047
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/module-16.js",
+            "wastedBytes": 1879
+          },
+          {
+            "url": "http://127.0.0.1:8000/widget/style-10.css",
+            "wastedBytes": 1846
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-16.css",
+            "wastedBytes": 1810
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/module-11.js",
+            "wastedBytes": 1810
+          },
+          {
+            "url": "http://127.0.0.1:8000/widget/widget-07.js",
+            "wastedBytes": 1631
+          },
+          {
+            "url": "http://127.0.0.1:8000/widget/widget-11.js",
+            "wastedBytes": 1566
+          },
+          {
+            "url": "http://127.0.0.1:8000/index.js",
+            "wastedBytes": 1529
+          },
+          {
+            "url": "http://127.0.0.1:8000/widget/widget-04.js",
+            "wastedBytes": 1484
+          },
+          {
+            "url": "http://127.0.0.1:8000/widget/widget-15.js",
+            "wastedBytes": 1437
+          },
+          {
+            "url": "http://127.0.0.1:8000/widget/widget-01.js",
+            "wastedBytes": 1377
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/module-17.js",
+            "wastedBytes": 1330
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/module-22.js",
+            "wastedBytes": 1327
+          },
+          {
+            "url": "http://127.0.0.1:8000/widget/widget-08.js",
+            "wastedBytes": 1284
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-15.css",
+            "wastedBytes": 1173
+          },
+          {
+            "url": "http://127.0.0.1:8000/widget/widget-10.js",
+            "wastedBytes": 1078
+          },
+          {
+            "url": "http://127.0.0.1:8000/widget/widget-13.js",
+            "wastedBytes": 919
+          },
+          {
+            "url": "http://127.0.0.1:8000/widget/style-11.css",
+            "wastedBytes": 868
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/module-20.js",
+            "wastedBytes": 848
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-18.css",
+            "wastedBytes": 842
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/module-14.js",
+            "wastedBytes": 746
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-14.css",
+            "wastedBytes": 644
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/module-13.js",
+            "wastedBytes": 625
+          },
+          {
+            "url": "http://127.0.0.1:8000/widget/widget-06.js",
+            "wastedBytes": 557
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-06.css",
+            "wastedBytes": 529
+          }
+        ],
+        "sortedBy": ["wastedBytes"],
+        "skipSumming": ["cacheLifetimeMs"],
+        "debugData": {
+          "type": "debugdata",
+          "wastedBytes": 311274
+        }
+      }
+    },
+    "document-latency-insight": {
+      "id": "document-latency-insight",
+      "score": 0.5,
+      "scoreDisplayMode": "metricSavings",
+      "metricSavings": {
+        "FCP": 0,
+        "LCP": 0
+      },
+      "details": {
+        "type": "checklist",
+        "items": {
+          "noRedirects": {
+            "label": "Avoids redirects",
+            "value": true
+          },
+          "serverResponseIsFast": {
+            "label": "Server responds quickly (observed 2 ms)",
+            "value": true
+          },
+          "usesCompression": {
+            "label": "No compression applied",
+            "value": false
+          }
+        },
+        "debugData": {
+          "type": "debugdata",
+          "redirectDuration": 0,
+          "serverResponseTime": 2,
+          "uncompressedResponseBytes": 22759,
+          "wastedBytes": 22759
+        }
+      }
+    }
+  }
+}

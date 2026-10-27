@@ -1,0 +1,359 @@
+{
+  "lighthouseVersion": "13.4.1",
+  "requestedUrl": "http://127.0.0.1:8000/404.html",
+  "mainDocumentUrl": "http://127.0.0.1:8000/404.html",
+  "finalDisplayedUrl": "http://127.0.0.1:8000/404.html",
+  "audits": {
+    "render-blocking-insight": {
+      "id": "render-blocking-insight",
+      "score": 0,
+      "scoreDisplayMode": "metricSavings",
+      "metricSavings": {
+        "FCP": 150,
+        "LCP": 150
+      },
+      "details": {
+        "type": "table",
+        "items": [
+          {
+            "url": "http://127.0.0.1:8000/shared/style-01.css",
+            "totalBytes": 3452
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-02.css",
+            "totalBytes": 2776
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-03.css",
+            "totalBytes": 2877,
+            "wastedMs": 84
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-04.css",
+            "totalBytes": 2240,
+            "wastedMs": 84
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-05.css",
+            "totalBytes": 3450,
+            "wastedMs": 84
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-06.css",
+            "totalBytes": 529,
+            "wastedMs": 84
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-07.css",
+            "totalBytes": 3602,
+            "wastedMs": 84
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-08.css",
+            "totalBytes": 8340,
+            "wastedMs": 84
+          }
+        ]
+      }
+    },
+    "network-dependency-tree-insight": {
+      "id": "network-dependency-tree-insight",
+      "score": 0,
+      "scoreDisplayMode": "numeric",
+      "metricSavings": {
+        "LCP": 0
+      },
+      "details": {
+        "type": "list",
+        "items": [
+          {
+            "type": "list-section",
+            "value": {
+              "type": "network-tree",
+              "chains": {
+                "2CAA9698CEFCC3EE5032929B966DB2FD": {
+                  "url": "http://127.0.0.1:8000/404.html",
+                  "isLongest": true,
+                  "children": {
+                    "16331.10": {
+                      "url": "http://127.0.0.1:8000/not-found.js",
+                      "isLongest": true,
+                      "children": {
+                        "16331.21": {
+                          "url": "http://127.0.0.1:8000/shared/module-01.js",
+                          "isLongest": true,
+                          "children": {
+                            "16331.23": {
+                              "url": "http://127.0.0.1:8000/shared/module-02.js",
+                              "isLongest": true,
+                              "children": {}
+                            }
+                          }
+                        },
+                        "16331.20": {
+                          "url": "http://127.0.0.1:8000/shared/module-03.js",
+                          "children": {
+                            "16331.24": {
+                              "url": "http://127.0.0.1:8000/shared/module-04.js",
+                              "children": {}
+                            }
+                          }
+                        },
+                        "16331.22": {
+                          "url": "http://127.0.0.1:8000/shared/module-05.js",
+                          "children": {}
+                        }
+                      }
+                    },
+                    "16331.2": {
+                      "url": "http://127.0.0.1:8000/shared/style-08.css",
+                      "children": {
+                        "16331.12": {
+                          "url": "http://127.0.0.1:8000/assets/fonts/font-01.woff2",
+                          "children": {}
+                        },
+                        "16331.14": {
+                          "url": "http://127.0.0.1:8000/assets/fonts/font-02.woff2",
+                          "children": {}
+                        }
+                      }
+                    },
+                    "16331.11": {
+                      "url": "http://127.0.0.1:8000/manifest.webmanifest",
+                      "children": {}
+                    },
+                    "16331.9": {
+                      "url": "http://127.0.0.1:8000/shared/style-01.css",
+                      "children": {}
+                    },
+                    "16331.8": {
+                      "url": "http://127.0.0.1:8000/shared/style-02.css",
+                      "children": {}
+                    },
+                    "16331.7": {
+                      "url": "http://127.0.0.1:8000/shared/style-03.css",
+                      "children": {}
+                    },
+                    "16331.6": {
+                      "url": "http://127.0.0.1:8000/shared/style-04.css",
+                      "children": {}
+                    },
+                    "16331.5": {
+                      "url": "http://127.0.0.1:8000/shared/style-05.css",
+                      "children": {}
+                    },
+                    "16331.4": {
+                      "url": "http://127.0.0.1:8000/shared/style-06.css",
+                      "children": {}
+                    },
+                    "16331.3": {
+                      "url": "http://127.0.0.1:8000/shared/style-07.css",
+                      "children": {}
+                    }
+                  }
+                }
+              },
+              "longestChain": {
+                "duration": 57
+              }
+            }
+          },
+          {
+            "type": "list-section",
+            "value": {
+              "type": "text",
+              "value": "no origins were preconnected"
+            }
+          },
+          {
+            "type": "list-section",
+            "value": {
+              "type": "text",
+              "value": "No additional origins are good candidates for preconnecting"
+            }
+          }
+        ]
+      }
+    },
+    "unused-css-rules": {
+      "id": "unused-css-rules",
+      "score": 1,
+      "scoreDisplayMode": "metricSavings",
+      "numericValue": 0,
+      "numericUnit": "millisecond",
+      "metricSavings": {
+        "FCP": 0,
+        "LCP": 0
+      },
+      "details": {
+        "type": "opportunity",
+        "items": [],
+        "overallSavingsMs": 0,
+        "overallSavingsBytes": 0,
+        "sortedBy": ["wastedBytes"],
+        "debugData": {
+          "type": "debugdata",
+          "metricSavings": {
+            "FCP": 0,
+            "LCP": 0
+          }
+        }
+      }
+    },
+    "lcp-breakdown-insight": {
+      "id": "lcp-breakdown-insight",
+      "score": 1,
+      "scoreDisplayMode": "informative",
+      "metricSavings": {
+        "LCP": 0
+      },
+      "details": {
+        "type": "list",
+        "items": [
+          {
+            "type": "table",
+            "items": [
+              {
+                "subpart": "timeToFirstByte",
+                "label": "Time to first byte",
+                "duration": 3.721
+              },
+              {
+                "subpart": "elementRenderDelay",
+                "label": "Element render delay",
+                "duration": 59.381
+              }
+            ]
+          },
+          {
+            "type": "node",
+            "lhId": "page-0-H1",
+            "selector": "body > main.page > h1"
+          }
+        ]
+      }
+    },
+    "lcp-discovery-insight": {
+      "id": "lcp-discovery-insight",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "cache-insight": {
+      "id": "cache-insight",
+      "score": 0,
+      "scoreDisplayMode": "metricSavings",
+      "metricSavings": {
+        "FCP": 100,
+        "LCP": 50
+      },
+      "details": {
+        "type": "table",
+        "items": [
+          {
+            "url": "http://127.0.0.1:8000/assets/fonts/font-02.woff2",
+            "wastedBytes": 34961
+          },
+          {
+            "url": "http://127.0.0.1:8000/assets/fonts/font-01.woff2",
+            "wastedBytes": 32953
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-08.css",
+            "wastedBytes": 8340
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/module-03.js",
+            "wastedBytes": 5022
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-07.css",
+            "wastedBytes": 3602
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-01.css",
+            "wastedBytes": 3452
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-05.css",
+            "wastedBytes": 3450
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/module-01.js",
+            "wastedBytes": 3086
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-03.css",
+            "wastedBytes": 2877
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-02.css",
+            "wastedBytes": 2776
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/module-04.js",
+            "wastedBytes": 2377
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/module-02.js",
+            "wastedBytes": 2313
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-04.css",
+            "wastedBytes": 2240
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/module-05.js",
+            "wastedBytes": 684
+          },
+          {
+            "url": "http://127.0.0.1:8000/shared/style-06.css",
+            "wastedBytes": 529
+          },
+          {
+            "url": "http://127.0.0.1:8000/not-found.js",
+            "wastedBytes": 429
+          }
+        ],
+        "sortedBy": ["wastedBytes"],
+        "skipSumming": ["cacheLifetimeMs"],
+        "debugData": {
+          "type": "debugdata",
+          "wastedBytes": 109091
+        }
+      }
+    },
+    "document-latency-insight": {
+      "id": "document-latency-insight",
+      "score": 0.5,
+      "scoreDisplayMode": "metricSavings",
+      "metricSavings": {
+        "FCP": 0,
+        "LCP": 0
+      },
+      "details": {
+        "type": "checklist",
+        "items": {
+          "noRedirects": {
+            "label": "Avoids redirects",
+            "value": true
+          },
+          "serverResponseIsFast": {
+            "label": "Server responds quickly (observed 2 ms)",
+            "value": true
+          },
+          "usesCompression": {
+            "label": "No compression applied",
+            "value": false
+          }
+        },
+        "debugData": {
+          "type": "debugdata",
+          "redirectDuration": 0,
+          "serverResponseTime": 2,
+          "uncompressedResponseBytes": 16250,
+          "wastedBytes": 16250
+        }
+      }
+    }
+  }
+}

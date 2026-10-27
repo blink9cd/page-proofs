@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>browser_pass sample: motion paced past the settle window</title>
+    <style>
+      body {
+        margin: 0;
+        font:
+          16px/1.5 system-ui,
+          sans-serif;
+      }
+      main {
+        padding: 16px;
+      }
+      /* The boxes are placed from the stage's top, so a box's rest is known from the stage alone. */
+      .stage {
+        position: relative;
+        height: 240px;
+      }
+      .stage > div {
+        position: absolute;
+        top: 0;
+        width: 80px;
+        height: 40px;
+      }
+      /* Holds still for 15s, far past any settle window or page load, then moves 120px down, and stays. */
+      #slide {
+        left: 0;
+        background: #9cf;
+        animation: slide 15s linear 15s both;
+      }
+      /* Endless, after a 15s delay. Each iteration starts, and ends, at its rest pose. */
+      #bob {
+        left: 104px;
+        background: #fc9;
+        animation: bob 1.2s ease-in-out 15s infinite;
+      }
+      /* Paused by the page itself, so what a visitor sees is its first frame: 40px down. */
+      #held {
+        left: 208px;
+        background: #c9f;
+        animation: drift 15s linear both paused;
+      }
+      @keyframes slide {
+        to {
+          transform: translateY(120px);
+        }
+      }
+      @keyframes bob {
+        0%,
+        100% {
+          transform: none;
+        }
+        50% {
+          transform: translateY(60px);
+        }
+      }
+      @keyframes drift {
+        from {
+          transform: translateY(40px);
+        }
+        to {
+          transform: translateY(160px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Motion paced past the settle window</h1>
+      <p>
+        The first box waits fifteen seconds, then slides down. The second bobs forever once its delay is over. The third
+        is paused by the page itself.
+      </p>
+      <div id="stage" class="stage">
+        <div id="slide"></div>
+        <div id="bob"></div>
+        <div id="held"></div>
+      </div>
+    </main>
+  </body>
+</html>

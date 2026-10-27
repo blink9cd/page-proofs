@@ -1,0 +1,16 @@
+# The hand-verification sample: the pages below, at one phone viewport in both orientations, and
+# one state of the popover page. Run it from the repository root with
+# --serve browser_pass/samples/site; README.md beside this file says what each
+# rendering should report.
+pages = ["/clean.html", "/faulty.html", "/blocked.html", "/motion.html", "/popover.html"]
+
+[[viewport]]
+width = 390
+height = 844
+rotates = true
+
+# The popover page with its panel opened by a click: the one fault it holds shows only here.
+[[state]]
+name = "opened"
+page = "/popover.html?from=state"
+actions = [{ click = "#open" }, { wait_for = "#panel" }]

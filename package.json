@@ -1,0 +1,29 @@
+{
+  "name": "page-proofs",
+  "version": "0.1.0",
+  "private": true,
+  "license": "AGPL-3.0-or-later",
+  "scripts": {
+    "check": "prettier --check . && html-validate \"browser_pass/samples/site/*.html\" \"browser_pass/tests/fixture_extension/*.html\" \"csp_watch/tests/fixture/*.html\" && eslint .",
+    "test": "node --experimental-test-coverage --test-coverage-include=\"browser_pass/src/*.js\" --test-coverage-include=\"csp_watch/src/*.js\" --test-coverage-include-all --test-coverage-branches=100 --test-coverage-lines=100 --test-coverage-functions=100 --test \"browser_pass/tests/test_*.mjs\" \"csp_watch/tests/test_*.mjs\""
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "eslint": "10.9.1",
+    "globals": "17.11.0",
+    "html-validate": "11.10.0",
+    "jsdom": "30.0.1",
+    "lighthouse": "13.4.1",
+    "prettier": "3.9.6"
+  },
+  "prettier": {
+    "overrides": [
+      {
+        "files": "*.html",
+        "options": {
+          "printWidth": 120
+        }
+      }
+    ]
+  }
+}

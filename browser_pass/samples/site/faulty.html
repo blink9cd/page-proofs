@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>browser_pass sample: one fault per detector</title>
+    <style>
+      body {
+        margin: 0;
+        font:
+          16px/1.5 system-ui,
+          sans-serif;
+      }
+      .wide {
+        width: 600px;
+        height: 24px;
+        background: #fcc;
+      }
+      .badge {
+        position: fixed;
+        top: 8px;
+        right: -40px;
+        width: 60px;
+        height: 24px;
+        background: #cfc;
+      }
+      .leak {
+        display: block;
+      }
+      .tiny {
+        width: 16px;
+        height: 16px;
+        min-width: 0;
+        min-height: 0;
+        padding: 0;
+      }
+      .banner {
+        min-height: 120px;
+        margin: 0;
+        background: #eef;
+      }
+    </style>
+    <!-- Runs after the first paint and moves everything below the banner it adds. -->
+    <script type="module" src="late.js"></script>
+  </head>
+  <body>
+    <main>
+      <h1>One fault per detector</h1>
+      <div class="wide">Wider than a phone held upright</div>
+      <div class="badge">Badge</div>
+      <p class="leak" hidden>A hidden paragraph that a class rule shows anyway</p>
+      <button class="tiny" type="button">x</button>
+      <img src="missing.png" alt="An image that does not exist" width="40" height="40" />
+    </main>
+    <script>
+      console.log("sample log line, which is not an error");
+      console.error("sample console error");
+      setTimeout(() => {
+        throw new Error("sample page error");
+      }, 0);
+    </script>
+  </body>
+</html>

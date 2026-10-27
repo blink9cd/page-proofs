@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'" />
+    <title>csp_watch fixture: a policy, and one style attribute it refuses</title>
+  </head>
+  <body>
+    <!-- [html-validate-disable-next no-inline-style -- the one violation this page exists to cause] -->
+    <p style="color: red">This paragraph's style attribute breaks the page's own policy.</p>
+  </body>
+</html>
