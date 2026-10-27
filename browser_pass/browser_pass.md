@@ -73,7 +73,7 @@ command and says what each rendering should report.
 | `--require-csp`            | off                                                        | Also find each page as it loads, scripts on and off, whose markup declares no Content-Security-Policy meta. Never a state.                                                         |
 | `--chromium-extension DIR` | none                                                       | An unpacked extension folder holding `manifest.json`, loaded into every Chromium context, in Chromium's full build. Implies `--loopback-only` (see "Measuring with an extension"). |
 | `--firefox-extension XPI`  | none                                                       | A Mozilla-signed `.xpi` whose manifest gives a gecko id, sideloaded into every Firefox context's throwaway profile. Implies `--loopback-only`.                                     |
-| `--loopback-only`          | off                                                        | Refuse requests off 127.0.0.1 in every engine, Chromium in its full build: the baseline an extension run is compared with. WebKit's UDP is not guarded.                            |
+| `--loopback-only`          | off                                                        | Refuse requests off the served origin in Chromium (full build) and Firefox, off 127.0.0.1 in WebKit, whose other loopback ports and UDP stay open: an extension run's baseline.    |
 
 ## The targets file
 
@@ -641,39 +641,64 @@ Each launch is slower than a context: a rendering takes two, and its watchdog bo
 much. Closing a persistent context closes its browser, inside that bound.
 
 **The egress guard.** `--loopback-only`, implied by an extension, fails the requests an engine
-makes off 127.0.0.1, the extension's own included. What each engine is launched with, and what
-that guards:
+makes off the served origin, `127.0.0.1` at the port the pages are served on, the extension's
+own included. Off 127.0.0.1 that holds in every engine; to another port on it, in Chromium and
+Firefox, where a page's script could otherwise reach whatever else listens on the machine's
+loopback, a development server or a local API. What each engine is launched with, and what that
+guards:
 
-- **Chromium** is launched with `--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1`, so
-  no name resolves but `127.0.0.1`, an IP literal included;
-  `--webrtc-ip-handling-policy=disable_non_proxied_udp`, so WebRTC sends no UDP, since no proxy
-  carries any; and `--disable-quic`.
-- **Firefox** sends every request but loopback's to a manual proxy on `127.0.0.1:9`, which no
-  add-on may bypass (`network.proxy.allow_bypass` off), and has no WebRTC, WebTransport or HTTP/3
-  at all (`media.peerconnection.enabled`, `network.webtransport.enabled` and
-  `network.http.http3.enable` off) and prefetches no name lookups (`network.dns.disablePrefetch`).
+- **Chromium** is launched with `--proxy-server=http://127.0.0.1:9` and
+  `--proxy-bypass-list=<-loopback>;127.0.0.1:<served port>`, so every request but the served
+  origin's, a WebSocket's included, goes to a proxy nothing listens on. `<-loopback>` removes
+  Chromium's implicit loopback bypass, and comes first because Chromium reads the list last rule
+  first. Also `--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1`, so no name resolves
+  but `127.0.0.1`, an IP literal included;
+  `--webrtc-ip-handling-policy=disable_non_proxied_udp`, so WebRTC sends no UDP, since an HTTP
+  proxy carries none; and `--disable-quic`.
+- **Firefox** sends every request but the served origin's to a manual proxy on `127.0.0.1:9`,
+  loopback's included (`network.proxy.allow_hijacking_localhost` on, and
+  `network.proxy.no_proxies_on` naming the served `127.0.0.1:<port>` alone), which no add-on may
+  bypass (`network.proxy.allow_bypass` off). The served origin stays a secure context
+  (`network.proxy.testing_localhost_is_secure_when_hijacked`), as loopback is. It has no WebRTC,
+  WebTransport or HTTP/3 at all (`media.peerconnection.enabled`, `network.webtransport.enabled`
+  and `network.http.http3.enable` off) and prefetches no name lookups
+  (`network.dns.disablePrefetch`).
 - **WebKit** sends its page's requests but loopback's to `http://127.0.0.1:9` through
-  Playwright's `proxy` option, and that is all: Playwright gives WebKit no switch for its UDP,
-  so WebRTC in it is not guarded.
+  Playwright's `proxy` option, and that is all. Its bypass names the loopback host, so every
+  port on it stays reachable: a page's script in WebKit can reach anything listening on the
+  machine's loopback. Playwright gives WebKit no switch for its UDP either, so WebRTC in it is
+  not guarded.
+
+**WebKit is not held to the served port, and why.** Each of these was measured on macOS with
+the pinned build, and refused. A bypass naming the port, `127.0.0.1:<port>`, is not read as a
+port by WebKit's network stack: the served origin itself went to the proxy, and no page loaded.
+No bypass at all did the same. Playwright's request and WebSocket routes on the context stopped
+the page's own requests and WebSockets to another port, but not a WebSocket a worker opens, nor
+the connection a `preconnect` link makes, so they were not added: a guard that holds most
+channels would read as one that holds them all. Holding WebKit would need a forwarding proxy of
+the tool's own in front of its every request, which it does not have.
 
 Measured in the live suite, with nothing listening on port 9: an image off loopback fails as
-`net::ERR_NAME_NOT_RESOLVED`, `NS_ERROR_PROXY_CONNECTION_REFUSED` and, in WebKit, in its
+`net::ERR_PROXY_CONNECTION_FAILED`, `NS_ERROR_PROXY_CONNECTION_REFUSED` and, in WebKit, in its
 platform network stack's words, `Could not connect to the server.` on macOS and `Could not
-connect to proxy server 127.0.0.1: Connection refused` on Linux, while loopback still loads;
-and a WebRTC connection to a STUN server on a loopback UDP port sends it nothing in Chromium
-once its ICE candidates are gathered, finds no `RTCPeerConnection` in Firefox, and reaches it
-in WebKit on Linux. That last is a Linux-measured claim: macOS WebKit never finishes gathering
-within a rendering, so its count of no datagrams proves nothing, and the suite says so in its
-output rather than passing it as open or closed. The WebTransport, HTTP/3, QUIC and prefetch
-switches are set and pinned by the unit suite, not measured: nothing here serves those protocols
-to try them on. The `--force-webrtc-ip-handling-policy` spelling older Chromium documentation
-gives was measured to stop nothing in this build; the switch it reads is
+connect to proxy server 127.0.0.1: Connection refused` on Linux, while loopback still loads. An
+image, a fetch and a WebSocket to another loopback port reach nothing in Chromium and Firefox,
+and reach it in WebKit. And a WebRTC connection to a STUN server on a loopback UDP port sends it
+nothing in Chromium once its ICE candidates are gathered, finds no `RTCPeerConnection` in
+Firefox, and reaches it in WebKit on Linux. That last is a Linux-measured claim: macOS WebKit
+never finishes gathering within a rendering, so its count of no datagrams proves nothing, and the
+suite says so in its output rather than passing it as open or closed. The WebTransport, HTTP/3,
+QUIC and prefetch switches are set and pinned by the unit suite, not measured: nothing here
+serves those protocols to try them on. The `--force-webrtc-ip-handling-policy` spelling older
+Chromium documentation gives was measured to stop nothing in this build; the switch it reads is
 `--webrtc-ip-handling-policy`. So an image, a font or a script a page takes from another host is
-an `http_error` in every guarded rendering, and so is anything an extension fetches; compare an
-extension run with a `--loopback-only` baseline, never with an unguarded run, so that only the
-extension differs. A run without `--serve` whose `base_url` is not on 127.0.0.1 is refused under
-the guard. The full Chromium build asks for `/favicon.ico` as a browser does, so a site with none
-logs a 404 console error in both runs alike.
+an `http_error` in every guarded rendering, and so is anything an extension fetches. In Chromium
+and Firefox a request to another loopback port is one too, naming its URL and so its port, and a
+refused WebSocket is a `console_error` naming its `ws://` URL. Compare an extension run with a
+`--loopback-only` baseline, never with an unguarded run, so that only the extension differs. A
+run without `--serve` whose `base_url` is not on 127.0.0.1, or names no valid port, is refused
+under the guard. The full Chromium build asks for `/favicon.ico` as a browser does, so a site
+with none logs a 404 console error in both runs alike.
 
 **What the policy reports.** The CSP collector is installed on each persistent context before its
 page, as on any context. An extension's insertion reaches it as the page's own would: Firefox
@@ -754,8 +779,9 @@ names your machine's layout when typed as an absolute one, and it is regenerated
 Two installs, each _pinned_, and each run once per machine, from the root of this repository.
 
 1. **Playwright and its closure**, as the repository's `pyproject.toml` pins them in its
-   `browser` extra. Install the extra rather than playwright alone: it pins `greenlet` and
-   `pyee` as well, and installing only playwright lets pip resolve those two freely.
+   `browser` extra. Install the extra rather than playwright alone: it pins `greenlet`, `pyee`
+   and `typing-extensions` as well, and installing only playwright lets pip resolve those
+   three freely.
 
    ```bash
    python3.12 -m pip install ".[browser]"
@@ -791,13 +817,14 @@ with `MOZ_APP_DATA` and `MOZ_LOCAL_APP_DATA` pointed into the run's scratch fold
 real folder cannot be read, as under a sandbox that denies it, Firefox would otherwise fail to
 start with "Could not find profile folder".
 
-A run with an extension is no exception: each persistent context's profile is a fresh folder
-made under the run's scratch folder, removed once its context closes, and never a browser's own
-profile. The extension is read from where the option names and copied into that profile (an
-`.xpi`) or loaded in place (an unpacked folder), never installed into a real browser. Under the
-egress guard, no request an extension or a page makes of another host leaves the browser in
-Chromium or Firefox, by any channel listed under "The egress guard" above; in WebKit its page's
-requests do not, while its WebRTC's UDP still can.
+A run with an extension is no exception: each persistent context's profile is a fresh folder made
+under the run's scratch folder, removed once its context closes, and never a browser's own profile.
+The extension is read from where the option names and copied into that profile (an `.xpi`) or loaded
+in place (an unpacked folder), never installed into a real browser. Under the egress guard, no
+request an extension or a page makes off the served origin leaves the browser in Chromium or
+Firefox, by any channel listed under "The egress guard" above, another port on loopback included; in
+WebKit its page's requests to another host do not, while a request to another loopback port and its
+WebRTC's UDP still can.
 
 ## Tests
 
@@ -844,12 +871,14 @@ The suites, by what they cover:
   `samples/site/csp.html`.
 - **An extension and the egress guard**: `test_pass_extension.py` reads extensions written fresh
   into a scratch folder; `test_pass_extension_guard.py` pins each engine's guard, argument by
-  argument and pref by pref; `test_pass_extension_launch.py` and `test_pass_extension_tabs.py`
+  argument and pref by pref, for the served origin's port; `test_pass_extension_launch.py` and `test_pass_extension_tabs.py`
   drive a persistent launch through a stand-in browser type (`tests/_launch_fakes.py`);
   `test_pass_engine_isolation.py` covers the seam, and `test_pass_cli_extension.py` the CLI.
   `test_pass_extension_live.py` loads the committed MV3 fixture (`tests/fixture_extension/`)
   into the full Chromium build, and `test_pass_loopback_live.py` measures the same page under
-  `--loopback-only` alone in Firefox and WebKit. WebKit's wording and its UDP check are chosen
+  `--loopback-only` alone in Firefox and WebKit. Each asks another loopback port than the served
+  one for an image, a fetch and a WebSocket: Chromium and Firefox reach nothing there and name
+  each refusal, and WebKit reaches it, as the guard's table says. WebKit's wording and its UDP check are chosen
   per platform by `tests/_guard_fixtures.py`, which `test_guard_expectations.py` tests without
   an engine.
 - **A page with no file**: `test_pass_not_found.py`, `test_pass_cli_not_found.py` and the live
@@ -891,7 +920,7 @@ repository's `npm test` runs `tests/test_page_probe_*.mjs` under `node --test` i
 holds the probe's files to 100% lines, branches and functions:
 
 ```bash
-npm ci
+npm ci --ignore-scripts
 npm test
 ```
 

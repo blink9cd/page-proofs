@@ -170,6 +170,71 @@ class RawNoneHidingRenderedTests(unittest.TestCase):
         self.assertIn("first line\n  second line", rendered)
 
 
+class _UnsetShimOverLegacy(help_formatter.UnsetHidingFormatter, _LegacyDefaultsBase):
+    """The unset-hiding shim over the legacy base, so its required case is observable."""
+
+
+class UnsetHidingLegacyTests(unittest.TestCase):
+    """The unset-hiding formatter's own logic, pinned against the legacy stand-in."""
+
+    def setUp(self) -> None:
+        self.formatter = _UnsetShimOverLegacy(prog="demo")
+
+    def test_a_none_default_is_never_shown(self) -> None:
+        rendered = self.formatter._get_help_string(_action(required=False))
+        self.assertEqual(rendered, "Help text.")
+
+    def test_an_empty_list_default_is_never_shown(self) -> None:
+        # An append/extend option's [] means "none given", which no one can type either.
+        rendered = self.formatter._get_help_string(_action(required=False, default=[]))
+        self.assertEqual(rendered, "Help text.")
+
+    def test_an_empty_tuple_default_is_never_shown(self) -> None:
+        rendered = self.formatter._get_help_string(_action(required=False, default=()))
+        self.assertEqual(rendered, "Help text.")
+
+    def test_a_non_empty_list_default_keeps_the_note(self) -> None:
+        rendered = self.formatter._get_help_string(
+            _action(required=False, default=["a"])
+        )
+        self.assertEqual(rendered, "Help text." + _DEFAULT_NOTE)
+
+    def test_an_empty_string_default_keeps_the_note(self) -> None:
+        # "" is a value a person can type (--flag ''), unlike None or an empty list.
+        rendered = self.formatter._get_help_string(_action(required=False, default=""))
+        self.assertEqual(rendered, "Help text." + _DEFAULT_NOTE)
+
+    def test_a_required_option_with_a_real_default_loses_the_note(self) -> None:
+        rendered = self.formatter._get_help_string(_action(required=True, default=7))
+        self.assertEqual(rendered, "Help text.")
+
+
+class UnsetHidingRenderedTests(unittest.TestCase):
+    """``format_help()`` under the unset-hiding formatter, on the running interpreter."""
+
+    def _parser(self, epilog: str | None = None) -> argparse.ArgumentParser:
+        return argparse.ArgumentParser(
+            prog="demo",
+            epilog=epilog,
+            formatter_class=help_formatter.UnsetHidingFormatter,
+        )
+
+    def test_unset_defaults_are_not_shown_and_a_real_one_is(self) -> None:
+        parser = self._parser()
+        parser.add_argument("--model", help="Leave out to use the first found.")
+        parser.add_argument("--skip", action="append", default=[], help="Skip one.")
+        parser.add_argument("--depth", default=99, help="How deep to walk.")
+        rendered = parser.format_help()
+        self.assertNotIn("default: None", rendered)
+        self.assertNotIn("default: []", rendered)
+        self.assertIn("(default: 99)", rendered)
+
+    def test_the_epilog_is_rewrapped_not_kept_raw(self) -> None:
+        # The non-raw counterpart of RawNoneHidingFormatter: a prose epilog is filled.
+        parser = self._parser(epilog="one\ntwo")
+        self.assertIn("one two", parser.format_help())
+
+
 class ExportTests(unittest.TestCase):
     """The public name is what every CLI binds to, so pin its shape."""
 
@@ -185,6 +250,11 @@ class ExportTests(unittest.TestCase):
         cls = help_formatter.RawNoneHidingFormatter
         self.assertTrue(issubclass(cls, help_formatter.ReqAwareDefaultsFormatter))
         self.assertTrue(issubclass(cls, argparse.RawDescriptionHelpFormatter))
+
+    def test_the_unset_hiding_formatter_is_not_raw(self) -> None:
+        cls = help_formatter.UnsetHidingFormatter
+        self.assertTrue(issubclass(cls, help_formatter.ReqAwareDefaultsFormatter))
+        self.assertFalse(issubclass(cls, argparse.RawDescriptionHelpFormatter))
 
 
 if __name__ == "__main__":

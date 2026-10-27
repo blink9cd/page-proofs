@@ -66,8 +66,9 @@ from pass_checks import (
     wait_until_settled,
 )
 from pass_digest import parse_digest
-from pass_extension import NO_ISOLATION, Isolation, guard_options
+from pass_extension import NO_ISOLATION, Isolation
 from pass_extension_launch import ExtensionFault, PersistentBrowser, extra_bound
+from pass_guard import guard_options
 from pass_late_load import LateOutcome, measure_late_shift
 from pass_listeners import Listeners
 from pass_motion import NO_MOTION, Motion, motion_from, tally
@@ -467,7 +468,7 @@ def run_matrix(
                 engine,
                 scratch=scratch,
                 timeout=timeout,
-                isolation=isolation,
+                isolation=isolation.serving(base_url),
             )
             try:
                 for rendering in group:

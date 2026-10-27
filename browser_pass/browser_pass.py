@@ -259,8 +259,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--loopback-only",
         action="store_true",
-        help="Refuse requests off 127.0.0.1 in every engine (Chromium in its full build): "
-        "the baseline an extension run is compared with. WebKit's UDP is not guarded.",
+        help="Refuse requests off the served origin (in WebKit, off 127.0.0.1; its UDP is not "
+        "guarded). Chromium runs its full build. The baseline an extension run is compared with.",
     )
     return parser
 

@@ -9,11 +9,16 @@ process at risk. The live nested-session test pins the real signals end to end.
 from __future__ import annotations
 
 import os
+import signal
+import subprocess
 import sys
 import tempfile
+import threading
 import unittest
 from collections.abc import Iterator, Sequence
 from pathlib import Path
+from typing import Any
+from unittest import mock
 
 from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
@@ -49,6 +54,14 @@ _AMPLE_SECONDS = 60.0
 
 #: The log entry a scripted snapshot leaves, so a test reads signals and reads in one order.
 _SNAPSHOT = ("snapshot",)
+
+#: Real seconds a snapshot given 0.5 s may take to return on a loaded host: far past its
+#: bound and short reap grace, far short of the 60 s its stand-in child would hold a wait.
+_RETURN_CEILING_SECONDS = 20.0
+
+#: The signal that really ends a stand-in child: SIGKILL where it exists, else the
+#: Windows terminate that ``Popen.kill`` itself sends.
+_REAL_KILL = getattr(signal, "SIGKILL", signal.SIGTERM)
 
 
 def _row(pid: int, ppid: int, pgid: int, state: str = "S") -> ProcessRow:
@@ -353,6 +366,56 @@ class TakeSnapshotTests(unittest.TestCase):
     def test_a_command_past_its_timeout_reads_as_none(self) -> None:
         argv = (sys.executable, "-c", "import time; time.sleep(60)")
         self.assertIsNone(boundedrun_posix_tree.take_snapshot(0.5, argv))
+
+    def test_a_command_the_kill_cannot_end_yet_is_abandoned_not_awaited(self) -> None:
+        # The regression: under heavy load macOS `ps` sat in an uninterruptible kernel wait
+        # for minutes, where SIGKILL cannot end it, and the snapshot's post-kill reap waited
+        # with no bound -- inside a stop handler, so a stopped run hung (personal_site 370).
+        # A Popen whose kill does nothing stands in for that process, deterministically.
+        _UnkillablePopen.started.clear()
+        self.addCleanup(_UnkillablePopen.end_every_child)
+        argv = (sys.executable, "-c", "import time; time.sleep(60)")
+        results: list[tuple[ProcessRow, ...] | None] = []
+        with mock.patch.object(subprocess, "Popen", _UnkillablePopen):
+            snapshot = threading.Thread(
+                target=lambda: results.append(
+                    boundedrun_posix_tree.take_snapshot(0.5, argv)
+                ),
+                daemon=True,
+            )
+            snapshot.start()
+            snapshot.join(timeout=_RETURN_CEILING_SECONDS)
+        self.assertFalse(
+            snapshot.is_alive(), "the snapshot waited on its unkillable ps"
+        )
+        self.assertEqual(results, [None])
+        self.assertTrue(_UnkillablePopen.started[0].kill_asked)
+
+
+class _UnkillablePopen(subprocess.Popen[str]):
+    """A real child whose ``kill`` is ignored, as a process in an uninterruptible wait ignores it."""
+
+    started: list[_UnkillablePopen] = []
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+        self.kill_asked = False
+        _UnkillablePopen.started.append(self)
+
+    def kill(self) -> None:
+        """Record the ask and leave the child running."""
+        self.kill_asked = True
+
+    @classmethod
+    def end_every_child(cls) -> None:
+        """Really end each child the test started, so none outlives it."""
+        for child in cls.started:
+            if child.poll() is None:
+                child.send_signal(_REAL_KILL)
+            child.wait(timeout=_RETURN_CEILING_SECONDS)
+            for stream in (child.stdout, child.stderr):
+                if stream is not None:
+                    stream.close()
 
 
 if __name__ == "__main__":

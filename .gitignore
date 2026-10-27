@@ -15,6 +15,8 @@ node_modules
 lighthouse_runs/
 # Where a browser_pass run writes its reports when --out is not given: beside its targets file.
 browser_pass_runs/
+# print_pass has no default folder to ignore: its --out is required, and refused inside any git
+# work tree, this one included.
 # `pip install ".[test]"` builds in place, leaving these beside the sources.
 build/
 *.egg-info/

@@ -169,7 +169,11 @@ The properties callers depend on:
    nor fork, so a fork racing the freeze costs one more round rather than an escape. The
    caller's own group is never stopped. When `ps` cannot be read — missing, exiting non-zero
    (a BusyBox `ps` refusing `-A`), or past `KILL_TIMEOUT_SECONDS` — the groups collected so
-   far are killed as they stand, which is at least the child's own: the kill this replaced. Still out of reach: a descendant whose own parent
+   far are killed as they stand, which is at least the child's own: the kill this replaced.
+   An overdue `ps` is killed and given one second to be reaped, then abandoned unreaped: under
+   heavy load macOS `ps -A` was measured sitting for minutes in an uninterruptible kernel wait,
+   where `SIGKILL` cannot end it, and an unbounded reap there hung the stop handler that
+   called the kill. Still out of reach: a descendant whose own parent
    exited before the kill and which left that parent's group, since no link of either kind leads
    to it; a member under another uid (property 4's `EPERM`); and, should the killer itself die
    between the freeze and the kill, the tree is left stopped rather than running. Windows needs
@@ -256,7 +260,9 @@ walk anyway (property 6).
 
 **The POSIX walk reads `ps`, not `psutil`, `sysctl` or `/proc`.** `ps -A -o pid=,ppid=,pgid=,stat=`
 is one command that BSD/macOS `ps` and procps both understand, and like `taskkill` it spawns
-nothing, so its own capturing `subprocess.run` is safe. `psutil` was rejected: it would put a
+nothing, so its own capturing read is safe. It reads through `Popen` and a bounded
+`communicate`, not `subprocess.run`, whose timeout path kills the child and then waits for it
+with no bound — a wait that never ends while `ps` cannot yet die (property 6 above). `psutil` was rejected: it would put a
 compiled dependency under a library that otherwise needs only the standard library, and its
 recursive listing is the
 same parent-pid walk with no freeze, so it would not close the race. `sysctl` through `ctypes` is a

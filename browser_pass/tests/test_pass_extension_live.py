@@ -9,7 +9,8 @@ a console error, which the `console_error` detector reports: so the full Chromiu
 by `run_matrix` the way the CLI launches it, is shown to have loaded the extension and the
 extension to have acted, in a page browser_pass measured, and the extension's own page's
 violation never to be its finding. The same page asks for an image off loopback, which the
-egress guard must fail with and without the extension; starts a WebRTC connection to a STUN
+egress guard must fail with and without the extension, and another loopback port than the
+served one, whose image, fetch and WebSocket it must fail too; starts a WebRTC connection to a STUN
 server on a loopback UDP port, which no guarded Chromium may reach once its candidates are
 gathered; and declares a policy its own markup breaks, which the CSP collector must report from
 inside a persistent context. A state's stored value must reach the page's first script.
@@ -48,8 +49,10 @@ from _guard_fixtures import (
     OFF_LOOPBACK,
     measure,
     off_loopback_failures,
+    other_port_findings,
 )
 from pass_extension import Extension, Isolation
+from pass_report import RenderingResult
 from pass_targets import Rendering
 
 #: Names a Mozilla-signed `.xpi` for the Firefox live test, which skips without it.
@@ -59,8 +62,12 @@ SIGNED_XPI_ENV = "BROWSER_PASS_SIGNED_XPI"
 _LAUNCH_BUDGET = {"chromium": 2, "firefox": 1}
 _SITE = LiveSite(launch_budget=_LAUNCH_BUDGET)
 
-#: How Chromium names the off-loopback image its guard's resolver refused.
-_NOT_RESOLVED = [f"failed {OFF_LOOPBACK} (net::ERR_NAME_NOT_RESOLVED)"]
+#: How Chromium names a request its guard's proxy refused.
+_PROXY_REFUSAL = "net::ERR_PROXY_CONNECTION_FAILED"
+
+#: How Chromium names the off-loopback image its guard refused: at the proxy, which every
+#: request but the served origin's is sent to, before any name is resolved.
+_NOT_RESOLVED = [f"failed {OFF_LOOPBACK} ({_PROXY_REFUSAL})"]
 
 
 def setUpModule() -> None:  # noqa: N802 - unittest's own hook name
@@ -87,18 +94,20 @@ class ChromiumExtensionLiveTests(unittest.TestCase):
         assert isinstance(extension, Extension), extension
         loaded = Rendering("chromium", "/index.html", 390, 844, "light", "on")
         stored = Rendering("chromium", "/index.html", 390, 844, "light", "on", "stored")
-        (page, state), datagrams = measure(
+        measured = measure(
             self,
             _SITE,
             Isolation(loopback_only=True, extensions=(extension,)),
             [loaded, stored],
         )
+        (page, state), datagrams = measured.results, measured.datagrams
         for result in (page, state):
             with self.subTest(rendering=result.rendering.label):
                 self.assertEqual(result.faults, ())
                 console = result.findings.get("console_error", ())
                 self.assertIn(ACTED, console)
                 self.assertEqual(off_loopback_failures(result), _NOT_RESOLVED)
+                self.assert_other_port_refused(result)
                 # The page's own inline style breaks its policy: the collector still reports
                 # from inside a persistent context.
                 self.assertTrue(result.findings.get("csp_violation"), result.findings)
@@ -113,13 +122,19 @@ class ChromiumExtensionLiveTests(unittest.TestCase):
         # The late-script load ran in a persistent context of its own, with the extension too.
         self.assertEqual(page.late_shift.status, pass_shift.MEASURED)
         self.assertEqual(datagrams, 0, "the guard let a STUN request out over UDP")
+        self.assertEqual(
+            measured.connections, 0, "the guard let another port be reached"
+        )
 
     def test_a_loopback_only_baseline_is_guarded_without_the_extension(self) -> None:
         loaded = Rendering("chromium", "/index.html", 390, 844, "light", "on")
-        (result,), datagrams = measure(
-            self, _SITE, Isolation(loopback_only=True), [loaded]
-        )
+        measured = measure(self, _SITE, Isolation(loopback_only=True), [loaded])
+        (result,), datagrams = measured.results, measured.datagrams
         self.assertEqual(result.faults, ())
+        self.assert_other_port_refused(result)
+        self.assertEqual(
+            measured.connections, 0, "the guard let another port be reached"
+        )
         console = result.findings["console_error"]
         self.assertIn(ABSENT, console)
         self.assertEqual(off_loopback_failures(result), _NOT_RESOLVED)
@@ -127,6 +142,22 @@ class ChromiumExtensionLiveTests(unittest.TestCase):
         self.assertIn("webrtc: present", console)
         self.assertIn(GATHERED, console)
         self.assertEqual(datagrams, 0, "the guard let a STUN request out over UDP")
+
+    def assert_other_port_refused(self, result: RenderingResult) -> None:
+        """`result`'s requests to the other loopback port failed at the proxy, each named."""
+        named = other_port_findings(result)
+        http = named.get("http_error", [])
+        self.assertTrue(
+            any("/other-port.png" in f for f in http)
+            and any("/other-port-fetch" in f for f in http),
+            named,
+        )
+        for failure in http:
+            self.assertIn(_PROXY_REFUSAL, failure)
+        socket_errors = [f for f in named.get("console_error", []) if "ws://" in f]
+        self.assertTrue(socket_errors, named)
+        for failure in socket_errors:
+            self.assertIn(_PROXY_REFUSAL, failure)
 
 
 @unittest.skipUnless(
@@ -140,12 +171,13 @@ class FirefoxExtensionLiveTests(unittest.TestCase):
         extension = pass_extension.read_xpi(Path(os.environ[SIGNED_XPI_ENV]))
         assert isinstance(extension, Extension), extension
         loaded = Rendering("firefox", "/index.html", 390, 844, "light", "on")
-        (result,), datagrams = measure(
+        measured = measure(
             self,
             _SITE,
             Isolation(loopback_only=True, extensions=(extension,)),
             [loaded],
         )
+        (result,), datagrams = measured.results, measured.datagrams
         self.assertEqual(result.faults, ())
         # Firefox asks for the refused image twice (measured with a signed uBlock Origin, Firefox
         # 155), and http_error keeps repeats, so the test holds every failure to the proxy's

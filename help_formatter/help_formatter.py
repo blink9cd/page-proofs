@@ -29,10 +29,11 @@ for old argparse, not against CPython's current output.
 Entry point assumptions
 -----------------------
 Importers bind :class:`ReqAwareDefaultsFormatter` -- or :class:`RawNoneHidingFormatter`,
-for a CLI whose epilog is laid out by hand and whose ``None`` defaults mean "not given"
--- as their parser's ``formatter_class`` and nothing else. The module is pure -- no I/O,
-no filesystem access, no config -- so it carries no ``stdio_utf8`` dependency and cannot
-fail at import time.
+for a CLI whose epilog is laid out by hand and whose ``None`` defaults mean "not given",
+or :class:`UnsetHidingFormatter`, for a prose epilog and ``None`` or empty-list defaults
+that mean the same -- as their parser's ``formatter_class`` and nothing else. The module
+is pure -- no I/O, no filesystem access, no config -- so it carries no ``stdio_utf8``
+dependency and cannot fail at import time.
 """
 
 from __future__ import annotations
@@ -77,5 +78,28 @@ class RawNoneHidingFormatter(
         A non-``None`` default delegates, so the required-option override still applies.
         """
         if action.default is None:
+            return action.help
+        return super()._get_help_string(action)
+
+
+class UnsetHidingFormatter(ReqAwareDefaultsFormatter):
+    """Show real defaults; hide them for required options and for an unset default.
+
+    The non-raw counterpart of :class:`RawNoneHidingFormatter`, for a CLI whose epilog is
+    prose argparse may rewrap. "Unset" means ``None`` or an EMPTY list or tuple: the first is
+    what an option left out holds, and the second is what an ``append`` or ``extend`` option
+    holds before any value is given. Neither is a value a person could type, so
+    ``(default: None)`` and ``(default: [])`` would say nothing true; each such option's help
+    should say instead what leaving it out means. An empty string is still shown, because
+    ``--flag ''`` can be typed.
+    """
+
+    def _get_help_string(self, action: argparse.Action) -> str | None:
+        """Return *action*'s help, with its default appended unless that default is unset.
+
+        A set default delegates, so the required-option override still applies.
+        """
+        default = action.default
+        if default is None or (isinstance(default, (list, tuple)) and not default):
             return action.help
         return super()._get_help_string(action)

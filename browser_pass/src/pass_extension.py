@@ -5,25 +5,11 @@ run can load one: `--chromium-extension` an unpacked folder, `--firefox-extensio
 `.xpi`. This module reads each one's manifest and refuses, before any browser opens, what cannot
 be measured -- a missing manifest, a Firefox add-on with no gecko id to file it under, a Chromium
 one with no service worker to confirm its load by, one asking for the `proxy` permission, with
-which it could route requests around the guard below, an engine `--engines` names that has no
+which it could route requests around the guard (`pass_guard`), an engine `--engines` names that has no
 extension (WebKit cannot load one at all), or an extension for an engine the run leaves out.
 
-`--loopback-only` is the egress guard: requests off 127.0.0.1 fail, the extension's own included.
-It is implied by an extension, and exists on its own so the no-extension BASELINE can be measured
-under the same guard. Each engine has its own guard, each measured to fail an off-loopback page
-request while loopback still loads; what each guards beyond that differs:
-
-- **Chromium** resolves no name but 127.0.0.1 (`--host-resolver-rules`), sends no UDP that no
-  proxy carries -- and there is no proxy -- so WebRTC sends none (measured: a STUN request to a
-  loopback port stopped), and speaks no QUIC; and runs its FULL build (`channel="chromium"`)
-  rather than the headless shell, which cannot load an extension -- so a baseline is measured in
-  the very build its extension run is;
-- **Firefox** sends every request to a proxy on a port nothing listens on, loopback excepted, and
-  lets no add-on bypass it; and has no WebRTC (measured: `RTCPeerConnection` is gone), no
-  WebTransport, no HTTP/3 and no DNS prefetch, each set by a pref;
-- **WebKit** sends its requests through Playwright's own proxy option the same way, and that is
-  all: Playwright gives WebKit no switch for its UDP, and WebRTC in it still sends a STUN request
-  under the guard (measured), so a WebKit run is guarded for its page's requests, not its UDP.
+`--loopback-only` is the egress guard, implied by an extension: what each engine is launched
+with under it is `pass_guard`'s.
 
 Entry point assumptions: the standard library only, so the CLI can validate with no Playwright
 installed; `pass_extension_launch` launches what is planned here.
@@ -37,60 +23,17 @@ import json
 import os
 import zipfile
 from collections.abc import Callable, Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path, PurePath
 from typing import Any
 from urllib.parse import urlsplit
 
+import pass_guard
+from pass_guard import LOOPBACK_HOST
 from pass_markdown import plain_text
 
 #: The engines that can load an extension. WebKit cannot.
 EXTENSION_ENGINES = ("chromium", "firefox")
-
-#: The one host the egress guard lets a request reach: the address `--serve` listens on.
-LOOPBACK_HOST = "127.0.0.1"
-
-#: A port nothing listens on (discard), where the guard sends every off-loopback request.
-REFUSING_PORT = 9
-
-#: Playwright's name for the full Chromium build, as against its headless shell.
-CHROMIUM_CHANNEL = "chromium"
-
-#: Chromium's guard. The resolver rule applies to IP literals as to names, so loopback is
-#: excluded by its exact address.
-#: WebRTC's sockets never ask the resolver, so its UDP is refused by its own policy, which this
-#: build names `--webrtc-ip-handling-policy` (measured: the older `--force-` spelling stopped
-#: nothing); QUIC is refused outright.
-CHROMIUM_GUARD_ARGS = (
-    f"--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE {LOOPBACK_HOST}",
-    "--webrtc-ip-handling-policy=disable_non_proxied_udp",
-    "--disable-quic",
-)
-
-#: Firefox's guard: a manual proxy for every scheme, which loopback alone bypasses and no add-on
-#: may; then every channel that would not go through it -- WebRTC, WebTransport, HTTP/3 (each
-#: UDP), and the name lookups a page's links would prefetch.
-FIREFOX_GUARD_PREFS: dict[str, str | int | bool] = {
-    "network.proxy.type": 1,
-    "network.proxy.http": LOOPBACK_HOST,
-    "network.proxy.http_port": REFUSING_PORT,
-    "network.proxy.ssl": LOOPBACK_HOST,
-    "network.proxy.ssl_port": REFUSING_PORT,
-    "network.proxy.no_proxies_on": "",
-    "network.proxy.allow_hijacking_localhost": False,
-    "network.proxy.socks_remote_dns": True,
-    "network.proxy.allow_bypass": False,
-    "media.peerconnection.enabled": False,
-    "network.webtransport.enabled": False,
-    "network.http.http3.enable": False,
-    "network.dns.disablePrefetch": True,
-}
-
-#: WebKit's guard, through Playwright's proxy option, bypassed by loopback alone.
-WEBKIT_GUARD_PROXY = {
-    "server": f"http://{LOOPBACK_HOST}:{REFUSING_PORT}",
-    "bypass": LOOPBACK_HOST,
-}
 
 MANIFEST_NAME = "manifest.json"
 
@@ -151,6 +94,19 @@ class Isolation:
 
     loopback_only: bool = False
     extensions: tuple[Extension, ...] = ()
+    #: The port the pages are served on, the one loopback port the guard admits; None until
+    #: they are served (`serving`).
+    served_port: int | None = None
+
+    def serving(self, base_url: str) -> Isolation:
+        """This isolation for the origin `base_url` is on, which its guard admits alone.
+
+        Unguarded, it is returned as it is: nothing is admitted or refused by port, and a
+        base_url is never judged.
+        """
+        if not self.loopback_only:
+            return self
+        return replace(self, served_port=pass_guard.served_port(base_url))
 
     def extension(self, engine: str) -> Extension | None:
         """`engine`'s extension, or None when it runs without one."""
@@ -201,9 +157,23 @@ def plan_isolation(
             f"--loopback-only lets through {LOOPBACK_HOST} alone, and the targets file's "
             f"base_url is on {host}: pass --serve"
         )
+    if refusal is None and host is not None:
+        refusal = _port_refusal(str(base_url))
     if refusal is not None:
         return refusal
     return Isolation(loopback_only=guarded, extensions=tuple(extensions))
+
+
+def _port_refusal(base_url: str) -> str | None:
+    """Why the guard cannot admit `base_url`'s origin: it names no valid port. None if it does."""
+    try:
+        pass_guard.served_port(base_url)
+    except ValueError:
+        return (
+            "--loopback-only lets through the served origin alone, and the targets file's "
+            f"base_url names no valid port: {base_url}"
+        )
+    return None
 
 
 def _engines_refusal(
@@ -469,20 +439,6 @@ def _gecko_id(manifest: dict[str, Any]) -> str:
     if Path(gecko_id).name != gecko_id or gecko_id.startswith("."):
         raise _Refused(f"its gecko id {gecko_id!r} is not a plain file name")
     return gecko_id
-
-
-def guard_options(engine: str, isolation: Isolation) -> dict[str, Any]:
-    """The launch options `engine` takes for the egress guard; none when the run is unguarded.
-
-    A fresh copy each call, so a caller extending one changes no other launch.
-    """
-    if not isolation.loopback_only:
-        return {}
-    if engine == "chromium":
-        return {"channel": CHROMIUM_CHANNEL, "args": list(CHROMIUM_GUARD_ARGS)}
-    if engine == "firefox":
-        return {"firefox_user_prefs": dict(FIREFOX_GUARD_PREFS)}
-    return {"proxy": dict(WEBKIT_GUARD_PROXY)}
 
 
 def isolation_lines(

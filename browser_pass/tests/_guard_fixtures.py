@@ -3,7 +3,9 @@
 `test_pass_extension_live.py` measures this page with an extension, and in Chromium without one;
 `test_pass_loopback_live.py` measures it under `--loopback-only` in Firefox and WebKit. They are
 two modules so a splitting runner can run them side by side, each its own engine launches. The page asks for
-an image off loopback, which the egress guard must fail; reads back what the committed fixture
+an image off loopback, which the egress guard must fail; asks another loopback port than the
+served one for an image, a fetch and a WebSocket, which the guard must fail in Chromium and
+Firefox and which counts the connections that reach it; reads back what the committed fixture
 extension does to it, as console errors; and starts a WebRTC connection to a STUN server on a
 loopback UDP port, which counts the datagrams that reach it. What WebKit is expected to do
 under the guard differs by platform, so `webkit_refusal` and `check_webkit_udp` choose it per
@@ -17,11 +19,13 @@ from __future__ import annotations
 
 import contextlib
 import socket
+import threading
 import unittest
 from collections.abc import Callable, Iterator, Sequence
+from typing import NamedTuple
 
 import loopback_site
-import pass_extension
+import pass_guard
 from _live_fixtures import LiveSite, scratch
 from pass_extension import Isolation
 from pass_report import RenderingResult
@@ -31,11 +35,15 @@ from pass_targets import Rendering, State
 #: the request nowhere real either, and its failure would then name another error.
 OFF_LOOPBACK = "http://192.0.2.1/off-loopback.png"
 
+#: The path every request the page makes of the other loopback port starts with.
+OTHER_PORT_MARK = "/other-port"
+
 _PAGE = f"""<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' http:">
+    <meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' http:; connect-src 'self' http: ws:">
     <title>measured with an extension</title>
     <script src="report.js"></script>
     <script src="rtc.js"></script>
@@ -44,14 +52,18 @@ _PAGE = f"""<!doctype html>
     <main>
       <p style="margin: 0">Measured with an extension.</p>
       <img src="{OFF_LOOPBACK}" alt="" width="40" height="40">
+      <img src="http://127.0.0.1:{{other}}{OTHER_PORT_MARK}.png" alt="" width="40" height="40">
     </main>
   </body>
 </html>
 """
 
-#: The page's own script: what it found stored as it first ran, and what the extension did.
+#: The page's own script: what it found stored as it first ran, and what the extension did; and
+#: a fetch and a WebSocket to the other loopback port `{other}`, which only the guard refuses.
 _REPORT = """const stored = localStorage.getItem("mode");
 console.error(`first script read mode=${stored}`);
+fetch("http://127.0.0.1:{other}/other-port-fetch").catch(() => {});
+new WebSocket("ws://127.0.0.1:{other}/other-port-socket");
 window.addEventListener("load", () => {
   const root = document.documentElement.getAttribute("data-fixture-extension");
   const style = document.querySelector("style[data-fixture-extension]") !== null;
@@ -117,11 +129,60 @@ ACTED = "fixture extension: root on, style true"
 ABSENT = "fixture extension: root null, style false"
 
 
+#: How long the other port's listener waits for a connection before it checks it is done.
+_ACCEPT_POLL_SECONDS = 0.2
+
+#: How many connections may wait on the other port before it answers them.
+_BACKLOG = 64
+
+
+class Measured(NamedTuple):
+    """What `measure` gives back: the results, and what reached the page's two other servers."""
+
+    results: list[RenderingResult]
+    #: How many datagrams the page's WebRTC probes sent their STUN server.
+    datagrams: int
+    #: How many connections reached the loopback port that is not the served one.
+    connections: int
+
+
+@contextlib.contextmanager
+def _other_port() -> Iterator[tuple[int, Callable[[], int]]]:
+    """A TCP port on loopback that is not the served one, and how many connections reached it.
+
+    Each connection is closed as it is accepted, so a page waiting on its answer fails at once
+    rather than holding its load open.
+    """
+    reached: list[int] = []
+    done = threading.Event()
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
+        server.bind((pass_guard.LOOPBACK_HOST, 0))
+        server.listen(_BACKLOG)
+        server.settimeout(_ACCEPT_POLL_SECONDS)
+
+        def answer() -> None:
+            while not done.is_set():
+                try:
+                    connection, _ = server.accept()
+                except TimeoutError:
+                    continue  # nothing came in this poll: look again, unless done
+                reached.append(1)
+                connection.close()
+
+        thread = threading.Thread(target=answer, daemon=True)
+        thread.start()
+        try:
+            yield server.getsockname()[1], lambda: len(reached)
+        finally:
+            done.set()
+            thread.join(timeout=_ACCEPT_POLL_SECONDS * 10)
+
+
 @contextlib.contextmanager
 def _stun_server() -> Iterator[tuple[int, Callable[[], int]]]:
     """A UDP port on loopback, and how many datagrams have reached it so far."""
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as server:
-        server.bind((pass_extension.LOOPBACK_HOST, 0))
+        server.bind((pass_guard.LOOPBACK_HOST, 0))
         server.setblocking(False)
 
         def received() -> int:
@@ -140,15 +201,19 @@ def measure(
     site: LiveSite,
     isolation: Isolation,
     renderings: list[Rendering],
-) -> tuple[list[RenderingResult], int]:
+) -> Measured:
     """Serve the guarded page from `case`'s scratch, and run `renderings` over it in `site`.
 
-    Returns the results, and how many datagrams the page's WebRTC probes sent their STUN server.
+    Returns the results, how many datagrams the page's WebRTC probes sent their STUN server, and
+    how many connections reached the other loopback port.
     """
     folder = scratch(case)
-    (folder / "index.html").write_text(_PAGE, encoding="utf-8", newline="\n")
-    (folder / "report.js").write_text(_REPORT, encoding="utf-8", newline="\n")
-    with _stun_server() as (port, received):
+    with _other_port() as (other, connections), _stun_server() as (port, received):
+        page, report = (
+            text.replace("{other}", str(other)) for text in (_PAGE, _REPORT)
+        )
+        (folder / "index.html").write_text(page, encoding="utf-8", newline="\n")
+        (folder / "report.js").write_text(report, encoding="utf-8", newline="\n")
         rtc = _RTC.replace("{port}", str(port)).replace("{bound}", str(GATHER_BOUND_MS))
         (folder / "rtc.js").write_text(rtc, encoding="utf-8", newline="\n")
         with loopback_site.serve_directory(folder) as base_url:
@@ -160,12 +225,21 @@ def measure(
                 states=[STORED],
             )
         case.assertTrue(all(versions.values()), versions)
-        return results, received()
+        return Measured(results, received(), connections())
 
 
 def off_loopback_failures(result: RenderingResult) -> list[str]:
     """The http_error findings naming the off-loopback image."""
     return [f for f in result.findings.get("http_error", ()) if "192.0.2.1" in f]
+
+
+def other_port_findings(result: RenderingResult) -> dict[str, list[str]]:
+    """Each detector's findings naming the other loopback port's requests, where any do."""
+    named = {
+        detector: [f for f in findings if OTHER_PORT_MARK in f]
+        for detector, findings in result.findings.items()
+    }
+    return {detector: found for detector, found in named.items() if found}
 
 
 def webkit_refusal(platform: str) -> str:

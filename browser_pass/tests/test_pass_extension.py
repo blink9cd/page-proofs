@@ -430,6 +430,15 @@ class PlanTests(_Scratch):
         )
         self.assertEqual(plan, Isolation(loopback_only=True))
 
+    def test_a_guarded_base_url_with_no_valid_port_is_refused(self) -> None:
+        # The guard admits the served origin's port alone, so it must be one.
+        base_url = "http://127.0.0.1:99999"
+        self.assertEqual(
+            self._plan(("chromium",), loopback_only=True, base_url=base_url),
+            f"--loopback-only lets through the served origin alone, and the targets "
+            f"file's base_url names no valid port: {base_url}",
+        )
+
     def test_without_the_guard_a_base_url_is_never_judged(self) -> None:
         self.assertEqual(
             self._plan(("webkit",), base_url="http://localhost:8123"),

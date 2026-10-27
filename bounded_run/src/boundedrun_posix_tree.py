@@ -58,6 +58,10 @@ _PS_ARGV = ("ps", "-A", "-o", "pid=,ppid=,pgid=,stat=")
 #: Fields per ``_PS_ARGV`` row.
 _PS_FIELDS = 4
 
+#: Seconds an overdue snapshot's reap may take after its SIGKILL. A process the kill can end
+#: is gone in milliseconds; one it cannot end yet is abandoned rather than awaited.
+_REAP_GRACE_SECONDS = 1.0
+
 #: Leading STAT letters of a process that can no longer fork: stopped (``T``; Linux's ``t`` is a
 #: tracing stop), a zombie (``Z``) or dead (Linux's ``X``).
 _INERT_STATES = frozenset("TtZX")
@@ -229,23 +233,44 @@ def take_snapshot(
 ) -> tuple[ProcessRow, ...] | None:
     """The process table *argv* prints, or None when it fails, exits non-zero or outlives *timeout*.
 
-    A bounded capturing ``subprocess.run`` is safe HERE for the reason ``taskkill`` is in
-    ``bounded_run``: ``ps`` spawns nothing, so no grandchild can hold its pipes.
+    A capturing ``communicate`` is safe HERE for the reason ``taskkill`` is in ``bounded_run``:
+    ``ps`` spawns nothing, so no grandchild can hold its pipes. Not ``subprocess.run``: past
+    its timeout that kills the child and then waits for it with no bound (see
+    :func:`_abandon_overdue`).
     """
     try:
-        done = subprocess.run(  # reliability: ignore[RL005] leaf; ps spawns nothing
+        proc = subprocess.Popen(  # reliability: ignore[RL005] leaf; ps spawns nothing
             list(argv),
-            capture_output=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
             encoding="utf-8",
             errors="replace",
-            timeout=timeout,
-            check=False,
         )
-    except (OSError, subprocess.TimeoutExpired):
+    except OSError:
         return None
-    if done.returncode != 0:
+    try:
+        out, _ = proc.communicate(timeout=timeout)
+    except subprocess.TimeoutExpired:
+        _abandon_overdue(proc)
         return None
-    return parse_process_table(done.stdout)
+    if proc.returncode != 0:
+        return None
+    return parse_process_table(out)
+
+
+def _abandon_overdue(proc: subprocess.Popen[str]) -> None:
+    """Kill an overdue snapshot and reap it within :data:`_REAP_GRACE_SECONDS`, else leave it.
+
+    Measured under heavy load on macOS: ``ps -A`` sat for minutes in an uninterruptible kernel
+    wait, where SIGKILL cannot end it until the kernel lets go. An unbounded reap there blocks
+    the stop handler that called the kill, and the run it was stopping hangs with it. A ``ps``
+    left unreaped exits once the kernel releases it, and ``subprocess`` reaps it later.
+    """
+    proc.kill()
+    with contextlib.suppress(subprocess.TimeoutExpired):
+        proc.wait(timeout=_REAP_GRACE_SECONDS)
+    assert proc.stdout is not None  # take_snapshot always pipes stdout
+    proc.stdout.close()
 
 
 def kill_tree_posix(pid: int, timeout: float) -> None:  # pragma: only-on posix

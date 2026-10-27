@@ -1,11 +1,11 @@
 {
   "name": "page-proofs",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "license": "AGPL-3.0-or-later",
   "scripts": {
-    "check": "prettier --check . && html-validate \"browser_pass/samples/site/*.html\" \"browser_pass/tests/fixture_extension/*.html\" \"csp_watch/tests/fixture/*.html\" && eslint .",
-    "test": "node --experimental-test-coverage --test-coverage-include=\"browser_pass/src/*.js\" --test-coverage-include=\"csp_watch/src/*.js\" --test-coverage-include-all --test-coverage-branches=100 --test-coverage-lines=100 --test-coverage-functions=100 --test \"browser_pass/tests/test_*.mjs\" \"csp_watch/tests/test_*.mjs\""
+    "check": "prettier --check . && html-validate \"browser_pass/samples/site/*.html\" \"browser_pass/tests/fixture_extension/*.html\" \"csp_watch/tests/fixture/*.html\" \"print_pass/samples/site/*.html\" && eslint .",
+    "test": "node --experimental-test-coverage --test-coverage-include=\"browser_pass/src/*.js\" --test-coverage-include=\"print_pass/src/*.js\" --test-coverage-include=\"csp_watch/src/*.js\" --test-coverage-include-all --test-coverage-branches=100 --test-coverage-lines=100 --test-coverage-functions=100 --test \"browser_pass/tests/test_*.mjs\" \"print_pass/tests/test_*.mjs\" \"csp_watch/tests/test_*.mjs\""
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

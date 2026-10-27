@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en" data-mode="light">
+  <head>
+    <meta charset="utf-8" />
+    <title>print_pass sample</title>
+    <!-- Restores a stored mode before the first paint, as a site's theme toggle does. -->
+    <script>
+      const mode = localStorage.getItem("mode");
+      if (mode !== null) {
+        document.documentElement.dataset.mode = mode;
+      }
+    </script>
+    <style>
+      /* A dark scheme for a reader who asks for one, as a site's own dark mode is. */
+      @media (prefers-color-scheme: dark) {
+        body {
+          color: #eee;
+          background: #111;
+        }
+      }
+      /* Pushes the image below the fold of a 1280x800 window, so it loads lazily. */
+      .spacer {
+        height: 1400px;
+      }
+      /* Runs forever, so the read-back reports a running animation. The element paints
+         nothing, so the moment a print catches it at cannot change a pixel. */
+      .spin {
+        display: inline-block;
+        animation: spin 4s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- The first link is same-origin, so its address in the PDF carries the port. -->
+    <p>This page is the <a href="/">print_pass sample</a>.</p>
+    <p>Its other link goes to <a href="https://example.com/">example.com</a>.</p>
+    <span class="spin"></span>
+    <div class="spacer"></div>
+    <!-- pixel.png is written beside this page when the sample is served: README.md. -->
+    <img src="pixel.png" alt="A gray block" loading="lazy" width="64" height="32" />
+  </body>
+</html>

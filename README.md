@@ -11,7 +11,7 @@ per-metric medians, and records exactly what it measured and with what. See
 [lighthouse_run/lighthouse_run.md](lighthouse_run/lighthouse_run.md).
 
 ```bash
-npm ci
+npm ci --ignore-scripts
 python3.12 lighthouse_run/lighthouse_run.py --root . --serve "<built site>"
 ```
 
@@ -26,16 +26,33 @@ python3.12 -m playwright install --only-shell chromium firefox webkit
 python3.12 browser_pass/browser_pass.py --targets "<targets file>" --serve "<built site>"
 ```
 
+**print_pass** prints the pages to PDF, in every state a targets file names, through
+Playwright's pinned Chromium headless shell, installed Google Chrome, or installed Firefox
+through geckodriver's WebDriver Print; reads any PDF with poppler, pypdf and pdfminer; and
+compares two PDFs' renders. See [print_pass/print_pass.md](print_pass/print_pass.md).
+
+```bash
+python3.12 -m pip install ".[print]"
+python3.12 -m playwright install --only-shell chromium
+python3.12 print_pass/print_pass.py --mode make --serve "<built site>" \
+  --targets "<targets file>" --out "$(mktemp -d)/print"
+```
+
 ## Requirements
 
 - Python 3.12 or later. lighthouse_run runs on the standard library alone, and so does every
-  library here; browser_pass needs Playwright, which the `browser` extra installs.
+  library here; browser_pass needs Playwright, which the `browser` extra installs; print_pass
+  needs pypdf, pdfminer.six and Playwright, which the `print` extra installs.
 - For lighthouse_run, Node.js as Lighthouse 13.4.1 requires it (its `engines` field: 22.19 or
   later), and npm; and Google Chrome, which Lighthouse launches. `npm ci` and `npm test` also
   need Node.js as jsdom 30.0.1 requires it (its `engines` field: 22.22.2 or a later 22, 24.15.0
   or a later 24, or 26 or later).
 - For browser_pass, the engine builds Playwright 1.63.0 pins, installed with
   `python3.12 -m playwright install` as above: about 800 MB for all three.
+- For print_pass, in every mode, poppler's `pdfinfo`, `pdffonts`, `pdfimages` and `pdftoppm`
+  on `PATH` (Homebrew's `poppler`, Debian's and Ubuntu's `poppler-utils`); for its default
+  engine, the headless shell Playwright 1.63.0 pins, installed as above; and for its Firefox
+  engine, macOS, with geckodriver and Firefox installed. print_pass is tested on macOS only.
 
 ## Tests
 
@@ -43,6 +60,7 @@ python3.12 browser_pass/browser_pass.py --targets "<targets file>" --serve "<bui
 python3.12 -m pip install ".[test]"
 python3.12 lighthouse_run/test_lighthouse_run.py
 python3.12 browser_pass/test_browser_pass.py
+python3.12 print_pass/test_print_pass.py
 python3.12 csp_watch/test_csp_watch.py
 python3.12 suite_select/test_suite_select.py
 python3.12 bounded_run/test_bounded_run.py
@@ -53,12 +71,13 @@ python3.12 loopback_site/test_loopback_site.py
 python3.12 stdio_utf8/test_stdio_utf8.py
 ```
 
-browser_pass's and csp_watch's live suites launch the engine builds, and skip, naming the install
-command, where a build is not installed. To make a missing build fail them instead, set
+browser_pass's, csp_watch's and print_pass's live suites launch the engine builds, and skip,
+naming the install command, where a build is not installed, print_pass's also where poppler is
+not. To make a missing build or poppler fail them instead, set
 `PAGE_PROOFS_REQUIRE_BROWSERS=1`. The in-page scripts' tests run under Node.js in jsdom:
 
 ```bash
-npm ci
+npm ci --ignore-scripts
 npm test
 ```
 

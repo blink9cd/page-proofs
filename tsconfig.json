@@ -1,5 +1,5 @@
 {
-  "//": "Type-checking config for the JavaScript the pages run, checked with tsc --noEmit and checkJs: plain .js with JSDoc annotations, run as it stands, so there is no compile step and the checker verifies the types the doc comments claim. strict is on with noImplicitAny off, so strictNullChecks still catches a null result used as a value. lib carries dom beside es2022 because every file here runs in a page. include names browser_pass's in-page probes, its sample pages' two scripts and csp_watch's in-page listener: each probe is one bare function its driver hands to the engine as text, and the listener one function an init script defines and then calls, so each is a script here, not a module. The .mjs suites import node builtins and would need @types/node, so they are not checked here. skipLibCheck is on because a dependency's own declarations can fail the checker where nothing here can fix them; it skips every .d.ts, so adding one under include means revisiting it.",
+  "//": "Type-checking config for the JavaScript the pages run, checked with tsc --noEmit and checkJs: plain .js with JSDoc annotations, run as it stands, so there is no compile step and the checker verifies the types the doc comments claim. strict is on with noImplicitAny off, so strictNullChecks still catches a null result used as a value. lib carries dom beside es2022 because every file here runs in a page. include names browser_pass's and print_pass's in-page probes, browser_pass's sample pages' two scripts and csp_watch's in-page listener: each probe is one bare function its driver hands to the engine as text, and the listener one function an init script defines and then calls, so each is a script here, not a module. The .mjs suites import node builtins and would need @types/node, so they are not checked here. skipLibCheck is on because a dependency's own declarations can fail the checker where nothing here can fix them; it skips every .d.ts, so adding one under include means revisiting it.",
   "compilerOptions": {
     "allowJs": true,
     "checkJs": true,
@@ -15,6 +15,7 @@
   "include": [
     "browser_pass/src/*.js",
     "browser_pass/samples/site/*.js",
+    "print_pass/src/*.js",
     "csp_watch/src/*.js"
   ],
   "exclude": ["node_modules"]

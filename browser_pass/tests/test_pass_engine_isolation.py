@@ -23,6 +23,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 import pass_engine  # noqa: E402 - the tool's private src/, via the insert above
 import pass_extension  # noqa: E402 - the tool's private src/, via the insert above
+import pass_guard  # noqa: E402 - the tool's private src/, via the insert above
 import pass_report  # noqa: E402 - the tool's private src/, via the insert above
 import pass_shift  # noqa: E402 - the tool's private src/, via the insert above
 from _extension_fixtures import unpacked, xpi  # noqa: E402 - beside this suite
@@ -38,7 +39,7 @@ from pass_targets import Rendering  # noqa: E402 - the tool's private src/
 _TIMEOUT = 7.0
 _BASE_URL = "http://127.0.0.1:8123"
 _CHROMIUM = Rendering("chromium", "/", 390, 844, "light", "on")
-_GUARDED = Isolation(loopback_only=True)
+_GUARDED = Isolation(loopback_only=True).serving(_BASE_URL)
 
 
 class _Case(unittest.TestCase):
@@ -73,7 +74,7 @@ class GuardedLaunchTests(_Case):
         self.playwright.chromium.launch.assert_called_once_with(
             timeout=_TIMEOUT * MS_PER_SECOND,
             channel="chromium",
-            args=list(pass_extension.CHROMIUM_GUARD_ARGS),
+            args=pass_guard.guard_options("chromium", _GUARDED)["args"],
         )
 
     def test_firefox_keeps_its_own_prefs_and_redirect_beside_the_guard(self) -> None:
@@ -83,9 +84,7 @@ class GuardedLaunchTests(_Case):
             options["firefox_user_prefs"],
             {
                 "ui.useOverlayScrollbars": 1,
-                **pass_extension.guard_options("firefox", _GUARDED)[
-                    "firefox_user_prefs"
-                ],
+                **pass_guard.guard_options("firefox", _GUARDED)["firefox_user_prefs"],
             },
         )
         self.assertEqual(Path(options["env"]["MOZ_APP_DATA"]).parent, self.root)
@@ -110,7 +109,7 @@ class ExtensionLaunchTests(_Case):
     def test_an_engine_with_an_extension_gets_a_persistent_browser(self) -> None:
         isolation = Isolation(
             loopback_only=True, extensions=(self.chromium, self.firefox)
-        )
+        ).serving(_BASE_URL)
         for engine in ("chromium", "firefox"):
             with self.subTest(engine=engine):
                 browser = pass_engine.launch(
@@ -124,7 +123,9 @@ class ExtensionLaunchTests(_Case):
                 getattr(self.playwright, engine).launch.assert_not_called()
 
     def test_its_launch_options_carry_the_guard(self) -> None:
-        isolation = Isolation(loopback_only=True, extensions=(self.chromium,))
+        isolation = Isolation(loopback_only=True, extensions=(self.chromium,)).serving(
+            _BASE_URL
+        )
         context = mock.Mock(pages=[], browser=None)
         context.service_workers = [
             mock.Mock(
@@ -142,7 +143,7 @@ class ExtensionLaunchTests(_Case):
         self.assertIs(pass_engine.open_context(browser, _CHROMIUM), context)
         options = self.playwright.chromium.launch_persistent_context.call_args.kwargs
         self.assertEqual(options["channel"], "chromium")
-        guard = list(pass_extension.CHROMIUM_GUARD_ARGS)
+        guard = pass_guard.guard_options("chromium", isolation)["args"]
         self.assertEqual(options["args"][: len(guard)], guard)
         self.assertEqual(options["viewport"], {"width": 390, "height": 844})
         self.assertIs(options["java_script_enabled"], True)
@@ -246,7 +247,9 @@ class MatrixWiringTests(_Case):
                 watchdog=watchdog,
                 isolation=isolation,
             )
-        self.assertEqual(launched, [isolation])
+        # Launched for the origin served, which the guard admits alone.
+        self.assertEqual(launched, [isolation.serving(_BASE_URL)])
+        self.assertEqual(launched[0].served_port, 8123)
         self.assertEqual(versions, {"chromium": "153.0.1"})
         self.assertEqual(
             watchdog.bounds[0][0],

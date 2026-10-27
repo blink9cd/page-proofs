@@ -59,6 +59,7 @@ Each CLI reaches it through the same `sys.path` bootstrap that finds `stdio_utf8
 | --- | --- |
 | `ReqAwareDefaultsFormatter` | `argparse.ArgumentDefaultsHelpFormatter` subclass; suppresses the default note on required actions and delegates otherwise (preserving `SUPPRESS` handling and `%(default)s` interpolation). |
 | `RawNoneHidingFormatter` | `ReqAwareDefaultsFormatter` composed with `argparse.RawDescriptionHelpFormatter`; shows real defaults, hides them for required options and for a `None` default, and keeps the description's and epilog's line breaks. |
+| `UnsetHidingFormatter` | `ReqAwareDefaultsFormatter` subclass; shows real defaults, hides them for required options and for an unset default (`None`, or an empty list or tuple), and rewraps the epilog as prose. |
 
 `RawNoneHidingFormatter` is for a CLI whose epilog is laid out by hand (a prerequisites
 list, an exit-code table) and whose `None` defaults mean "not given". `None` is no value a
@@ -68,6 +69,13 @@ so they compose, and a non-`None` default still passes through the required-opti
 override. Its tests pin the `None` and required-option logic against the same legacy
 stand-in as the base class, and check the kept line breaks through `format_help()` on the
 running interpreter.
+
+`UnsetHidingFormatter` is the non-raw counterpart, for a CLI whose epilog is prose that
+argparse may rewrap. It also hides an EMPTY list or tuple default, which is what an
+`append` or `extend` option holds before any value is given: `(default: [])` says no more
+than `(default: None)` does. An empty string is still shown, because `--flag ''` can be
+typed. Its tests pin the same logic against the legacy stand-in, and check through
+`format_help()` that the unset notes are gone and the epilog is rewrapped.
 
 ## Notes
 

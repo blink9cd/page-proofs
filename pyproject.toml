@@ -9,8 +9,8 @@ build-backend = "setuptools.build_meta"
 # The repository's name. package.json, package-lock.json's two top-level "name" fields and
 # the README's title carry it too, so a rename changes all four.
 name = "page-proofs"
-version = "0.1.0"
-description = "Tools that check a built static site's pages on your own machine, with a pinned Lighthouse and pinned browser engines."
+version = "0.2.0"
+description = "Tools that check a built static site's pages on your own machine, with a pinned Lighthouse, pinned browser engines and PDF proofs."
 readme = "README.md"
 license = "AGPL-3.0-or-later"
 # The oldest interpreter the tools are written and type-checked for, not the newest one on the
@@ -20,24 +20,58 @@ requires-python = ">=3.12"
 # Deliberately empty: lighthouse_run runs on the standard library and the folders beside it,
 # and so does every library here. Lighthouse is a Node program, pinned in package.json and
 # installed with `npm ci`. browser_pass's one runtime package, Playwright, is the `browser`
-# extra below, so a lighthouse_run user never installs it.
+# extra below, and print_pass's PDF readers and Playwright are the `print` extra, so a
+# lighthouse_run user installs neither.
 dependencies = []
 
 [project.optional-dependencies]
 # browser_pass drives the real engines through Playwright. Each Playwright release pins its own
 # engine revisions, so this one pin also pins Chromium, Firefox and WebKit; the engine builds
 # themselves are not Python packages, and `python -m playwright install` fetches them.
-# greenlet and pyee are playwright's whole closure, pinned beside it so the resolver never
-# picks either; each is an exact pin, which a live test holds every entry to.
-browser = ["playwright==1.63.0", "greenlet==3.5.6", "pyee==13.0.1"]
-# The test-only library, pinned exactly: hypothesis drives the property tests, and nothing at
-# runtime imports it. The `browser` extra's pins are repeated, since browser_pass's and
-# csp_watch's suites import Playwright; the two lists must agree, entry for entry.
-test = [
-  "hypothesis==6.165.10",
+# Its whole closure is pinned beside it, so the resolver picks none of it: greenlet and pyee,
+# and typing-extensions under pyee. Each is an exact pin, which a live test holds every entry
+# to; another holds that each package a pin here needs on this floor is pinned here too.
+browser = [
   "playwright==1.63.0",
   "greenlet==3.5.6",
   "pyee==13.0.1",
+  "typing-extensions==4.16.0",
+]
+# print_pass reads every PDF with pypdf and pdfminer.six, in every mode, and prints through
+# Playwright for its Chromium engines. pdfminer.six's own closure is pinned beside it, as
+# Playwright's is: charset-normalizer, and cryptography with cffi and pycparser under it;
+# pypdf needs nothing on this floor. The Playwright pins repeat the `browser` extra's, entry for
+# entry, so the two extras never pin two Playwrights; a live test holds every entry exact.
+print = [
+  "pypdf==6.21.2",
+  "pdfminer.six==20260107",
+  "charset-normalizer==3.5.1",
+  "cryptography==50.0.1",
+  "cffi==2.1.1",
+  "pycparser==3.0",
+  "playwright==1.63.0",
+  "greenlet==3.5.6",
+  "pyee==13.0.1",
+  "typing-extensions==4.16.0",
+]
+# The test-only library, pinned exactly with sortedcontainers, which it needs: hypothesis
+# drives the property tests, and nothing at runtime imports it. The `browser` and `print`
+# extras' pins are repeated, since browser_pass's, csp_watch's and print_pass's suites import
+# Playwright and print_pass's the PDF readers; each list must agree with this one, entry for
+# entry.
+test = [
+  "hypothesis==6.165.10",
+  "sortedcontainers==2.4.0",
+  "playwright==1.63.0",
+  "greenlet==3.5.6",
+  "pyee==13.0.1",
+  "typing-extensions==4.16.0",
+  "pypdf==6.21.2",
+  "pdfminer.six==20260107",
+  "charset-normalizer==3.5.1",
+  "cryptography==50.0.1",
+  "cffi==2.1.1",
+  "pycparser==3.0",
 ]
 
 [tool.setuptools]
@@ -83,6 +117,9 @@ mypy_path = [
   "$MYPY_CONFIG_FILE_DIR/browser_pass",
   "$MYPY_CONFIG_FILE_DIR/browser_pass/src",
   "$MYPY_CONFIG_FILE_DIR/browser_pass/tests",
+  "$MYPY_CONFIG_FILE_DIR/print_pass",
+  "$MYPY_CONFIG_FILE_DIR/print_pass/src",
+  "$MYPY_CONFIG_FILE_DIR/print_pass/tests",
   "$MYPY_CONFIG_FILE_DIR/csp_watch",
   "$MYPY_CONFIG_FILE_DIR/csp_watch/tests",
   "$MYPY_CONFIG_FILE_DIR/suite_select",
@@ -105,8 +142,6 @@ mypy_path = [
 terms = [
   # prose: ignore[owner] the declaration itself
   "owner",
-  # prose: ignore[print_pass] the declaration itself
-  "print_pass",
   # prose: ignore[site_package] the declaration itself
   "site_package",
   # prose: ignore[python_gate] the declaration itself

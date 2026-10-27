@@ -1,0 +1,30 @@
+# The hand-verification sample: one page, printed in four states. README.md beside this file
+# says how to serve it and what each state reports.
+backgrounds = "both"
+
+[[read]]
+name = "data-mode"
+selector = ":root"
+attribute = "data-mode"
+
+[[target]]
+name = "sample"
+page = "/"
+storage_reads = ["mode"]
+
+[[target.state]]
+name = "default"
+
+# A mode the page's own script restores from storage, as a site's theme toggle does.
+[[target.state]]
+name = "stored-dark"
+storage = { mode = "dark" }
+
+# Playwright's emulated dark scheme: it persists into the print, which no reader's does.
+[[target.state]]
+name = "emulated-dark"
+color_scheme = "dark"
+
+[[target.state]]
+name = "reduced"
+reduced_motion = "reduce"

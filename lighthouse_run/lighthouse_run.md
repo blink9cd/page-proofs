@@ -14,7 +14,7 @@ run the tool against the folder of pages to measure. Keep the machine otherwise 
 running alongside is measured too.
 
 ```bash
-npm ci
+npm ci --ignore-scripts
 python3.12 lighthouse_run/lighthouse_run.py --root . --serve "<built site>"
 ```
 

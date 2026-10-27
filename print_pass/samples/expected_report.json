@@ -1,0 +1,967 @@
+{
+  "comparisons": [
+    {
+      "a": "pdfs/sample--default--bg-off.pdf",
+      "b": "pdfs/sample--default--bg-on.pdf",
+      "identical": true,
+      "page_count": [
+        2,
+        2
+      ],
+      "pages": [
+        {
+          "identical": true,
+          "page": 1
+        },
+        {
+          "identical": true,
+          "page": 2
+        }
+      ]
+    },
+    {
+      "a": "pdfs/sample--stored-dark--bg-off.pdf",
+      "b": "pdfs/sample--stored-dark--bg-on.pdf",
+      "identical": true,
+      "page_count": [
+        2,
+        2
+      ],
+      "pages": [
+        {
+          "identical": true,
+          "page": 1
+        },
+        {
+          "identical": true,
+          "page": 2
+        }
+      ]
+    },
+    {
+      "a": "pdfs/sample--emulated-dark--bg-off.pdf",
+      "b": "pdfs/sample--emulated-dark--bg-on.pdf",
+      "identical": false,
+      "page_count": [
+        2,
+        2
+      ],
+      "pages": [
+        {
+          "identical": false,
+          "page": 1
+        },
+        {
+          "identical": false,
+          "page": 2
+        }
+      ]
+    },
+    {
+      "a": "pdfs/sample--reduced--bg-off.pdf",
+      "b": "pdfs/sample--reduced--bg-on.pdf",
+      "identical": true,
+      "page_count": [
+        2,
+        2
+      ],
+      "pages": [
+        {
+          "identical": true,
+          "page": 1
+        },
+        {
+          "identical": true,
+          "page": 2
+        }
+      ]
+    }
+  ],
+  "mode": "make",
+  "pdfs": [
+    {
+      "file": "pdfs/sample--default--bg-off.pdf",
+      "fonts": [
+        {
+          "embedded": true,
+          "subset": true,
+          "unicode": true
+        }
+      ],
+      "images": {
+        "items": [
+          {
+            "bpc": 8,
+            "color": "icc",
+            "encoding": "image",
+            "height": 32,
+            "page": 2,
+            "size_bytes": 28,
+            "width": 64,
+            "x_ppi": 96,
+            "y_ppi": 96
+          }
+        ],
+        "max_ppi": 96,
+        "min_ppi": 96
+      },
+      "links": [
+        {
+          "destination": null,
+          "page": 1,
+          "uri": "http://127.0.0.1:<port>/"
+        },
+        {
+          "destination": null,
+          "page": 1,
+          "uri": "https://example.com/"
+        }
+      ],
+      "metadata": {
+        "author": "absent",
+        "creator": "Chromium",
+        "dates": {
+          "CreationDate": "utc",
+          "ModDate": "utc"
+        },
+        "encrypted": false,
+        "pdf_version": "1.4",
+        "tagged": true,
+        "title": "print_pass sample"
+      },
+      "page_sizes": [
+        {
+          "height_pt": 792.0,
+          "name": "Letter",
+          "width_pt": 612.0
+        },
+        {
+          "height_pt": 792.0,
+          "name": "Letter",
+          "width_pt": 612.0
+        }
+      ],
+      "pages": 2,
+      "privacy": [],
+      "problems": [],
+      "text": {
+        "chars_per_page": 2,
+        "cid_glyphs": 0,
+        "file": "text/sample--default--bg-off.txt",
+        "non_ascii_glyph_fonts": []
+      }
+    },
+    {
+      "file": "pdfs/sample--default--bg-on.pdf",
+      "fonts": [
+        {
+          "embedded": true,
+          "subset": true,
+          "unicode": true
+        }
+      ],
+      "images": {
+        "items": [
+          {
+            "bpc": 8,
+            "color": "icc",
+            "encoding": "image",
+            "height": 32,
+            "page": 2,
+            "size_bytes": 28,
+            "width": 64,
+            "x_ppi": 96,
+            "y_ppi": 96
+          }
+        ],
+        "max_ppi": 96,
+        "min_ppi": 96
+      },
+      "links": [
+        {
+          "destination": null,
+          "page": 1,
+          "uri": "http://127.0.0.1:<port>/"
+        },
+        {
+          "destination": null,
+          "page": 1,
+          "uri": "https://example.com/"
+        }
+      ],
+      "metadata": {
+        "author": "absent",
+        "creator": "Chromium",
+        "dates": {
+          "CreationDate": "utc",
+          "ModDate": "utc"
+        },
+        "encrypted": false,
+        "pdf_version": "1.4",
+        "tagged": true,
+        "title": "print_pass sample"
+      },
+      "page_sizes": [
+        {
+          "height_pt": 792.0,
+          "name": "Letter",
+          "width_pt": 612.0
+        },
+        {
+          "height_pt": 792.0,
+          "name": "Letter",
+          "width_pt": 612.0
+        }
+      ],
+      "pages": 2,
+      "privacy": [],
+      "problems": [],
+      "text": {
+        "chars_per_page": 2,
+        "cid_glyphs": 0,
+        "file": "text/sample--default--bg-on.txt",
+        "non_ascii_glyph_fonts": []
+      }
+    },
+    {
+      "file": "pdfs/sample--stored-dark--bg-off.pdf",
+      "fonts": [
+        {
+          "embedded": true,
+          "subset": true,
+          "unicode": true
+        }
+      ],
+      "images": {
+        "items": [
+          {
+            "bpc": 8,
+            "color": "icc",
+            "encoding": "image",
+            "height": 32,
+            "page": 2,
+            "size_bytes": 28,
+            "width": 64,
+            "x_ppi": 96,
+            "y_ppi": 96
+          }
+        ],
+        "max_ppi": 96,
+        "min_ppi": 96
+      },
+      "links": [
+        {
+          "destination": null,
+          "page": 1,
+          "uri": "http://127.0.0.1:<port>/"
+        },
+        {
+          "destination": null,
+          "page": 1,
+          "uri": "https://example.com/"
+        }
+      ],
+      "metadata": {
+        "author": "absent",
+        "creator": "Chromium",
+        "dates": {
+          "CreationDate": "utc",
+          "ModDate": "utc"
+        },
+        "encrypted": false,
+        "pdf_version": "1.4",
+        "tagged": true,
+        "title": "print_pass sample"
+      },
+      "page_sizes": [
+        {
+          "height_pt": 792.0,
+          "name": "Letter",
+          "width_pt": 612.0
+        },
+        {
+          "height_pt": 792.0,
+          "name": "Letter",
+          "width_pt": 612.0
+        }
+      ],
+      "pages": 2,
+      "privacy": [],
+      "problems": [],
+      "text": {
+        "chars_per_page": 2,
+        "cid_glyphs": 0,
+        "file": "text/sample--stored-dark--bg-off.txt",
+        "non_ascii_glyph_fonts": []
+      }
+    },
+    {
+      "file": "pdfs/sample--stored-dark--bg-on.pdf",
+      "fonts": [
+        {
+          "embedded": true,
+          "subset": true,
+          "unicode": true
+        }
+      ],
+      "images": {
+        "items": [
+          {
+            "bpc": 8,
+            "color": "icc",
+            "encoding": "image",
+            "height": 32,
+            "page": 2,
+            "size_bytes": 28,
+            "width": 64,
+            "x_ppi": 96,
+            "y_ppi": 96
+          }
+        ],
+        "max_ppi": 96,
+        "min_ppi": 96
+      },
+      "links": [
+        {
+          "destination": null,
+          "page": 1,
+          "uri": "http://127.0.0.1:<port>/"
+        },
+        {
+          "destination": null,
+          "page": 1,
+          "uri": "https://example.com/"
+        }
+      ],
+      "metadata": {
+        "author": "absent",
+        "creator": "Chromium",
+        "dates": {
+          "CreationDate": "utc",
+          "ModDate": "utc"
+        },
+        "encrypted": false,
+        "pdf_version": "1.4",
+        "tagged": true,
+        "title": "print_pass sample"
+      },
+      "page_sizes": [
+        {
+          "height_pt": 792.0,
+          "name": "Letter",
+          "width_pt": 612.0
+        },
+        {
+          "height_pt": 792.0,
+          "name": "Letter",
+          "width_pt": 612.0
+        }
+      ],
+      "pages": 2,
+      "privacy": [],
+      "problems": [],
+      "text": {
+        "chars_per_page": 2,
+        "cid_glyphs": 0,
+        "file": "text/sample--stored-dark--bg-on.txt",
+        "non_ascii_glyph_fonts": []
+      }
+    },
+    {
+      "file": "pdfs/sample--emulated-dark--bg-off.pdf",
+      "fonts": [
+        {
+          "embedded": true,
+          "subset": true,
+          "unicode": true
+        }
+      ],
+      "images": {
+        "items": [
+          {
+            "bpc": 8,
+            "color": "icc",
+            "encoding": "image",
+            "height": 32,
+            "page": 2,
+            "size_bytes": 28,
+            "width": 64,
+            "x_ppi": 96,
+            "y_ppi": 96
+          }
+        ],
+        "max_ppi": 96,
+        "min_ppi": 96
+      },
+      "links": [
+        {
+          "destination": null,
+          "page": 1,
+          "uri": "http://127.0.0.1:<port>/"
+        },
+        {
+          "destination": null,
+          "page": 1,
+          "uri": "https://example.com/"
+        }
+      ],
+      "metadata": {
+        "author": "absent",
+        "creator": "Chromium",
+        "dates": {
+          "CreationDate": "utc",
+          "ModDate": "utc"
+        },
+        "encrypted": false,
+        "pdf_version": "1.4",
+        "tagged": true,
+        "title": "print_pass sample"
+      },
+      "page_sizes": [
+        {
+          "height_pt": 792.0,
+          "name": "Letter",
+          "width_pt": 612.0
+        },
+        {
+          "height_pt": 792.0,
+          "name": "Letter",
+          "width_pt": 612.0
+        }
+      ],
+      "pages": 2,
+      "privacy": [],
+      "problems": [],
+      "text": {
+        "chars_per_page": 2,
+        "cid_glyphs": 0,
+        "file": "text/sample--emulated-dark--bg-off.txt",
+        "non_ascii_glyph_fonts": []
+      }
+    },
+    {
+      "file": "pdfs/sample--emulated-dark--bg-on.pdf",
+      "fonts": [
+        {
+          "embedded": true,
+          "subset": true,
+          "unicode": true
+        }
+      ],
+      "images": {
+        "items": [
+          {
+            "bpc": 8,
+            "color": "icc",
+            "encoding": "image",
+            "height": 32,
+            "page": 2,
+            "size_bytes": 28,
+            "width": 64,
+            "x_ppi": 96,
+            "y_ppi": 96
+          }
+        ],
+        "max_ppi": 96,
+        "min_ppi": 96
+      },
+      "links": [
+        {
+          "destination": null,
+          "page": 1,
+          "uri": "http://127.0.0.1:<port>/"
+        },
+        {
+          "destination": null,
+          "page": 1,
+          "uri": "https://example.com/"
+        }
+      ],
+      "metadata": {
+        "author": "absent",
+        "creator": "Chromium",
+        "dates": {
+          "CreationDate": "utc",
+          "ModDate": "utc"
+        },
+        "encrypted": false,
+        "pdf_version": "1.4",
+        "tagged": true,
+        "title": "print_pass sample"
+      },
+      "page_sizes": [
+        {
+          "height_pt": 792.0,
+          "name": "Letter",
+          "width_pt": 612.0
+        },
+        {
+          "height_pt": 792.0,
+          "name": "Letter",
+          "width_pt": 612.0
+        }
+      ],
+      "pages": 2,
+      "privacy": [],
+      "problems": [],
+      "text": {
+        "chars_per_page": 2,
+        "cid_glyphs": 0,
+        "file": "text/sample--emulated-dark--bg-on.txt",
+        "non_ascii_glyph_fonts": []
+      }
+    },
+    {
+      "file": "pdfs/sample--reduced--bg-off.pdf",
+      "fonts": [
+        {
+          "embedded": true,
+          "subset": true,
+          "unicode": true
+        }
+      ],
+      "images": {
+        "items": [
+          {
+            "bpc": 8,
+            "color": "icc",
+            "encoding": "image",
+            "height": 32,
+            "page": 2,
+            "size_bytes": 28,
+            "width": 64,
+            "x_ppi": 96,
+            "y_ppi": 96
+          }
+        ],
+        "max_ppi": 96,
+        "min_ppi": 96
+      },
+      "links": [
+        {
+          "destination": null,
+          "page": 1,
+          "uri": "http://127.0.0.1:<port>/"
+        },
+        {
+          "destination": null,
+          "page": 1,
+          "uri": "https://example.com/"
+        }
+      ],
+      "metadata": {
+        "author": "absent",
+        "creator": "Chromium",
+        "dates": {
+          "CreationDate": "utc",
+          "ModDate": "utc"
+        },
+        "encrypted": false,
+        "pdf_version": "1.4",
+        "tagged": true,
+        "title": "print_pass sample"
+      },
+      "page_sizes": [
+        {
+          "height_pt": 792.0,
+          "name": "Letter",
+          "width_pt": 612.0
+        },
+        {
+          "height_pt": 792.0,
+          "name": "Letter",
+          "width_pt": 612.0
+        }
+      ],
+      "pages": 2,
+      "privacy": [],
+      "problems": [],
+      "text": {
+        "chars_per_page": 2,
+        "cid_glyphs": 0,
+        "file": "text/sample--reduced--bg-off.txt",
+        "non_ascii_glyph_fonts": []
+      }
+    },
+    {
+      "file": "pdfs/sample--reduced--bg-on.pdf",
+      "fonts": [
+        {
+          "embedded": true,
+          "subset": true,
+          "unicode": true
+        }
+      ],
+      "images": {
+        "items": [
+          {
+            "bpc": 8,
+            "color": "icc",
+            "encoding": "image",
+            "height": 32,
+            "page": 2,
+            "size_bytes": 28,
+            "width": 64,
+            "x_ppi": 96,
+            "y_ppi": 96
+          }
+        ],
+        "max_ppi": 96,
+        "min_ppi": 96
+      },
+      "links": [
+        {
+          "destination": null,
+          "page": 1,
+          "uri": "http://127.0.0.1:<port>/"
+        },
+        {
+          "destination": null,
+          "page": 1,
+          "uri": "https://example.com/"
+        }
+      ],
+      "metadata": {
+        "author": "absent",
+        "creator": "Chromium",
+        "dates": {
+          "CreationDate": "utc",
+          "ModDate": "utc"
+        },
+        "encrypted": false,
+        "pdf_version": "1.4",
+        "tagged": true,
+        "title": "print_pass sample"
+      },
+      "page_sizes": [
+        {
+          "height_pt": 792.0,
+          "name": "Letter",
+          "width_pt": 612.0
+        },
+        {
+          "height_pt": 792.0,
+          "name": "Letter",
+          "width_pt": 612.0
+        }
+      ],
+      "pages": 2,
+      "privacy": [],
+      "problems": [],
+      "text": {
+        "chars_per_page": 2,
+        "cid_glyphs": 0,
+        "file": "text/sample--reduced--bg-on.txt",
+        "non_ascii_glyph_fonts": []
+      }
+    }
+  ],
+  "print": {
+    "format": "Letter",
+    "header_footer": false,
+    "margin": "1cm",
+    "prefer_css_page_size": false,
+    "scale": 1,
+    "tagged": true
+  },
+  "redirects": [],
+  "schema": 2,
+  "states": [
+    {
+      "actions": [],
+      "color_scheme": {
+        "emulated": false,
+        "requested": "native"
+      },
+      "engine": "shell",
+      "margin_px": 37.7953,
+      "network": {
+        "blocked": [],
+        "csp_violations": [],
+        "failed": [],
+        "http_errors": [],
+        "page_errors": []
+      },
+      "page": "/",
+      "page_width": null,
+      "pdfs": [
+        "pdfs/sample--default--bg-off.pdf",
+        "pdfs/sample--default--bg-on.pdf"
+      ],
+      "print_at_ms": null,
+      "problems": [
+        {
+          "severity": "warning",
+          "what": "1 animation(s) running on screen at print (spin): a print stylesheet may still show them finished; compare with a reduced-motion state"
+        }
+      ],
+      "read_back": {
+        "animations": [
+          {
+            "name": "spin",
+            "target": "span.spin"
+          }
+        ],
+        "color_scheme": "light",
+        "fonts_status": "loaded",
+        "images": [
+          {
+            "complete": true,
+            "has_src": true,
+            "loading": "lazy",
+            "natural_width": 64,
+            "src": "/pixel.png"
+          }
+        ],
+        "reads": {
+          "data-mode": [
+            "light"
+          ]
+        },
+        "ready_state": "complete",
+        "reduced_motion": "no-preference",
+        "storage": {
+          "mode": null
+        },
+        "title": "print_pass sample"
+      },
+      "reduced_motion": {
+        "emulated": false,
+        "requested": "native"
+      },
+      "state": "default",
+      "storage": {},
+      "target": "sample",
+      "viewport": {
+        "height": 800,
+        "width": 1280
+      }
+    },
+    {
+      "actions": [],
+      "color_scheme": {
+        "emulated": false,
+        "requested": "native"
+      },
+      "engine": "shell",
+      "margin_px": 37.7953,
+      "network": {
+        "blocked": [],
+        "csp_violations": [],
+        "failed": [],
+        "http_errors": [],
+        "page_errors": []
+      },
+      "page": "/",
+      "page_width": null,
+      "pdfs": [
+        "pdfs/sample--stored-dark--bg-off.pdf",
+        "pdfs/sample--stored-dark--bg-on.pdf"
+      ],
+      "print_at_ms": null,
+      "problems": [
+        {
+          "severity": "warning",
+          "what": "1 animation(s) running on screen at print (spin): a print stylesheet may still show them finished; compare with a reduced-motion state"
+        }
+      ],
+      "read_back": {
+        "animations": [
+          {
+            "name": "spin",
+            "target": "span.spin"
+          }
+        ],
+        "color_scheme": "light",
+        "fonts_status": "loaded",
+        "images": [
+          {
+            "complete": true,
+            "has_src": true,
+            "loading": "lazy",
+            "natural_width": 64,
+            "src": "/pixel.png"
+          }
+        ],
+        "reads": {
+          "data-mode": [
+            "dark"
+          ]
+        },
+        "ready_state": "complete",
+        "reduced_motion": "no-preference",
+        "storage": {
+          "mode": "dark"
+        },
+        "title": "print_pass sample"
+      },
+      "reduced_motion": {
+        "emulated": false,
+        "requested": "native"
+      },
+      "state": "stored-dark",
+      "storage": {
+        "mode": "dark"
+      },
+      "target": "sample",
+      "viewport": {
+        "height": 800,
+        "width": 1280
+      }
+    },
+    {
+      "actions": [],
+      "color_scheme": {
+        "emulated": true,
+        "requested": "dark"
+      },
+      "engine": "shell",
+      "margin_px": 37.7953,
+      "network": {
+        "blocked": [],
+        "csp_violations": [],
+        "failed": [],
+        "http_errors": [],
+        "page_errors": []
+      },
+      "page": "/",
+      "page_width": null,
+      "pdfs": [
+        "pdfs/sample--emulated-dark--bg-off.pdf",
+        "pdfs/sample--emulated-dark--bg-on.pdf"
+      ],
+      "print_at_ms": null,
+      "problems": [
+        {
+          "severity": "warning",
+          "what": "1 animation(s) running on screen at print (spin): a print stylesheet may still show them finished; compare with a reduced-motion state"
+        },
+        {
+          "severity": "warning",
+          "what": "EMULATED dark: Playwright's emulated color scheme persists into page.pdf(), while a real dark OS prints light (Chrome 153, measured); where this PDF differs from a light print, no reader's print looks like it"
+        }
+      ],
+      "read_back": {
+        "animations": [
+          {
+            "name": "spin",
+            "target": "span.spin"
+          }
+        ],
+        "color_scheme": "dark",
+        "fonts_status": "loaded",
+        "images": [
+          {
+            "complete": true,
+            "has_src": true,
+            "loading": "lazy",
+            "natural_width": 64,
+            "src": "/pixel.png"
+          }
+        ],
+        "reads": {
+          "data-mode": [
+            "light"
+          ]
+        },
+        "ready_state": "complete",
+        "reduced_motion": "no-preference",
+        "storage": {
+          "mode": null
+        },
+        "title": "print_pass sample"
+      },
+      "reduced_motion": {
+        "emulated": false,
+        "requested": "native"
+      },
+      "state": "emulated-dark",
+      "storage": {},
+      "target": "sample",
+      "viewport": {
+        "height": 800,
+        "width": 1280
+      }
+    },
+    {
+      "actions": [],
+      "color_scheme": {
+        "emulated": false,
+        "requested": "native"
+      },
+      "engine": "shell",
+      "margin_px": 37.7953,
+      "network": {
+        "blocked": [],
+        "csp_violations": [],
+        "failed": [],
+        "http_errors": [],
+        "page_errors": []
+      },
+      "page": "/",
+      "page_width": null,
+      "pdfs": [
+        "pdfs/sample--reduced--bg-off.pdf",
+        "pdfs/sample--reduced--bg-on.pdf"
+      ],
+      "print_at_ms": null,
+      "problems": [
+        {
+          "severity": "warning",
+          "what": "1 animation(s) running on screen at print (spin): a print stylesheet may still show them finished; compare with a reduced-motion state"
+        }
+      ],
+      "read_back": {
+        "animations": [
+          {
+            "name": "spin",
+            "target": "span.spin"
+          }
+        ],
+        "color_scheme": "light",
+        "fonts_status": "loaded",
+        "images": [
+          {
+            "complete": true,
+            "has_src": true,
+            "loading": "lazy",
+            "natural_width": 64,
+            "src": "/pixel.png"
+          }
+        ],
+        "reads": {
+          "data-mode": [
+            "light"
+          ]
+        },
+        "ready_state": "complete",
+        "reduced_motion": "reduce",
+        "storage": {
+          "mode": null
+        },
+        "title": "print_pass sample"
+      },
+      "reduced_motion": {
+        "emulated": true,
+        "requested": "reduce"
+      },
+      "state": "reduced",
+      "storage": {},
+      "target": "sample",
+      "viewport": {
+        "height": 800,
+        "width": 1280
+      }
+    }
+  ],
+  "targets": {
+    "expected_offsite_hosts": []
+  },
+  "tool": "print_pass",
+  "totals": {
+    "findings": 0,
+    "pdfs": 8,
+    "states": 4,
+    "warnings": 5
+  }
+}
