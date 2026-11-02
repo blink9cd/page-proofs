@@ -90,7 +90,7 @@ class ParseDigestTests(unittest.TestCase):
         )
     )
     def test_fuzz_parse_digest(self, raw: object) -> None:
-        """Any shape parses or is refused as a ProbeError -- never another exception."""
+        """Any shape parses or is refused as a ProbeError, never another exception."""
         try:
             digest = pass_digest.parse_digest(raw)
         except ProbeError:

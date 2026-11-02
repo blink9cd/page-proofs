@@ -1,11 +1,13 @@
-"""Grouped suite: the late-script load, LIVE -- scripts held until the first paint, for real.
+"""Grouped suite: the late-script load, live (scripts held until the first paint, for real).
 
 The race this load removes only exists in a real engine, so these tests drive the pinned
 Chromium (and, once, Firefox) against `samples/site` and against pages written for one refusal
-each -- all of them in one browser per engine for the whole module, each test in a fresh context,
+each, all of them in one browser per engine for the whole module, each test in a fresh context,
 as the tool itself runs its renderings. `_live_fixtures.py` holds the setup shared with the other
 live suites; how this load stills endless motion is `test_pass_late_motion_live.py`'s.
 """
+
+# gate-serves: none (temporary trees, and its own samples/site, gated with its tool)
 
 from __future__ import annotations
 
@@ -50,7 +52,7 @@ _UNPAINTED_PAGE = """<!doctype html><html lang="en"><head><title>unpainted</titl
 _HERE = Path(__file__).resolve().parent
 
 #: A page that paints (its root has a background) but whose <body> holds no box, so nothing
-#: appended to it -- the late-shift plant included -- can be drawn.
+#: appended to it (the late-shift plant included) can be drawn.
 _BODILESS_PAGE = """<!doctype html><html lang="en"><head><title>bodiless</title>
 <style>html { background: #abc; } body { display: none; }</style></head>
 <body><p>never shown</p></body></html>
@@ -69,14 +71,14 @@ body { font-family: Never, serif; }
 """
 
 #: A page that cannot paint until its script runs, and whose text only THEN starts loading a web
-#: face -- the script injects the `@font-face` and applies it, so the fetch cannot begin before
+#: face (the script injects the `@font-face` and applies it), so the fetch cannot begin before
 #: the paint. `font-display: swap` makes the face replace the fallback when it lands, which moves
 #: every line that had already been painted.
 #:
 #: This is the shape that exposed the counting window: released at once (no paint can come while a
 #: render-blocking script is held), the swap lands after the release and would be charged to the
 #: script, although the script had finished before anything was on screen. Counting from the
-#: moment the page is PRESENTABLE -- painted, then in its own fonts -- is what leaves it out.
+#: moment the page is presentable (painted, then in its own fonts) is what leaves it out.
 _BLOCKING_SWAP_PAGE = """<!doctype html><html lang="en"><head><title>blocking swap</title>
 <style>body { margin: 0; font: 16px/1.5 monospace; }</style>
 <script blocking="render" src="swap.js"></script></head>
@@ -105,7 +107,7 @@ def setUpModule() -> None:  # noqa: N802 - unittest's own hook name
     """Point Playwright at the pinned builds, serve the sample site, start the shared engines.
 
     Cleanups rather than a `tearDownModule`, so a start that fails part way still undoes
-    what did start -- the shared engines first, then the site, whose stop checks the budget.
+    what did start: the shared engines first, then the site, whose stop checks the budget.
     """
     _SITE.start()
     unittest.addModuleCleanup(_SITE.stop)
@@ -222,8 +224,8 @@ class LateShiftTests(unittest.TestCase):
         self,
     ) -> None:
         # THE REGRESSION THIS WINDOW EXISTS FOR, measured end to end. The page's own script
-        # blocks the first paint, so the hold releases at once and the release is BEFORE any
-        # paint -- which is precisely where the fonts half of the hold would stop protecting
+        # blocks the first paint, so the hold releases at once and the release is before any
+        # paint, which is precisely where the fonts half of the hold would stop protecting
         # were counting to start at the release.
         # The face arrives after the paint and moves three painted lines; none of it is the
         # script's doing, and the score must be zero rather than a finding.

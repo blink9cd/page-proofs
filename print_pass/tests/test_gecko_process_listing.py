@@ -1,4 +1,4 @@
-"""Suite: the process listing, and which crash helper in it is ours -- never one that only looks it.
+"""Suite: the process listing, and which crash helper in it is ours, never one that only looks it.
 
 Firefox's crash helper leaves geckodriver's group, so a driver records it from a listing of
 every process while its Firefox runs, and the stop finds it again by that record. The reader's

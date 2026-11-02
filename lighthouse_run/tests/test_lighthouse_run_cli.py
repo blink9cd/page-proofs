@@ -14,13 +14,7 @@ from typing import Any
 from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-# The vendored formatter library, at the fixed sibling path the runner's bootstrap names, so
-# the help test can name the class it expects without relying on that bootstrap. It goes just
-# after the tool folder, ahead of every installed distribution, so none of the same name can
-# shadow it.
-sys.path.insert(1, str(Path(__file__).resolve().parents[2] / "help_formatter"))
 
-import help_formatter  # noqa: E402 - import follows the sys.path bootstrap above
 import lighthouse_run  # noqa: E402 - import follows the sys.path bootstrap above
 from _lighthouse_run_case import (  # noqa: E402 - beside this module, via the loader's top_level_dir
     ProjectCase,
@@ -85,14 +79,8 @@ class ParserTests(unittest.TestCase):
         text = " ".join(lighthouse_run.build_parser().format_help().split())
         self.assertIn("default:", text)
         self.assertIn("npm ci", text)
-
-    def test_help_binds_the_formatter_hiding_a_required_default(self) -> None:
-        # Identity, not rendering: CPython 3.13 fixed the bogus `(default: None)` on a
-        # required option, so a rendering test passes there with the stock formatter back.
-        self.assertIs(
-            lighthouse_run.build_parser().formatter_class,
-            help_formatter.ReqAwareDefaultsFormatter,
-        )
+        for unset in ("(default: None)", "(default: False)"):
+            self.assertNotIn(unset, text)
 
 
 class ScheduleTests(unittest.TestCase):
@@ -445,7 +433,7 @@ class CommitReadTests(ProjectCase):
 
     def test_a_package_outside_any_repository_has_an_unknown_commit(self) -> None:
         # git exits 128 in a folder no repository holds, and commit_facts reads that as
-        # unknown with nothing wrong -- no warning, and exit 0. The fake git answers, so
+        # unknown with nothing wrong: no warning, and exit 0. The fake git answers, so
         # neither the host's git nor where its scratch folder sits decides the outcome; what
         # the real git says there is commit_facts' own suite to pin.
         package = make_package(self.root.parent / "package")

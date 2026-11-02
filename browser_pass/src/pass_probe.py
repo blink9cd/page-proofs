@@ -4,9 +4,9 @@ The in-page probe is one function the driver evaluates in the page, written in t
 `page_probe.js`, a function of the other two; `page_probe_motion.js`, the stilling both settles
 run; and `page_probe_trees.js`, the one walk over the page's elements, each open shadow root's
 included, that every read makes. Their source is composed here, the first applied to the other
-two, so an engine receives one function as before. Two loads call it -- the page-load detectors'
+two, so an engine receives one function as before. Two loads call it (the page-load detectors'
 (`pass_engine`) and the late-script load's (`pass_late_load`), whose stilling also calls it over a
-DevTools session (`pass_inert`) -- so its source, the configuration handed over on every call and
+DevTools session, `pass_inert`), so its source, the configuration handed over on every call and
 the pace of every poll live here, once.
 
 Entry point assumptions: Playwright is importable (the repository's `browser` extra).

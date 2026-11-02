@@ -1,4 +1,4 @@
-"""Suite: what is done with a finished report -- its exit code, normalization, summary and file.
+"""Suite: what is done with a finished report (its exit code, normalization, summary and file).
 
 Each case starts from the documented make report in `_print_report_fixtures` (or the read
 and compare reports `print_report` builds) and changes only what it is about. Shaping the
@@ -99,7 +99,7 @@ _NOT_LOOPBACK_TEXTS: typing.Final = (
 )
 
 #: The strings `_holding` sets: a state's problem and read value, a PDF's link, and a
-#: comparison's file name -- each nested at its own depth.
+#: comparison's file name, each nested at its own depth.
 _HELD_AT: typing.Final[tuple[_Path, ...]] = (
     ("states", 0, "problems", 0, "what"),
     ("states", 0, "read_back", "reads", READ_NAME, 0),

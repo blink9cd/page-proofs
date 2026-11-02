@@ -4,12 +4,12 @@ What a run records about WHY its numbers are what they are (`lighthouse_audits`)
 run to run as the numbers do, so it is reduced the same way: every number to its median over
 the runs that have it, each LCP subpart on its own. Each render-blocking request keeps its run
 count beside its median: Lighthouse writes a request's simulated download time only at 50 ms
-or more, so the median is over the runs that reached 50 ms alone, and the count -- out of the
-result's measured runs -- says how many did. A request that crossed 50 ms in one run of five
+or more, so the median is over the runs that reached 50 ms alone, and the count (out of the
+result's measured runs) says how many did. A request that crossed 50 ms in one run of five
 then reads as one slow run, not as a typical one. A run whose time for the request, or whose
 whole request map, could not be read adds to no count either, so a count below the measured
-runs can also mean an unreadable run. A category -- the LCP element's selector, each discovery
-flag, whether the document was compressed -- is tallied instead, as `{value: run count}`,
+runs can also mean an unreadable run. A category (the LCP element's selector, each discovery
+flag, whether the document was compressed) is tallied instead, as `{value: run count}`,
 majority first, with an unknown or not-applicable run counted under `null` rather than
 dropped, so a split between runs shows.
 

@@ -11,8 +11,8 @@ engine runs no init script, and the log stays empty whatever the page violates: 
 report that rendering as not measured, never as clean. `csp_watch.md` has what each engine
 reports there instead.
 
-Every page of the context reports to the one log, so a caller measuring one page among others --
-a tab a browser extension opened beside it, say -- hands `install` an `admit` that keeps only
+Every page of the context reports to the one log, so a caller measuring one page among others
+(a tab a browser extension opened beside it, say) hands `install` an `admit` that keeps only
 the reports of the pages it measures, by the caller Playwright hands the binding.
 
 `policy_of` reads the policy a page's markup declares, and works with scripts off as well, since

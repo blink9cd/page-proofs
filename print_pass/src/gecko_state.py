@@ -10,13 +10,13 @@ never run before them; the page loaded; the actions, settling and print moment
 back; and one PDF or two from that one load, written where the record says.
 
 A page whose isolation did not hold is refused before it prints: a request answered off its
-origin, a document off it, or a document that is not on the served origin -- `about:blank`,
-`data:`, `blob:`. So is a Resource Timing read that is not plain rows. Each is an `EngineError` (exit 2). The scratch folder's path is
-taken out of the log before anything of it is recorded, as a cheap safeguard: no measured
-path carries it into the record, since only the page's own `JavaScript error:` lines are
-kept -- its scripts on the served origin, or written into it inline -- and of each only its
-first line. Whatever happens, the session's crash helper is recorded while its Firefox still
-runs, and then the session is deleted.
+origin, a document off it, or a document that is not on the served origin (`about:blank`,
+`data:`, `blob:`). So is a Resource Timing read that is not plain rows. Each is an
+`EngineError` (exit 2). The scratch folder's path is taken out of the log before anything of
+it is recorded, as a cheap safeguard: no measured path carries it into the record, since
+only the page's own `JavaScript error:` lines are kept (its scripts on the served origin, or
+written into it inline), and of each only its first line. Whatever happens, the session's
+crash helper is recorded while its Firefox still runs, and then the session is deleted.
 
 Every error names the state. One that ended a state is first checked against the log for
 the guard, which ends the browser at its refusal: a breach is reported as itself,

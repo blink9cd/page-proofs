@@ -1,4 +1,4 @@
-"""Suite: the engine suites' own stand-ins -- the guard `FakeRun.unbounded()`, and the bounder.
+"""Suite: the engine suites' own stand-ins (the guard `FakeRun.unbounded()`, and the bounder).
 
 Every engine suite that asserts `unbounded() == []` trusts this guard to report a Playwright
 call the watchdog would not bound as its own. That trust is the fixture's rule, not the

@@ -1,4 +1,4 @@
-"""Suite: what the engine hands Playwright -- print and context options -- and the loopback rule.
+"""Suite: what the engine hands Playwright (print and context options), and the loopback rule.
 
 Nothing here runs a browser. The options are compared as whole dictionaries, so a key added,
 dropped or renamed fails here rather than as a print that silently differs from the dialog's.

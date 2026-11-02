@@ -15,8 +15,8 @@ the real synchronous API when a socket route's handler calls it; and
 log, refusing first, with the watchdog's own check, any bound the watchdog would refuse;
 `FakeClock` is a clock that moves a fixed step on every reading.
 
-The three fakes the engine hands a dictionary of keywords -- `launch`, `new_context` and
-`pdf` -- bind them to the real Playwright method's own signature first, so a key Playwright
+The three fakes the engine hands a dictionary of keywords (`launch`, `new_context` and
+`pdf`) bind them to the real Playwright method's own signature first, so a key Playwright
 does not take raises the same TypeError here that it raises against a live browser.
 
 Entry point assumptions: imported by a suite under this folder, under an interpreter with

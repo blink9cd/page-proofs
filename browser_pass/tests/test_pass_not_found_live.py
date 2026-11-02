@@ -9,6 +9,8 @@ still a finding, its echo with it, and with `--prove` every plant is caught in C
 missing-path one among them. `_live_fixtures.py` holds the setup the live suites share.
 """
 
+# gate-serves: none (temporary trees, and its own samples/site, gated with its tool)
+
 from __future__ import annotations
 
 # First, beside this module via the loader's top_level_dir: it puts the tool's src/ and the

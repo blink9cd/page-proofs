@@ -4,8 +4,8 @@
 // WHAT IS REAL. The DOM, its selectors (`closest`, `matches(":disabled")`), and the computed
 // style the probe reads: jsdom's cascade answers `display` from its own UA stylesheet (a <div>
 // is block, an <a> inline, a [hidden] element none), `overflow-x` and `visibility` from the
-// page's CSS, `position` from a style attribute. So an exemption the probe makes on a style --
-// a scroller, a visibility-hidden reserve, a link inside a sentence -- is exercised by real CSS
+// page's CSS, `position` from a style attribute. So an exemption the probe makes on a style
+// (a scroller, a visibility-hidden reserve, a link inside a sentence) is exercised by real CSS
 // in the fixture, not by a stated answer. The probe itself is its three files' text, each trimmed
 // as the driver trims it: page_probe.js applied to its motion half, page_probe_motion.js, and its
 // tree walker, page_probe_trees.js, as the driver's PROBE_SOURCE applies them, which makes the
@@ -19,8 +19,8 @@
 // default an element's `data-box` attribute ("x y width height", viewport coordinates), or a
 // `boxOf` function the test passes. An element whose own or a flat-tree ancestor's computed
 // display is none gets no box whatever it states, because an engine gives it none. Four APIs
-// jsdom does not implement at all -- matchMedia, document.fonts, PerformanceObserver and
-// performance.getEntriesByType -- are fakes the test drives, and a fifth, a script element's
+// jsdom does not implement at all (matchMedia, document.fonts, PerformanceObserver and
+// performance.getEntriesByType) are fakes the test drives, and a fifth, a script element's
 // `async` property, reflects its attribute as an engine's does for a script the parser inserted.
 // The Web Animations API is absent as well; the motion suites stand in `document.getAnimations`
 // and `document.timeline`, and each shadow root's `getAnimations`, through
@@ -31,7 +31,7 @@
 // WHAT THIS CANNOT PROVE: that an engine reports what these fakes assume. That is the live
 // suites' job (test_pass_live.py, test_pass_late_live.py), which run the same source in
 // Chromium, Firefox and WebKit. These suites pin the DECISIONS the probe makes over those
-// numbers -- exemptions, thresholds, de-duplication, names, ordering -- on every test run.
+// numbers (exemptions, thresholds, de-duplication, names, ordering) on every test run.
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -115,7 +115,7 @@ export function boxFromAttribute(element) {
 
 /**
  * Whether an engine would lay `element` out at all: nothing up to <html> is display none, up the
- * flat tree an engine lays boxes out by -- a slotted element through its slot, the top of a
+ * flat tree an engine lays boxes out by: a slotted element through its slot, the top of a
  * shadow root through its host.
  */
 function isDisplayed(window, element) {

@@ -1,4 +1,4 @@
-"""Grouped suite: the fence's canary by itself -- its probes, its config, its report, its hold.
+"""Grouped suite: the fence's canary by itself (its probes, its config, its report, its hold).
 
 The canary runs inside the live Firefox suite's Seatbelt fence and probes, in a fixed order,
 what the fence must refuse and what it must let through. Here every probe's action is a

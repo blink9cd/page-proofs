@@ -1,12 +1,12 @@
 // The in-page half of browser_pass: ONE function the driver evaluates in the page as
 // page.evaluate(source, [op, config]). It is a bare function expression rather than a module
 // because the driver hands its source text to the engine. It is written as a function OF its
-// motion half, page_probe_motion.js -- the stilling both settles run, kept in a file of its own
-// -- and of its tree walker, page_probe_trees.js, the one walk every read here and the motion
+// motion half, page_probe_motion.js (the stilling both settles run, kept in a file of its own),
+// and of its tree walker, page_probe_trees.js, the one walk every read here and the motion
 // half's make, so an element inside an open shadow root is read wherever the document's are.
 // The driver applies this file to the other two, so the source an engine receives is still one
-// function. Every value it shares with the Python side -- the plant marker, the planted texts,
-// the missing path, the late-shift log's name -- arrives in `config`, so the two sides cannot
+// function. Every value it shares with the Python side (the plant marker, the planted texts,
+// the missing path, the late-shift log's name) arrives in `config`, so the two sides cannot
 // drift apart. The late-script load's DevTools session calls the same function with a second
 // argument, `listed`: a list the motion half made and the page kept (page_probe_motion.js).
 //
@@ -44,7 +44,7 @@
     const tenth = (value) => Math.round(value * 10) / 10;
     const hundredth = (value) => Math.round(value * 100) / 100;
 
-    // The element holding `node` in its own tree -- its parent, or at the top of a shadow root,
+    // The element holding `node` in its own tree: its parent, or at the top of a shadow root,
     // that root's host, since a root is not an element.
     /**
      * @param {Node} node
@@ -55,7 +55,7 @@
       (node.parentNode instanceof ShadowRoot ? node.parentNode.host : null);
 
     // The element `node` is laid out inside: the slot it is assigned to, else its parent, else
-    // -- at the top of a shadow root -- that root's host. This is the route a box takes up the
+    // or, at the top of a shadow root, that root's host. This is the route a box takes up the
     // flat tree, so a scroller or an `inert` in a root holds what is slotted into it. A slot in a
     // CLOSED root is not reported (`assignedSlot` reads null), so the climb stays in the light
     // tree there, as every read stays out of a closed root.
@@ -100,7 +100,7 @@
     };
 
     // Content past the right edge is only a defect when nothing between it and <body> scrolls
-    // or clips it -- a carousel's off-screen slides are inside a scroller by design. <body> and
+    // or clips it: a carousel's off-screen slides are inside a scroller by design. <body> and
     // <html> are deliberately NOT counted: content they clip is content nobody can reach.
     const insideScrollerOrClip = (element) => {
       for (
@@ -132,7 +132,7 @@
         if (insideScrollerOrClip(element)) continue;
         flagged.add(element);
         // Its parent already names this overflow; listing every descendant is noise. A parent
-        // with no box -- a <slot>, a `display: contents` wrapper -- is never found itself, so
+        // with no box (a <slot>, a `display: contents` wrapper) is never found itself, so
         // the box it stands in is looked for above it.
         if (flagged.has(boxedParent(element))) continue;
         found.push(
@@ -200,7 +200,7 @@
       return element;
     };
 
-    // One fault per detector, planted AFTER load -- an init script runs before <body> exists.
+    // One fault per detector, planted after load: an init script runs before <body> exists.
     // Returns whether each plant took, checked independently of the detector meant to catch it.
     const plant = () => {
       const overflow = plantElement("div", "page_overflow", {
@@ -304,9 +304,9 @@
         }).observe({ type: "layout-shift", buffered: true });
       }
       // WHEN THE PAGE BECAME PRESENTABLE: painted, and then in its own fonts. This is what
-      // shifts are counted from, and it is NOT always the release -- a held script the page
+      // shifts are counted from, and it is not always the release: a held script the page
       // cannot paint without is released at once, before any paint, so a font swapping in
-      // afterwards would be charged to the scripts without this.
+      // later would be charged to the scripts without this.
       //
       // `document.fonts.ready` is awaited AFTER the first paint, never before, and the order is
       // the whole correctness of it: on a document with no layout yet there is no text to match
@@ -318,9 +318,9 @@
       // resolves when the faces are IN, not when the frame showing them has been drawn, so the
       // swap's own layout shift can still be timestamped after it. Measured: a render-blocking
       // page whose face swapped in scored 0.0027 from the resolution alone, on one run out of
-      // two -- a race, and the flakiest kind, since the reading that looks right is the one that
-      // silently charges a font to the scripts. The first callback runs before the next paint;
-      // the second runs after it, which is where the page is genuinely presentable.
+      // two. That is a race, and the flakiest kind, since the reading that looks right is the
+      // one that silently charges a font to the scripts. The first callback runs before the
+      // next paint; the second runs after it, which is where the page is genuinely presentable.
       new PerformanceObserver((entries, observer) => {
         if (entries.getEntries().length === 0) return;
         observer.disconnect();
@@ -376,7 +376,7 @@
     };
 
     // The late-shift plant: a box drawn across the top of the viewport, moved down by half the
-    // viewport two frames later -- once it has been painted where it started, or its arrival would
+    // viewport two frames later, once it has been painted where it started, or its arrival would
     // be an appearance rather than a shift. Absolutely placed, so nothing else moves with it.
     const plantShift = () => {
       const half = Math.round(innerHeight / 2);
@@ -422,7 +422,7 @@
       watchShifts,
       // Whether the held scripts can be let through: the page has painted and its fonts are in,
       // or a held script is one it cannot paint without, so no paint will come until it runs.
-      // The paint is what makes the font status meaningful -- before a layout there is nothing
+      // The paint is what makes the font status meaningful: before a layout there is nothing
       // to load a face for, and `document.fonts.status` reads "loaded" on an empty document.
       holdState: () => ({
         painted: performance.getEntriesByType("paint").length > 0,

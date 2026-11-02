@@ -1,4 +1,4 @@
-"""Suite: the in-page probe's Python half -- its argument, the parse of its result, its call.
+"""Suite: the in-page probe's Python half (its argument, the parse of its result, its call).
 
 The probe itself is JavaScript and has its own node suite beside this one; nothing here runs
 a browser. The page is a fake with Playwright's `evaluate` shape that records what it was
@@ -293,7 +293,7 @@ class RefusalTests(unittest.TestCase):
 
     def test_an_unknown_choice_is_refused(self) -> None:
         # The report leaves each of these unscrubbed as the browser's own fixed word, so a
-        # word the browser never reads -- a path, a hostname -- must never pass here.
+        # word the browser never reads (a path, a hostname) must never pass here.
         for path in (
             ("colorScheme",),
             ("reducedMotion",),
@@ -444,7 +444,7 @@ class RunProbeTests(unittest.TestCase):
         )
 
 
-#: Arbitrary JSON values -- what any page's evaluate can hand back.
+#: Arbitrary JSON values: what any page's evaluate can hand back.
 _JSON = st.recursive(
     st.none() | st.booleans() | st.integers() | st.floats() | st.text(max_size=5),
     lambda children: (

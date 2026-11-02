@@ -1,4 +1,4 @@
-"""Suite: geckodriver's log readers by property -- any text, and their line after any text.
+"""Suite: geckodriver's log readers by property (any text, and their line after any text).
 
 `listening_port` and `isolation_breach` read a log the run does not control the whole of, so
 both are fuzzed. Any text either names no port or names one in range that a whole

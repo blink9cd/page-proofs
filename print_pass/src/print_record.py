@@ -146,7 +146,7 @@ def engine_errors(where: str, *passing: type[Exception]) -> Iterator[None]:
     """Raise whatever the block raises as an `EngineError`: `<where>: <its first line>`.
 
     An `EngineError` already says where it happened, and a `ValueError` is the engine refusing
-    what it was handed -- a programming error, never the browser's -- so both pass untouched,
+    what it was handed (a programming error, never the browser's), so both pass untouched,
     as does each exception type in `passing`.
     """
     untouched: tuple[type[Exception], ...] = (EngineError, ValueError, *passing)

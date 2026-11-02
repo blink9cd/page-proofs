@@ -6,7 +6,7 @@ suite's files as separate pool tasks, while the folder's coverage is still combi
 ## Why it exists
 
 A grouped-suite aggregator, a `test_<folder>.py` file beside a `tests/` folder, folds every
-`tests/test_*.py` beside it into one run. Run bare or under one `coverage run`, that is ONE
+`tests/test_*.py` beside it into one run. Run bare or under one `coverage run`, that is one
 serial process, so when the grouped files mostly wait (engine launches, settle windows, refusal
 timeouts) the folder's test time is the sum of every file's waiting.
 

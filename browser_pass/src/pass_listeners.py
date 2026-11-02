@@ -28,7 +28,7 @@ from playwright.sync_api import Error as PlaywrightError
 #: The console line Chromium and WebKit log for a response that answers 404, a document's own
 #: included, at line 0 and column 0 of the response's url; Firefox logs none. Measured in the
 #: pinned builds. Matched whole, so an engine that rewords it leaves the echo a finding again
-#: -- loudly, never a 404 hidden.
+#: loudly, never a 404 hidden.
 NOT_FOUND_ECHO = (
     "Failed to load resource: the server responded with a status of 404 (Not Found)"
 )
@@ -39,7 +39,7 @@ class DocumentMiss:
 
     The response is the main frame's navigation to the page's own path, its query aside; the
     echo is the console's line for a 404 at that url. Each is excused once, so a second load of
-    the same document -- a reload, say -- is a finding again.
+    the same document (a reload, say) is a finding again.
     """
 
     def __init__(self, base_url: str, page: str | None) -> None:

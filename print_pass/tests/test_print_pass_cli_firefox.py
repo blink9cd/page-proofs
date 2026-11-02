@@ -3,8 +3,8 @@
 Firefox prints through geckodriver's WebDriver Print, which never prints the print dialog's
 header and footer, and needs none of Playwright's engine builds. So `--header-footer` and
 `--browsers` are refused beside it with exit 2, as an option of another mode is: given at
-all, even at a value Firefox would honor. `--help` says what it needs -- macOS, geckodriver
-and the command that installs it, and Firefox itself -- beside what each Playwright engine
+all, even at a value Firefox would honor. `--help` says what it needs (macOS, geckodriver
+and the command that installs it, and Firefox itself) beside what each Playwright engine
 needs, and names it beside Playwright's Chromium as a way a page is printed. Every case ends
 before anything is printed.
 

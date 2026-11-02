@@ -11,11 +11,13 @@ baseline instead of merely resembling it.
 
 From the root of this repository, install the pinned Lighthouse into `node_modules/.bin`, then
 run the tool against the folder of pages to measure. Keep the machine otherwise idle: a build
-running alongside is measured too.
+running alongside is measured too. Any Python 3.12 or later runs it, since it needs nothing
+beyond the standard library; the commands here write `python`, which is the venv's
+interpreter once the README's "Install" has run.
 
 ```bash
 npm ci --ignore-scripts
-python3.12 lighthouse_run/lighthouse_run.py --root . --serve "<built site>"
+python lighthouse_run/lighthouse_run.py --root . --serve "<built site>"
 ```
 
 `--root` supplies the pinned Lighthouse, and `--serve` names the folder of pages to serve on
@@ -24,14 +26,15 @@ folder of pages at its root, and a run without `--serve` is refused. In a web pr
 that keeps its pages in `src/` and has run `npm ci` itself, `--root` alone is enough:
 
 ```bash
-python3.12 lighthouse_run/lighthouse_run.py --root "<web project>"
+python lighthouse_run/lighthouse_run.py --root "<web project>"
 ```
 
 By default that measures the home page on the mobile and desktop presets, three rounds each,
 for 6 Lighthouse runs. A wider run names its pages:
 
 ```bash
-python3.12 lighthouse_run/lighthouse_run.py --root . --serve "<built site>" --pages / /archive/ /404.html --runs 5
+python lighthouse_run/lighthouse_run.py --root . --serve "<built site>" \
+  --pages / /archive/ /404.html --runs 5
 ```
 
 A folder outside any repository, such as a build in a scratch folder, records its commit as
@@ -45,7 +48,8 @@ To measure a site as a real host serves it, give the copy's base url with `--url
 is served on loopback, and `--root` still supplies the pinned Lighthouse:
 
 ```bash
-python3.12 lighthouse_run/lighthouse_run.py --root . --url "https://<host>" --expect "<built site>" --out "<private folder>"
+python lighthouse_run/lighthouse_run.py --root . --url "https://<host>" \
+  --expect "<built site>" --out "<private folder>"
 ```
 
 Every flag, default, the interleaving and the arithmetic are the loopback run's, so the two
@@ -98,11 +102,10 @@ Each invocation writes one folder named by its UTC start time (`YYYYMMDDTHHMMSSZ
   (the home page's name is `home`);
 - `summary.json`, with the `commit` measured and `src_dirty` (whether that tree had
   uncommitted edits), both null when git cannot say; `served`, the folder measured as given
-  (null for the default `src/`); `url`, the base url of a hosted run with its scheme and host lowercased and no trailing slash
-  (null on loopback); the
-  `lighthouse_versions` read from the reports, the full `chrome_version`, the `flags` each
-  preset ran with, each run's numbers and `audits` or its error, and the `medians` and
-  `audit_medians`.
+  (null for the default `src/`); `url`, the base url of a hosted run with its scheme and host
+  lowercased and no trailing slash (null on loopback); the `lighthouse_versions` read from the
+  reports, the full `chrome_version`, the `flags` each preset ran with, each run's numbers and
+  `audits` or its error, and the `medians` and `audit_medians`.
 
 | Metric                 | Read from                                                                                     |
 | ---------------------- | --------------------------------------------------------------------------------------------- |
@@ -122,7 +125,7 @@ network, and no request finished at a simulated time.
 and that path is handed to every run. So the recorded version is the browser actually used. The
 report's user agent cannot stand in for it, because Chrome reduces that to the major version.
 
-Medians are taken **per metric**, not as the median run: the run with the median score need not
+Medians are taken per metric, not as the median run: the run with the median score need not
 hold the median CLS. The audits each run records, and how they are reduced, are described in
 `src/lighthouse_audits.py` and `src/audit_summary.py`.
 
@@ -172,7 +175,7 @@ updates on its own.
 From the root of this repository, after the install in the [root README](../README.md):
 
 ```bash
-python3.12 lighthouse_run/test_lighthouse_run.py
+python lighthouse_run/test_lighthouse_run.py
 ```
 
 The tests never touch the host's Chrome or Lighthouse. Lighthouse, `node`, Chrome and git are

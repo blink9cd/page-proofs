@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Aggregator for browser_pass's grouped suites -- bare-runnable, 100% branch.
+"""Aggregator for browser_pass's grouped suites: bare-runnable, 100% branch.
 
 This file holds no tests of its own beyond its guards. The real suites live in the sibling
 ``tests/`` directory, grouped by the module each exercises, and this file is the
@@ -127,7 +127,7 @@ def _load_this_module() -> dict[str, int]:
 
 
 class GroupedSuiteDiscoveryTest(unittest.TestCase):
-    """Fail loudly when a grouped suite is lost -- or when a guard in here is."""
+    """Fail loudly when a grouped suite is lost, or when a guard in here is."""
 
     def test_module_load_includes_the_grouped_suites(self) -> None:
         """Guards the ``load_tests`` WIRING, which a discovery-based check cannot see.

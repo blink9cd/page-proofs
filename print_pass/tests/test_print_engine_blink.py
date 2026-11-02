@@ -1,7 +1,7 @@
 """Suite: the engine's one `--blink-settings` switch keeps Playwright's own headless settings.
 
-Playwright's headless launch passes a `--blink-settings` of its own -- a hovering, fine
-pointer -- before the caller's arguments, and Chromium honors only the last such switch. So
+Playwright's headless launch passes a `--blink-settings` of its own (a hovering, fine
+pointer) before the caller's arguments, and Chromium honors only the last such switch. So
 the engine's switch repeats Playwright's settings ahead of its lazy-image margin, and this
 suite pins the copy against the installed Playwright: an upgrade that changes Playwright's
 default fails here, loudly, rather than silently dropping half of it from every launch.

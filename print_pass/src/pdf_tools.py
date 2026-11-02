@@ -2,15 +2,15 @@
 
 `pdfinfo`, `pdffonts` and `pdfimages -list` are poppler's command-line readers. Each runs
 through the shared `bounded_run`, so a reader that hangs is killed, tree and all, instead of
-hanging the pass; every failure -- an absent binary, a non-zero exit, a timeout -- surfaces as
+hanging the pass; every failure (an absent binary, a non-zero exit, a timeout) surfaces as
 one `PopplerError` naming the tool. The parsers are pure functions of the text a reader
 printed, so they are tested, and fuzzed, on captured output alone.
 
 Measured traps (poppler 26.08) shape the reading:
 
 - Dates are read RAW (`pdfinfo -rawdates`). Plain `pdfinfo` DISPLAYS a date converted to the
-  local zone, which is not what the file stores. Only a date's class is kept here -- `utc`,
-  `local offset (withheld)` or `unparsed` -- never its value.
+  local zone, which is not what the file stores. Only a date's class is kept here (`utc`,
+  `local offset (withheld)` or `unparsed`), never its value.
 - `pdffonts` pads its name column to 36 BYTES and lets a longer name overflow it, so in
   characters every later column moves from row to row: right after a long name, left after a
   multibyte one. Columns are located from the dashed rule, then re-anchored on each row.

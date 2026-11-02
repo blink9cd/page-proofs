@@ -92,7 +92,7 @@ def declares_split(aggregator_source: str) -> bool:
 
     Read by AST, never by import, so a gate can classify a folder without running its code.
     Only top-level statements are read: a marker inside a function, class or ``if`` is not a
-    static declaration. Source that does not parse returns False -- the caller then runs the
+    static declaration. Source that does not parse returns False, and the caller then runs the
     unsplit path, which is always safe.
     """
     try:
@@ -185,7 +185,7 @@ def fold_selected(
         return standard_tests
     # Exact names from the listing, never ``(suite_dir / chosen).is_file()``: on a
     # case-insensitive filesystem that finds ``test_PA.py`` for a ``test_pa.py``, and
-    # discovery's case-sensitive pattern then loads nothing -- a green run of zero tests.
+    # discovery's case-sensitive pattern then loads nothing: a green run of zero tests.
     if chosen not in {entry.name for entry in suite_dir.iterdir() if entry.is_file()}:
         msg = f"{SELECT_ENV}={chosen!r} names no file in {suite_dir}"
         raise ValueError(msg)

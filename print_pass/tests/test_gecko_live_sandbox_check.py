@@ -1,4 +1,4 @@
-"""Grouped suite: the fence's check from outside -- libSystem's `sandbox_check`, and its verdict.
+"""Grouped suite: the fence's check from outside (libSystem's `sandbox_check`, and its verdict).
 
 Before anything launches, the proof asks `sandbox_check` about the canary process while it
 runs under the profile: the canary must read as sandboxed, and the asking process as not, so

@@ -1,4 +1,4 @@
-"""Grouped suite: a make run under `--engine firefox` -- its refusals, its engine, its report.
+"""Grouped suite: a make run under `--engine firefox` (its refusals, its engine, its report).
 
 A Firefox run takes its own branch before Playwright is looked for: off macOS it refuses
 first, with nothing looked up or started; without geckodriver it refuses naming how to

@@ -37,10 +37,11 @@ found by a scratch instrument assembled for the occasion, the thing this tool ex
 ## Usage
 
 From the root of this repository, after the installs under "Installing the engines", name the
-targets file and the folder of pages to serve on loopback:
+targets file and the folder of pages to serve on loopback. Every command here runs in the
+virtual environment the README's "Install" makes, so `python` is the venv's interpreter:
 
 ```bash
-python3.12 browser_pass/browser_pass.py --targets "<targets file>" --serve "<built site>"
+python browser_pass/browser_pass.py --targets "<targets file>" --serve "<built site>"
 ```
 
 That is the whole pass: every page in the targets file at every viewport, both orientations of
@@ -49,7 +50,7 @@ modes with scripts on, in all three engines. Add `--prove` to also plant one fau
 in every rendering. A narrower run while chasing one thing:
 
 ```bash
-python3.12 browser_pass/browser_pass.py --targets "<targets file>" --serve "<built site>" \
+python browser_pass/browser_pass.py --targets "<targets file>" --serve "<built site>" \
   --engines webkit --orientations landscape --modes dark
 ```
 
@@ -196,7 +197,7 @@ with the same state.
 An action that does not complete within `--timeout` (a selector that never matches, a click on
 something that never becomes clickable) is an instrument fault, exit `2`, naming the state and
 the action, counted from one: `state after-start: action 2 (click "#x") timed out`. The state was
-never reached, so nothing measured afterwards would be a measurement of it.
+never reached, so nothing measured after it would be a measurement of it.
 
 ## The detectors
 
@@ -329,7 +330,7 @@ parent, `<body>` included.
 the fonts protection working on the page that needed it most.** Usually the two moments are the
 same instant, because the release waits for exactly that. They come apart on the early-release
 path above: a page whose script blocks its rendering is released _before_ it has painted, so
-counting from the release would charge it with a web face swapping in afterwards, on precisely
+counting from the release would charge it with a web face swapping in later, on precisely
 the pages that adopted `blocking="render"` to stop a late shift. Found that way, in fact: making a
 site's entry point render-blocking gave every home-page rendering a fresh window at 73-77ms
 naming its header and heading text, while the two pages whose entry points were untouched scored
@@ -549,9 +550,9 @@ cross-engine comparison still runs. A run with one compared against a `--loopbac
 without it is the measurement; the extension is the only difference between them.
 
 ```bash
-python3.12 browser_pass/browser_pass.py --targets "<targets file>" --serve "<built site>" \
+python browser_pass/browser_pass.py --targets "<targets file>" --serve "<built site>" \
   --engines chromium --loopback-only
-python3.12 browser_pass/browser_pass.py --targets "<targets file>" --serve "<built site>" \
+python browser_pass/browser_pass.py --targets "<targets file>" --serve "<built site>" \
   --engines chromium --chromium-extension "<unpacked extension folder>"
 ```
 
@@ -578,7 +579,7 @@ in the very build its extension run is. It is a second install beside the shell,
 folder:
 
 ```bash
-python3.12 -m playwright install chromium
+python -m playwright install chromium
 ```
 
 **Firefox loads only a Mozilla-signed `.xpi`, by profile sideload.** Playwright has no supported
@@ -784,7 +785,7 @@ Two installs, each _pinned_, and each run once per machine, from the root of thi
    three freely.
 
    ```bash
-   python3.12 -m pip install ".[browser]"
+   python -m pip install ".[browser]"
    ```
 
    A live test fails if the installed playwright and its pin ever disagree, and another fails
@@ -794,7 +795,7 @@ Two installs, each _pinned_, and each run once per machine, from the root of thi
    revisions, about 800 MB unzipped for all three:
 
    ```bash
-   python3.12 -m playwright install --only-shell chromium firefox webkit
+   python -m playwright install --only-shell chromium firefox webkit
    ```
 
    `--only-shell` fetches Chromium's headless shell alone, which is all a headless run uses.
@@ -831,7 +832,7 @@ WebRTC's UDP still can.
 From the root of this repository, after the installs in the [root README](../README.md):
 
 ```bash
-python3.12 browser_pass/test_browser_pass.py
+python browser_pass/test_browser_pass.py
 ```
 
 `test_browser_pass.py` runs the grouped suites under `tests/`, every one in one process, and
@@ -847,7 +848,7 @@ must measure the engines sets `PAGE_PROOFS_REQUIRE_BROWSERS=1`, and a missing bu
 the module instead:
 
 ```bash
-PAGE_PROOFS_REQUIRE_BROWSERS=1 python3.12 browser_pass/test_browser_pass.py
+PAGE_PROOFS_REQUIRE_BROWSERS=1 python browser_pass/test_browser_pass.py
 ```
 
 The extension suite needs Chromium's full build as well, and its Firefox test runs only when
@@ -871,16 +872,17 @@ The suites, by what they cover:
   `samples/site/csp.html`.
 - **An extension and the egress guard**: `test_pass_extension.py` reads extensions written fresh
   into a scratch folder; `test_pass_extension_guard.py` pins each engine's guard, argument by
-  argument and pref by pref, for the served origin's port; `test_pass_extension_launch.py` and `test_pass_extension_tabs.py`
-  drive a persistent launch through a stand-in browser type (`tests/_launch_fakes.py`);
+  argument and pref by pref, for the served origin's port; `test_pass_extension_launch.py` and
+  `test_pass_extension_tabs.py` drive a persistent launch through a stand-in browser type
+  (`tests/_launch_fakes.py`);
   `test_pass_engine_isolation.py` covers the seam, and `test_pass_cli_extension.py` the CLI.
   `test_pass_extension_live.py` loads the committed MV3 fixture (`tests/fixture_extension/`)
   into the full Chromium build, and `test_pass_loopback_live.py` measures the same page under
   `--loopback-only` alone in Firefox and WebKit. Each asks another loopback port than the served
   one for an image, a fetch and a WebSocket: Chromium and Firefox reach nothing there and name
-  each refusal, and WebKit reaches it, as the guard's table says. WebKit's wording and its UDP check are chosen
-  per platform by `tests/_guard_fixtures.py`, which `test_guard_expectations.py` tests without
-  an engine.
+  each refusal, and WebKit reaches it, as the guard's table says. WebKit's wording and its UDP
+  check are chosen per platform by `tests/_guard_fixtures.py`, which `test_guard_expectations.py`
+  tests without an engine.
 - **A page with no file**: `test_pass_not_found.py`, `test_pass_cli_not_found.py` and the live
   `test_pass_not_found_live.py`.
 - **A page that is a meta refresh**: `test_pass_redirects.py`, `test_pass_cli_redirects.py` and

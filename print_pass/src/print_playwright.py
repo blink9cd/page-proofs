@@ -269,7 +269,7 @@ def print_options(
 
     US Letter, tagged, scale 1 and no CSS page-size preference are fixed: what Chrome's print
     dialog does here, where Playwright's own defaults differ. The margin, on every side, is
-    `margin_inches` -- the dialog's 1 cm unless a state's page width sets its own -- written
+    `margin_inches` (the dialog's 1 cm unless a state's page width sets its own), written
     by `css_margin`. It is a fresh dictionary on every call, so no caller can reach another's.
     """
     return {
@@ -287,8 +287,8 @@ def css_margin(margin_inches: Fraction) -> str:
     """`margin_inches` as the CSS length `page.pdf` is sent: `71.5px`, `1cm`.
 
     Written exactly, in the first of `_EXACT_UNITS` holding it as a terminating decimal, so
-    a page width's half-pixel margin is not rounded. A margin neither unit holds exactly --
-    none the tool derives -- is written in inches, as near as a float holds it.
+    a page width's half-pixel margin is not rounded. A margin neither unit holds exactly
+    (none the tool derives) is written in inches, as near as a float holds it.
     """
     for unit, per_inch in _EXACT_UNITS:
         text = _decimal_text(margin_inches * per_inch)

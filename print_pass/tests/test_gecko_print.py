@@ -116,10 +116,21 @@ class CannotControlTests(unittest.TestCase):
     def test_tagging_the_header_and_footer_and_the_title_are_each_named(self) -> None:
         sentences = gecko_print.CANNOT_CONTROL
         self.assertEqual(len(sentences), 3)
-        self.assertIn("untagged", sentences[0])
+        self.assertIn("tagging", sentences[0])
         self.assertIn("header", sentences[1])
         self.assertIn("footer", sentences[1])
         self.assertIn("Title", sentences[2])
+
+    def test_tagging_and_the_title_are_left_to_the_firefox_build(self) -> None:
+        # The command sets neither, so the build decides, and builds differ (measured):
+        # Firefox 159 on macOS tags its PDF and writes the page's title as its Title, where
+        # an earlier build did neither. A sentence naming one outcome is false for the other.
+        tagging, _header_footer, title = gecko_print.CANNOT_CONTROL
+        for sentence in (tagging, title):
+            with self.subTest(sentence=sentence):
+                self.assertIn("the Firefox build's choice", sentence)
+                self.assertNotIn("always", sentence)
+                self.assertNotIn("writes no", sentence)
 
     def test_each_is_one_sentence(self) -> None:
         for sentence in gecko_print.CANNOT_CONTROL:

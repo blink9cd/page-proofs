@@ -1,12 +1,12 @@
 """The motion a settle stilled: what the probe did to each running animation, and how it is told.
 
 A rendering is measured once its layout holds still for a quiet window, and a window alone reads
-PACED motion -- steps separated by pauses longer than it -- in its first pause, and ENDLESS
+paced motion (steps separated by pauses longer than it) in its first pause, and endless
 motion never at rest at all. Lengthening the window cures neither: an endless animation never
 holds still, so a page carrying one would time out instead. So before every poll the probe's
 `stillMotion` brings each animation still running on the document's timeline to rest, in the
-document or in any OPEN shadow root (a closed one is out of the page's reach) -- one that ends
-is finished, one that never ends is paused at an iteration start -- and reports what it did.
+document or in any open shadow root (a closed one is out of the page's reach): one that ends
+is finished, one that never ends is paused at an iteration start, and it reports what it did.
 Seeking inside every poll catches an animation that starts mid-settle, and a seek that moves a
 box changes the layout signature, so the quiet window restarts from there.
 
@@ -41,7 +41,7 @@ class Motion:
 
     `finished` and `paused` count what was stilled, summed over every poll. `running` counts
     what was still running when the settle ended: an animation on another timeline, or at a
-    zero rate, which does not advance with time -- and in the late-script load's settle, one
+    zero rate, which does not advance with time; and in the late-script load's settle, one
     not provably layout-inert, which it leaves to run.
     """
 
@@ -105,7 +105,7 @@ def motion_from(raw: object) -> Motion:
 def tally(total: Motion, poll: Motion) -> Motion:
     """`total` with one more poll's record added.
 
-    What was stilled SUMS: each animation is stilled once, and is no longer running afterwards,
+    What was stilled sums: each animation is stilled once, and is no longer running after that,
     so no poll counts it twice. What was left running is the LATEST poll's, since the animations
     left running are counted again on every poll, and what matters is what ran when the settle
     ended.
@@ -154,8 +154,8 @@ _SECTION_HEAD = (
     "on the document's timeline, in the document or in any open shadow root, was brought to "
     "rest, so a page with paced or endless motion is measured at rest rather than in its first "
     "pause. **Finished**: an animation that ends, brought to its end. **Paused**: one that "
-    "never ends, paused at the start of an iteration, so one frame of it -- its iteration "
-    "start -- is what was measured. **Still running**: one on another timeline (a "
+    "never ends, paused at the start of an iteration, so one frame of it (its iteration "
+    "start) is what was measured. **Still running**: one on another timeline (a "
     "scroll-driven one) or at a zero rate, which does not advance with time, left as it stood. "
     "The counts are animations, summed over the renderings of each page that had any; a "
     "rendering refused before it was measured counts what its settle had stilled by then. They "
@@ -171,7 +171,7 @@ _LATE_HEAD = (
     "**The late-script load** settles again, in a load of its own, and before each poll "
     "stills only motion **provably layout-inert**: an animation naming at least one property, "
     "every one of them what `LAYOUT_INERT_PROPERTIES` in `src/page_probe_motion.js` names, which "
-    "moves or fades a box without laying it out again -- a CSS animation's names read from the "
+    "moves or fades a box without laying it out again: a CSS animation's names read from the "
     "`@keyframes` rule Chromium's style resolver applies to it. A seek of one moves no layout, "
     "so the Layout Instability API reports nothing for it and the scripts are charged with "
     "nothing. Any other animation, or one whose rule is unknown, is left as it stood and counted "

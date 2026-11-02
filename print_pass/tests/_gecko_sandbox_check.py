@@ -8,7 +8,7 @@ whether it may look up the resolver's mach service and read the canary file, bot
 must be denied; and whether it may look up a service the profile leaves alone, the control,
 which must not be. The asking process must itself read as not sandboxed, or its answers
 could not be trusted; and since the canary must read as sandboxed, that question is shown to
-tell the two apart. A rule that applies but matches nothing -- a renamed service -- answers
+tell the two apart. A rule that applies but matches nothing (a renamed service) answers
 0 here.
 
 The binding to `sandbox_check` is the canary's, which can import nothing but the standard

@@ -1,4 +1,4 @@
-"""Suite: what geckodriver's log says about Firefox's isolation -- a breach, found and named.
+"""Suite: what geckodriver's log says about Firefox's isolation: a breach, found and named.
 
 With `MOZ_DISABLE_NONLOCAL_CONNECTIONS` set, Firefox refuses a direct TCP connection to an
 address it counts as non-local, writes the refusal to its stderr, which geckodriver's log

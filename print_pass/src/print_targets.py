@@ -3,8 +3,8 @@
 A targets file is TOML, and it is the only knowledge of any one site the engine is ever
 given, so every key is known here and an unknown one is refused: a misspelled key must
 fail loudly rather than pass as its default. Each refusal is a `TargetsError` whose message
-opens with the PATH to the bad key -- `target[1].state[2].color_scheme`, arrays counted from
-zero in file order -- because that path is the whole of what an operator is shown. What a
+opens with the path to the bad key (`target[1].state[2].color_scheme`, arrays counted from
+zero in file order), because that path is the whole of what an operator is shown. What a
 value must be, whatever key holds it, is checked by `print_targets_checks`, which raises
 that error and knows no key; what an expected off-loopback host may be, by `print_offsite`.
 
@@ -69,7 +69,7 @@ LETTER_WIDTH_PX: Final = 816
 #: is never all margin.
 MIN_PAGE_WIDTH: Final = 320
 
-# An action waits on, or clicks, the element a selector matches -- or waits a set time.
+# An action waits on, or clicks, the element a selector matches, or waits a set time.
 _SELECTOR_ACTIONS: Final[tuple[ActionKind, ...]] = ("click", "wait_for")
 _WAIT_ACTION: Final[ActionKind] = "wait_ms"
 _ACTION_KINDS: Final = (*_SELECTOR_ACTIONS, _WAIT_ACTION)
@@ -224,7 +224,7 @@ def load_targets(path: Path) -> TargetsFile:
     Raises:
         TargetsError: the file cannot be read, is not TOML (bytes that are not UTF-8
             included, which `tomllib` reports as a `UnicodeDecodeError`), or its content is
-            refused -- the first two naming the file, the last the key.
+            refused, the first two naming the file, the last the key.
     """
     try:
         with path.open("rb") as handle:

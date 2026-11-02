@@ -4,7 +4,7 @@ The Firefox engine keeps Firefox on loopback from inside: prefs, a dead proxy an
 guard. A live run proves those hold only if nothing gets past them while it does, so the live
 suite runs geckodriver, and so Firefox, inside a Seatbelt network fence the kernel enforces:
 everything but loopback refused, name lookups refused at the resolver, and every read or
-write under the folders it is given denied -- the reader's own Firefox folders, under both
+write under the folders it is given denied: the reader's own Firefox folders, under both
 the home `$HOME` names and the account's, and a canary folder of the suite's own. Seatbelt
 matches resolved paths, so every folder is denied by its resolved path. The rules are
 macOS's own, measured, and kept apart from the production engine, which a fence would cost
@@ -13,7 +13,7 @@ Firefox's own child sandboxes (they cannot nest under it, so the shim switches t
 A fence that silently fails to apply looks exactly like one that works, so before anything
 launches, `_gecko_proof_fixtures.prove_fence` proves it under the same profile file, and a run
 is made only when it held. Then `arm_fence` writes the shim geckodriver the run's `PATH` finds
-first: it records its pid -- geckodriver's, and its process group's id -- and its arguments,
+first: it records its pid (geckodriver's, and its process group's id) and its arguments,
 sets Firefox's host-resolver log, and execs the real geckodriver under the profile.
 
 Entry point assumptions: imported by a suite that unittest discovery loaded with this folder
@@ -60,7 +60,7 @@ _FIREFOX_DATA: Final = (
 )
 
 #: The network fence, as measured: everything allowed but outbound network, loopback and
-#: unix sockets let through, and the resolver's socket and its lookup service refused --
+#: unix sockets let through, and the resolver's socket and its lookup service refused,
 #: each named by the constant the canary probes, or asks `sandbox_check` about, so a rule
 #: and its proof cannot drift apart.
 _NETWORK_FENCE: Final = (
@@ -174,7 +174,7 @@ def firefox_data_folders(homes: Sequence[Path]) -> tuple[Path, ...]:
     far as its path does, so a home reached through a link is named by its target's path.
 
     Raises:
-        ValueError: a home is not absolute -- a relative `$HOME`, say. Resolving it would
+        ValueError: a home is not absolute (a relative `$HOME`, say). Resolving it would
             name a folder under this process's own, not the one Firefox would use.
     """
     for home in homes:
@@ -192,8 +192,8 @@ def seatbelt_profile(denied: Sequence[Path]) -> str:
     Seatbelt matches a path once resolved, so each folder must be given resolved.
 
     Raises:
-        ValueError: no folder is given -- a file rule with no folder would deny every file
-            -- or one is not absolute, or holds what a profile string cannot.
+        ValueError: no folder is given (a file rule with no folder would deny every file),
+            or one is not absolute, or holds what a profile string cannot.
     """
     if not denied:
         raise ValueError("a fence denies the reads under one folder at least")
@@ -218,8 +218,8 @@ def make_fence(root: Path, readers_folders: Sequence[Path]) -> Fence:
     resolved paths, and a temporary folder lies under a symlink on macOS.
 
     Raises:
-        ValueError: a folder is not absolute -- resolving would make it relative to this
-            process's folder -- or a resolved one holds what a profile string cannot.
+        ValueError: a folder is not absolute (resolving would make it relative to this
+            process's folder), or a resolved one holds what a profile string cannot.
     """
     for folder in readers_folders:
         _require_profile_literal(folder)

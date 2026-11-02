@@ -1,4 +1,4 @@
-"""Grouped suite: print_modes' read and compare runs end to end -- given PDFs, each to a report.
+"""Grouped suite: print_modes' read and compare runs end to end (given PDFs, each to a report).
 
 Each case runs `main` past its checks into a run. Nothing here runs poppler: the readers under
 `read_pdf` and `compare_pdfs` are `_print_report_fixtures.fake_readers`, so both run for real

@@ -1,4 +1,4 @@
-"""Grouped suite: the motion a settle stills -- its record, its sum, and how a run reports it.
+"""Grouped suite: the motion a settle stills (its record, its sum, and how a run reports it).
 
 Also the settle's wiring in `pass_engine.measure`, through a page that answers the probe with
 scripted records: that the read stills before it signs, and that the rendering keeps the motion

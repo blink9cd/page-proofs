@@ -1,8 +1,8 @@
 """Grouped suite: launching an engine, and a page that will not load, through a fake Playwright.
 
 `pass_engine.launch` takes the started Playwright as an argument, so a stand-in for it reaches
-every launch path with no engine build installed: what each engine is launched with -- Firefox's
-per-user data redirected into the run's scratch folder, never the real profile store -- and a
+every launch path with no engine build installed: what each engine is launched with (Firefox's
+per-user data redirected into the run's scratch folder, never the real profile store), and a
 launch that fails, which must surface as an `EngineError` naming the engine. A page whose load
 fails is driven the same way, through a page that raises as Playwright does. The live suites
 launch the real builds; where none is installed they skip, and this suite still runs.

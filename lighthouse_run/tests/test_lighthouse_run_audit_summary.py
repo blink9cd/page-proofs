@@ -1,6 +1,6 @@
 """Grouped suite: a page and preset's audits reduced to medians and tallies, printed, recorded.
 
-The runs reduced here are read from the real reports under `fixtures/` -- three desktop rounds
+The runs reduced here are read from the real reports under `fixtures/`, three desktop rounds
 of the home page among them. Lighthouse writes a blocking request's `wastedMs`, its simulated
 download time, only at 50 ms or more: all eighteen requests reached that in the first round,
 and only six did in each of the next two.

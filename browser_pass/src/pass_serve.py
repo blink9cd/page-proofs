@@ -1,7 +1,7 @@
 """Where a run's pages are measured from: `--serve`'s tree, confirmed, or the targets file's url.
 
 With `--serve`, the tree is served on 127.0.0.1 through the shared `loopback_site`, on a port the
-OS picks, and every page's bytes are confirmed against disk before anything renders -- so the
+OS picks, and every page's bytes are confirmed against disk before anything renders, so the
 tree measured is the tree named. A page with no file is confirmed to answer 404 with the targets
 file's `not_found` instead, and each declared meta refresh is followed (`pass_redirects`).
 Without it, the targets file's `base_url` is measured as it answers, and nothing is followed.

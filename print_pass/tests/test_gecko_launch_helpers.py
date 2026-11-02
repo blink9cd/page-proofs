@@ -1,4 +1,4 @@
-"""Suite: `Geckodriver` and Firefox's crash helper -- recorded, awaited, and ended, never mistaken.
+"""Suite: `Geckodriver` and Firefox's crash helper: recorded, awaited, and ended, never mistaken.
 
 Firefox's crash helper leaves geckodriver's group (measured: launchd its parent, a group of its
 own), so the group's end says nothing of it. The driver lists every process before it starts
@@ -6,8 +6,8 @@ geckodriver, notes each Firefox an engine names that runs in geckodriver's group
 each such Firefox's helper while that Firefox still runs there, if the same listing shows the
 helper no older than that Firefox. Once the group has ended it polls a listing for the
 recorded helpers, signaling one only past the timeout. Every seam is faked, by
-`_gecko_launch_fixtures`, and each look-alike here -- the reader's own helper above all, and
-any helper never recorded -- must never be signaled.
+`_gecko_launch_fixtures`, and each look-alike here (the reader's own helper above all, and
+any helper never recorded) must never be signaled.
 
 Entry point assumptions: standalone, or discovered by `unittest discover` with this folder
 as its top-level directory, which is how the shared fixtures beside it are found.

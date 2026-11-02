@@ -1,4 +1,4 @@
-"""Grouped suite: the verdicts -- emulation read back, findings, planted faults, and settling."""
+"""Grouped suite: the verdicts (emulation read back, findings, planted faults, and settling)."""
 
 from __future__ import annotations
 

@@ -3,9 +3,9 @@
 // because the driver hands its source text to the engine, which calls the function the text
 // evaluates to. The node suite runs this same file through `vm` for the same reason.
 //
-// It reports what a print of the page would be taken from -- the media emulation in force,
+// It reports what a print of the page would be taken from (the media emulation in force,
 // how far loading got, every image and whether it asked for a source, the animations still
-// running (the document's and every open shadow root's), the targets' reads and storage --
+// running (the document's and every open shadow root's), the targets' reads and storage),
 // and it only reads: nothing is assigned on the window, the document or an element, so
 // probing a page cannot change what is then printed.
 //
@@ -82,8 +82,8 @@
 
   // The loading IDL property reads "eager" when the attribute is absent, so an image that
   // never asked for eager loading would read as one that did; the attribute tells them apart.
-  // An image with no src attribute at all requested nothing -- a carousel's hidden slide,
-  // waiting for its turn -- where `src=""` still asks for something; only the attribute
+  // An image with no src attribute at all requested nothing (a carousel's hidden slide,
+  // waiting for its turn), where `src=""` still asks for something; only the attribute
   // tells them apart, since both read an empty source.
   /** @param {HTMLImageElement} image */
   const describeImage = (image) => ({

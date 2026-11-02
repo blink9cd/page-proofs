@@ -34,8 +34,8 @@ from print_probe import ProbeError, ProbeResult, run_probe
 from print_record import Problem, first_line
 from print_targets import Action
 
-#: The Element Click errors that mean the element cannot take a click yet -- it has no box,
-#: or another element covers it -- which a click retries until the timeout.
+#: The Element Click errors that mean the element cannot take a click yet (it has no box,
+#: or another element covers it), which a click retries until the timeout.
 RETRIED_CLICK_ERRORS: Final = frozenset(
     {"element not interactable", "element click intercepted"}
 )
@@ -115,8 +115,8 @@ def _action_call(
 ) -> Callable[[], None]:
     """What one action does, built before it runs.
 
-    Built outside the call's `try`, so an action no targets file can hold -- a click with no
-    selector -- raises here as the programming error it is, never as a finding.
+    Built outside the call's `try`, so an action no targets file can hold (a click with no
+    selector) raises here as the programming error it is, never as a finding.
     """
     match action:
         case Action(kind="click", selector=str(selector)):

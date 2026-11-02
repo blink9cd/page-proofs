@@ -1,4 +1,4 @@
-"""Grouped suite: print_modes' make run end to end -- the site served, printed, read, to a report.
+"""Grouped suite: print_modes' make run end to end (the site served, printed, read, to a report).
 
 Each case runs `main` past its checks into a run. Nothing here launches a browser or runs
 poppler. `run_targets` is replaced by a fake that prints nothing and returns one record per

@@ -2,8 +2,8 @@
 
 `samples/site/csp.html` declares a policy and carries one style attribute that policy refuses.
 With scripts on, every engine reports that refusal through the collector as ONE `csp_violation`
-finding -- in Chromium the late-script load reports it again, and the two loads' findings merge
-into that one -- and also logs it as a console error, so the refusal is reported twice. With
+finding (in Chromium the late-script load reports it again, and the two loads' findings merge
+into that one), and also logs it as a console error, so the refusal is reported twice. With
 scripts off the collector's init script never runs: the detector is not measured, never zero, and
 the console error is what still reports the refusal. On the clean page the plant is caught with
 scripts on and is `n/a` with them off. The policy page refuses style attributes, and with `--prove`

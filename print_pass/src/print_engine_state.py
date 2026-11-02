@@ -7,9 +7,9 @@ connecting, the page loaded, the actions run, the probe polled until images and 
 arrived, the print moment waited for, one last read-back, then one PDF or two (backgrounds
 off, then on) from that same load. Its record says what each step saw.
 
-A state that cannot go on stops with ONE finding and no PDF -- an action that does not
-complete, a probe that raises -- and the run goes on to the next state. Any other call the
-browser fails -- opening or closing the context, loading the page, a wait, a print -- is an
+A state that cannot go on stops with one finding and no PDF (an action that does not
+complete, a probe that raises), and the run goes on to the next state. Any other call the
+browser fails (opening or closing the context, loading the page, a wait, a print) is an
 `EngineError` naming the state, as a fault in the CSP collector is: the run could not
 measure it honestly.
 
@@ -371,8 +371,8 @@ def _run_actions(page: PageLike, job: _Job) -> None:
 def _action_call(page: PageLike, action: Action, job: _Job) -> Callable[[], object]:
     """The Playwright call one action makes, built before it runs.
 
-    Built outside the call's `try`, so an action no targets file can hold -- a click with no
-    selector -- raises here as the programming error it is, never as a finding.
+    Built outside the call's `try`, so an action no targets file can hold (a click with no
+    selector) raises here as the programming error it is, never as a finding.
     """
     match action:
         case Action(kind="click", selector=str(selector)):

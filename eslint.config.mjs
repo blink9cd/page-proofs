@@ -30,8 +30,8 @@ export default [
     },
   },
   {
-    // Everything that runs under Node -- the suites, the helpers they share,
-    // an entry module, and this file -- is `.mjs`, so its own block, keyed on
+    // Everything that runs under Node (the suites, the helpers they share,
+    // an entry module, and this file) is `.mjs`, so its own block, keyed on
     // the extension, gives it Node's globals. Loosening the block above
     // instead would let a pure module quietly start using `process`.
     //

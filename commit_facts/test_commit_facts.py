@@ -2,8 +2,8 @@
 
 Two halves. The repository tests build a throwaway repository with the real `git`, isolated
 from the host's configuration and from any variable pointing git elsewhere, so nothing here
-reads or changes a real checkout. The failure tests hand `read` a fake `git` -- a real process,
-so the subprocess boundary is crossed for real -- because a `status` that fails, or a git that
+reads or changes a real checkout. The failure tests hand `read` a fake `git` (a real process,
+so the subprocess boundary is crossed for real), because a `status` that fails, or a git that
 hangs, is not a state a healthy repository can be put in.
 
 Entry point assumptions: standalone, or discovered by a test runner. The inserts below reach
@@ -37,8 +37,8 @@ _TIMEOUT = 30.0
 #: Bound on a call to the fake git that hangs: long enough to start it, short enough to wait.
 _HANG_TIMEOUT = 1.0
 
-#: Variables that would point git at a repository other than the one under test -- set, for
-#: instance, when a suite runs inside a git hook.
+#: Variables that would point git at a repository other than the one under test (set, for
+#: instance, when a suite runs inside a git hook).
 _GIT_REDIRECTS = ("GIT_DIR", "GIT_WORK_TREE", "GIT_INDEX_FILE")
 
 #: Keeps the host's own git configuration (and any hooks it names) out of the throwaway repos.

@@ -1,4 +1,4 @@
-"""Grouped suite: the library -- reading a served page's meta refresh.
+"""Grouped suite: the library, reading a served page's meta refresh.
 
 A page that is a 0-second `<meta http-equiv="refresh">` navigates away as it loads, so a tool
 that evaluates script in it races the navigation. `parse_meta_refresh` reads the first refresh
@@ -6,6 +6,8 @@ the document declares, the way a browser's "shared declarative refresh steps" re
 `read_meta_refresh` fetches the page over loopback first, so a caller can decide before any
 browser opens it.
 """
+
+# gate-serves: none (serves only temporary trees built at test time)
 
 from __future__ import annotations
 

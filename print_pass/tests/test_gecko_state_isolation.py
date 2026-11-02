@@ -5,7 +5,7 @@ writes why to geckodriver's log, so a state that fails is checked for it FIRST, 
 breach is reported as itself rather than as whatever call the dying browser failed; a state
 that succeeded never is: the guard ends the browser, and a page can write the sentence.
 A request answered off loopback, a document refused off it, a document that is not the
-served page -- `about:blank`, `data:`, `blob:`, another port or scheme -- and a Resource
+served page (`about:blank`, `data:`, `blob:`, another port or scheme), and a Resource
 Timing read that is not plain rows each end the state before it prints, its session still
 ended. Each case runs the real `run_state` against `_gecko_state_fixtures`' scripted session.
 

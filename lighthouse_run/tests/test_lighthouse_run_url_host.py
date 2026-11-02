@@ -4,8 +4,8 @@ urllib percent-decodes the host, writes the `Host` header itself from the decode
 Latin-1, and the resolver IDNA-encodes it before any lookup. So a host holding a percent-escape
 was not the host the parse-time checks saw: `%3a` became a port, `%40` slipped past the
 credentials check, and `%2e%2e` was a doubled dot. A non-ASCII host went out as raw bytes or
-raised before connecting, and a name IDNA cannot encode -- an empty label, one over 63
-characters -- raised at the resolver. Each is refused here with exit 2, the url never echoed: a
+raised before connecting, and a name IDNA cannot encode (an empty label, one over 63
+characters) raised at the resolver. Each is refused here with exit 2, the url never echoed: a
 non-ASCII name with its `xn--` form asked for, and any percent-escape with a plain host asked
 for. A browser decodes an escape too and refuses many (a decoded colon, at sign, space, a
 scoped IPv6 zone), so every `%` is refused and the host typed is the host each check judged.

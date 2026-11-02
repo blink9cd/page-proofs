@@ -1,6 +1,6 @@
 """Grouped suite: the CLI's extension options and `--loopback-only`, through the fake engine.
 
-Each refusal is exit 2 with one line naming why, before any browser opens -- the fake engine
+Each refusal is exit 2 with one line naming why, before any browser opens: the fake engine
 records no call. An accepted run hands the engine its isolation and records, in the report's
 facts, whether off-loopback requests were refused and each engine's extension by name and version
 (and gecko id). The engine is `_cli_fixtures.FakeEngine`, as in `test_pass_cli.py`.

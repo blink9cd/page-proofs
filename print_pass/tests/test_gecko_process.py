@@ -1,4 +1,4 @@
-"""Suite: geckodriver's process group -- one SIGTERM to all of it, and the probe for what is left.
+"""Suite: geckodriver's process group: one SIGTERM to all of it, and the probe for what is left.
 
 Both functions are proven on real child processes this suite starts in a session of their own,
 so the only group either ever signals is one the suite made. The answers asserted are macOS's,

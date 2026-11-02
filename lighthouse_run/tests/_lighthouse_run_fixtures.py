@@ -1,8 +1,8 @@
 """Shared fixtures for lighthouse_run's grouped suites: reports, fake executables, a project.
 
 Nothing here reaches the host's Chrome, its Lighthouse or any network beyond loopback. The
-fake executables are REAL processes -- Python scripts whose shebang is the interpreter
-running the suite -- so the runner's subprocess boundary is crossed for real while every
+fake executables are real processes (Python scripts whose shebang is the interpreter
+running the suite), so the runner's subprocess boundary is crossed for real while every
 behavior on the far side stays scripted through environment variables. The audit reports
 under `fixtures/` are real ones, minimized and sanitized: see `AUDIT_REPORTS`.
 """
@@ -21,7 +21,7 @@ from typing import Any
 #: differences matter; the size matches what a real trace carries.
 NETWORK_START_TS = 381_635_913_081
 
-#: First contentful paint, in milliseconds after the first request -- as observed on a site.
+#: First contentful paint, in milliseconds after the first request, as observed on a site.
 FCP_OFFSET_MS = 60.0
 
 #: Font bytes that finished before paint in the default report: the two first-paint faces.
@@ -40,8 +40,8 @@ PAGE_FILES: Mapping[str, str] = {
 PACKAGE_MARK = "<!-- package -->\n"
 
 #: A fake Lighthouse. It fetches the url it was given, so a run proves the server was live,
-#: logs its argv, the Chrome it was handed and the page body it was served -- so a test can
-#: tell WHICH tree answered -- then behaves as `FAKE_LH_MODE` says.
+#: logs its argv, the Chrome it was handed and the page body it was served (so a test can
+#: tell which tree answered), then behaves as `FAKE_LH_MODE` says.
 FAKE_LIGHTHOUSE = """
 import json, os, sys, time, urllib.request
 args = sys.argv[1:]
@@ -92,7 +92,7 @@ FAKE_COMMIT = "0123456789abcdef0123456789abcdef01234567"
 
 #: A fake `git`, installed for every whole run so none reaches the host's. It logs each call
 #: together with the folder it ran in and how many Lighthouse runs had been made when it was
-#: asked -- so a test can tell WHICH tree the commit was read for, and WHEN -- then answers as
+#: asked (so a test can tell which tree the commit was read for, and when), then answers as
 #: `FAKE_GIT_MODE` says: `clean` (the default), `dirty` (`status` lists an edit),
 #: `fail-status` (HEAD resolves, `status` fails), `outside` (every call exits 128, as git does
 #: in a folder no repository holds) or `hang`.
@@ -264,8 +264,8 @@ def fake_git(bin_dir: Path, log: Path) -> dict[str, str]:
     return {"FAKE_GIT_LOG": str(log)}
 
 
-#: Real Lighthouse 13.4.1 reports of a built site, measured on loopback -- the home page
-#: on both presets and the 404 page on desktop -- because a shape guessed from documentation is
+#: Real Lighthouse 13.4.1 reports of a built site, measured on loopback (the home page
+#: on both presets and the 404 page on desktop), because a shape guessed from documentation is
 #: exactly what a fake cannot catch. Each keeps the report's version and urls and the audits
 #: `lighthouse_audits` reads; Lighthouse's UI strings and every field carrying page text
 #: (`nodeLabel`, `snippet`) are dropped, the loopback origin is rewritten to `AUDIT_ORIGIN`,

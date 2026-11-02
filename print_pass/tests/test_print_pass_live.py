@@ -1,4 +1,4 @@
-"""Grouped suite: the LIVE sample -- the whole tool, run once over `samples/` on the pinned shell.
+"""Grouped suite: the live sample (the whole tool, run once over `samples/` on the pinned shell).
 
 A fake browser cannot show what this tool exists to measure: whether a stored mode is read
 back, whether an emulated dark scheme reaches the paper, whether a lazy image arrived before

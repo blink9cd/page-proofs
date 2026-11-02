@@ -1,7 +1,7 @@
 """What is done with a finished report: its summary, its exit code, its normal form, its file.
 
-`print_report` shapes a run into the report; this module takes the report as shaped -- or as
-`json` loads one back -- and turns it into what leaves the tool: the lines printed to the
+`print_report` shapes a run into the report; this module takes the report as shaped (or as
+`json` loads one back) and turns it into what leaves the tool: the lines printed to the
 terminal (findings first), the exit code, the normalized copy a sample's expected report
 holds (nothing that varies by run or machine), and `report.json` itself, written whole or
 not at all. It also holds the few words both halves share, so the shaping half can import

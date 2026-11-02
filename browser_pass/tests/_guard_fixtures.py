@@ -76,8 +76,8 @@ GATHER_BOUND_MS = 5000
 
 #: The page's WebRTC probe: whether WebRTC is there at all, and a STUN server on the loopback
 #: port `{port}`, which a STUN request reaches over UDP unless the engine's guard stops it. A
-#: count of none proves nothing until gathering is complete -- the STUN request, if any, is sent
-#: by then -- so it says when it is, or that it gave up after `{bound}` ms.
+#: count of none proves nothing until gathering is complete (the STUN request, if any, is sent
+#: by then), so it says when it is, or that it gave up after `{bound}` ms.
 _RTC = """const absent = typeof RTCPeerConnection === "undefined";
 console.error(`webrtc: ${absent ? "absent" : "present"}`);
 if (!absent) {
@@ -259,7 +259,7 @@ def check_webkit_udp(
 
     Returns None when the claim held, or a note when it went unmeasured: where gathering is
     measured never to finish, a count of none is no verdict. Raises AssertionError when the
-    claim failed -- gathering finished and sent nothing -- when a platform that gathers did
+    claim failed (gathering finished and sent nothing) when a platform that gathers did
     not, or on a platform with no measured claim. A finished gathering is held to the count on
     every platform, so one that starts gathering and sends nothing is caught.
     """

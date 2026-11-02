@@ -1,15 +1,15 @@
 """A state's steps: the values its page loads with, and the actions that reach it once loaded.
 
 A `[[state]]` in the targets file names a page and how to reach what it shows: values stored in
-`localStorage` before the page loads, and actions run in order once it has loaded and settled
--- a click, a wait for a selector to show, a wait of a set length. The stored values go in
+`localStorage` before the page loads, and actions run in order once it has loaded and settled:
+a click, a wait for a selector to show, a wait of a set length. The stored values go in
 through the browser context's `storage_state`, for the served origin
 (a persistent context, which takes none at launch, has them set by Playwright's own setter,
 `pass_extension_launch`): no script is injected to write them, so none can run late or be
 blocked.
 
 An action that does not complete is an instrument fault naming the state and the action,
-counted from one: the state was never reached, so nothing measured afterwards would be a
+counted from one: the state was never reached, so nothing measured after it would be a
 measurement of it. A step's timeout is the run's `--timeout`, and each step lengthens the
 rendering's watchdog bound by as much (`state_bound`).
 
@@ -31,7 +31,7 @@ from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
 
 
 class ActionPage(Protocol):
-    """The part of Playwright's page an action calls -- a seam the tests replace."""
+    """The part of Playwright's page an action calls: a seam the tests replace."""
 
     def click(self, selector: str, *, timeout: float) -> None:
         """Click the first element `selector` matches, waiting up to `timeout` ms for it."""
@@ -73,8 +73,8 @@ def _action_call(
 ) -> Callable[[], object]:
     """The Playwright call one action makes, built before it runs.
 
-    Built outside the call's `try`, so an action no targets file can hold -- a click with no
-    selector -- raises here as the programming error it is, never as a fault.
+    Built outside the call's `try`, so an action no targets file can hold (a click with no
+    selector) raises here as the programming error it is, never as a fault.
     """
     match action:
         case Action(kind="click", selector=str(selector)):
@@ -90,8 +90,8 @@ def _action_call(
 def storage_state(state: State | None, base_url: str) -> StorageState | None:
     """The context's `storage_state` holding `state`'s stored values, or None when it has none.
 
-    The values belong to `base_url`'s ORIGIN -- its scheme and host, without any path a
-    `base_url` carries -- since `localStorage` is kept per origin.
+    The values belong to `base_url`'s origin (its scheme and host, without any path a
+    `base_url` carries), since `localStorage` is kept per origin.
     """
     if state is None or not state.storage:
         return None

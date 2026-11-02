@@ -1,7 +1,7 @@
 """Suite: `gecko_page.timing_rows` by property.
 
-Whatever a page hands back for its Resource Timing read -- any nesting of lists, strings,
-numbers, booleans, None and objects, as WebDriver's JSON can carry -- is either refused with
+Whatever a page hands back for its Resource Timing read (any nesting of lists, strings,
+numbers, booleans, None and objects, as WebDriver's JSON can carry) is either refused with
 `EngineError`, or read as exactly one document row and any number of resource rows, each a
 URL and a whole status from 0 to 999. Nothing else is ever raised, and nothing malformed is
 ever handed on. The strategies weight well-formed reads, so that acceptance is reached as

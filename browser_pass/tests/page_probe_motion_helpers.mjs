@@ -12,8 +12,8 @@
 // driver reads it from the engine's style resolver and hands it back, so a test hands it back
 // itself.
 //
-// WHAT IS REAL. The shadow roots themselves -- jsdom attaches them, open and closed, and a
-// closed one's host reads a null `shadowRoot`, as an engine's does -- and the rest, as
+// WHAT IS REAL. The shadow roots themselves (jsdom attaches them, open and closed, and a
+// closed one's host reads a null `shadowRoot`, as an engine's does), and the rest, as
 // page_probe_test_helpers.mjs's header says.
 import { loadProbe } from "./page_probe_test_helpers.mjs";
 
@@ -49,8 +49,8 @@ export const keyframesOf = (...properties) =>
 export const INERT_ONLY = Object.freeze({ layoutInertOnly: true });
 
 /**
- * An animation as the probe reads one. Every call the probe makes on it -- a finish, a pause, a
- * seek -- is recorded in `log`, in order, and a finish or a pause changes its play state as an
+ * An animation as the probe reads one. Every call the probe makes on it (a finish, a pause, a
+ * seek) is recorded in `log`, in order, and a finish or a pause changes its play state as an
  * engine's would.
  * @param {object} options
  * @param {object} options.timeline - The timeline it runs on.

@@ -13,8 +13,8 @@ page is read over loopback BEFORE any browser opens it, and:
 A page with no file is never read (it answers 404), and a page with a `#fragment` or a `?query`
 is read at its server path, the file a static server answers it from.
 
-Entry point assumptions: nothing here opens a socket itself. The server's two answers -- a
-page's meta refresh, and whether a path is served -- come from the `site` a caller hands over:
+Entry point assumptions: nothing here opens a socket itself. The server's two answers (a
+page's meta refresh, and whether a path is served) come from the `site` a caller hands over:
 the CLI hands over `loopback_site` itself, and the tests a fake.
 """
 
@@ -49,7 +49,7 @@ class Refresh(Protocol):
 
 
 class Site(Protocol):
-    """The part of `loopback_site` a redirect is followed through -- a seam the tests replace."""
+    """The part of `loopback_site` a redirect is followed through: a seam the tests replace."""
 
     @property
     def SiteServeError(self) -> type[Exception]:  # noqa: N802 - mirrors the module's class name
@@ -124,7 +124,7 @@ def follow(targets: Targets, served: Served, missing_pages: Set[str]) -> Followe
 
     Raises:
         RedirectRefused: an undeclared page is a meta refresh, or a declared one cannot be
-            followed -- naming the page and why.
+            followed, naming the page and why.
     """
     declared = {server_path(page) for page in targets.redirects}
     followed: list[Redirect] = []
@@ -181,7 +181,7 @@ def _followed_to(page: str, refresh: Refresh | None, served: Served) -> Redirect
 
 
 def _same_origin_page(url: str, base_url: str) -> str | None:
-    """`url` as a page of `base_url`'s server -- path, query, fragment -- or None when off it."""
+    """`url` as a page of `base_url`'s server (path, query, fragment), or None when off it."""
     parts = urlsplit(url)
     if (parts.scheme, parts.netloc) != urlsplit(base_url)[:2]:
         return None

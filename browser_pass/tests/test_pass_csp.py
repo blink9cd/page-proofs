@@ -5,7 +5,7 @@ context before its first page, each distinct violation one finding, the plant ma
 on the log, and with `--require-csp` a page load declaring no policy a finding of its own. What is
 checked here is that wiring and its order, which a stand-in makes plain: `_csp_fixtures.py`'s
 browser hands out contexts that log every call, and pages that deliver scripted violations
-through the exposed binding -- only where the listener's init script would run, so never with
+through the exposed binding, only where the listener's init script would run, so never with
 scripts off. The report's cell and facts and the CLI's `--require-csp` are here too. The real
 engines report through it in `test_pass_csp_live.py`.
 """

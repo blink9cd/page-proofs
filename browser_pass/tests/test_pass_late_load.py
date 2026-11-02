@@ -1,8 +1,8 @@
 """Grouped suite: the late-script load's refusals and waits, driven through a scripted page.
 
 The live suite proves this load against real engines. What a real engine will not do on demand
-is FAIL or LAG in a particular way -- a font that never arrives, a held script that cannot be
-replayed, frames that trail a settled layout -- so those paths are driven here through a page
+is fail or lag in a particular way (a font that never arrives, a held script that cannot be
+replayed, frames that trail a settled layout), so those paths are driven here through a page
 that answers the probe with scripted records and raises where a browser would
 (`_late_fixtures`). Each refusal must end as the fault it names, and a page measured only once
 it is presentable. So is the settle's wiring: layout-inert motion stilled before every read,
@@ -41,7 +41,7 @@ class FontTimeoutTests(unittest.TestCase):
     """A page that painted but never finished its fonts cannot be measured honestly."""
 
     def test_fonts_that_never_load_are_a_fault_not_a_measurement(self) -> None:
-        # Releasing here would charge the face that swaps in afterwards to the scripts --
+        # Releasing here would charge the face that swaps in later to the scripts:
         # the very misattribution the fonts half of the hold exists to prevent.
         page = FakePage({"painted": True, "fontsLoaded": False, "blocked": False})
         outcome = measure(page)
@@ -62,7 +62,7 @@ class ReleaseFailureTests(unittest.TestCase):
     """A held script that cannot be replayed is a fault, not a crash."""
 
     def test_a_route_that_refuses_to_replay_is_a_fault(self) -> None:
-        # Uncaught, this would leave the run with no report at all and exit 1 -- the code
+        # Uncaught, this would leave the run with no report at all and exit 1, the code
         # that means a detector found something.
         outcome = measure(
             FakePage(
@@ -123,7 +123,7 @@ class PresentableWaitTests(unittest.TestCase):
 
     def test_a_page_presentable_only_after_its_layout_settles_is_measured(self) -> None:
         # The live failure, scripted: loaded, still, and not yet shown by a frame when first
-        # read. Reading once refuses it; waiting for the frames measures it -- at zero, since
+        # read. Reading once refuses it; waiting for the frames measures it, at zero, since
         # its face swapped in before the page became presentable.
         page = self._blocked_page(NOT_YET_PRESENTABLE, PRESENTABLE)
         with mock.patch.object(pass_late_load, "wait_until_settled", return_value=True):
@@ -137,7 +137,7 @@ class PresentableWaitTests(unittest.TestCase):
         self,
     ) -> None:
         # Refused as a page that did not become presentable in the time it had, which is all
-        # a bounded wait can know -- and before the settle, which could not change that.
+        # a bounded wait can know, and before the settle, which could not change that.
         page = self._blocked_page(NOT_YET_PRESENTABLE)
         with mock.patch.object(
             pass_late_load, "wait_until_settled", return_value=True

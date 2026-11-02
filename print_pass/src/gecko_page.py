@@ -165,7 +165,7 @@ def timing_rows(raw: object) -> tuple[TimingEntry, tuple[TimingEntry, ...]]:
 def is_served(url: str, base_url: str) -> bool:
     """Whether `url` is on `base_url`'s origin: the same scheme, host and port.
 
-    A URL with no host -- `about:`, `data:`, an object URL's `blob:` -- is on none, and an
+    A URL with no host (`about:`, `data:`, an object URL's `blob:`) is on none, and an
     origin that cannot be read matches none, so a base that does not parse serves nothing.
     """
     origin = _origin(url)

@@ -1,9 +1,9 @@
 """Suite: the emulated-dark warning follows the emulation, not the scheme a state asked for.
 
 Playwright's emulated color scheme persists into `page.pdf()`, which is what the warning is
-about. A state that asked for dark and was NOT emulated -- Firefox reaches dark through a
-preference of its own, and records it as not emulated, as installed Chrome's native dark is
--- prints the way a reader's dark setting does, so it carries no such warning. Each case
+about. A state that asked for dark and was not emulated (Firefox reaches dark through a
+preference of its own, and records it as not emulated, as installed Chrome's native dark is)
+prints the way a reader's dark setting does, so it carries no such warning. Each case
 hands `state_problems` one state and says whether its color scheme was emulated.
 
 Entry point assumptions: run by `unittest` discovery from the tool folder, or by the tool's

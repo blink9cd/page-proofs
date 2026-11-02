@@ -10,6 +10,8 @@ Each page is served alone on loopback; one browser per engine serves the module,
 fresh context. `_live_fixtures.py` holds the setup.
 """
 
+# gate-serves: none (temporary trees, and its own samples/site, gated with its tool)
+
 from __future__ import annotations
 
 import json
@@ -94,7 +96,7 @@ def setUpModule() -> None:  # noqa: N802 - unittest's own hook name
     """Point Playwright at the pinned builds and start the shared engines.
 
     Cleanups rather than a `tearDownModule`, so a start that fails part way still undoes what
-    did start -- the shared engines first, then the site, whose stop checks the budget.
+    did start: the shared engines first, then the site, whose stop checks the budget.
     """
     _SITE.start()
     unittest.addModuleCleanup(_SITE.stop)

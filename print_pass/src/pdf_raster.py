@@ -2,15 +2,15 @@
 
 A print is judged from its PDF, and a PDF is judged here from what poppler draws of it.
 `pdftoppm` writes each page as a binary PGM (gray, `-gray`), PPM (color) or PNG (`-png`, kept
-for a person to look at). The PGM / PPM rasters are parsed in plain Python -- the format is a
-short text header and a flat byte buffer -- so no imaging library has to be pinned for it.
+for a person to look at). The PGM / PPM rasters are parsed in plain Python (the format is a
+short text header and a flat byte buffer), so no imaging library has to be pinned for it.
 
 What is read from a raster:
 
 - ``dominant_shares``: the gray levels or colors that each cover at least a share of the page,
   which is how a print's palette (black text on white, or a dark page nobody asked for) shows.
-- ``ink_extent``: the first and last rows holding ink, and how much of the content area -- the
-  page minus the print margin at top and bottom -- lies blank below the last one. The margin
+- ``ink_extent``: the first and last rows holding ink, and how much of the content area (the
+  page minus the print margin at top and bottom) lies blank below the last one. The margin
   is the one the PDF was printed with, which the caller names: it differs by engine.
 - ``compare_rasters``: whether two renders of one page are identical, and if not, how many
   pixels differ and the box they fall in, in points from the page's top-left corner.
@@ -21,7 +21,7 @@ and ``render_rasters`` renders one page per `pdftoppm` run, handing each on befo
 
 Entry point assumptions: `pdftoppm` is on `PATH` (the caller validates that before any run),
 and every run goes through `bounded_run`, so a hung render is killed with its whole process
-tree. Every failure of the tool -- absent, timed out or exiting non-zero -- is a `RasterError`,
+tree. Every failure of the tool (absent, timed out or exiting non-zero) is a `RasterError`,
 so a reader can record it as a finding and carry on with the PDF's other checks.
 """
 
@@ -192,7 +192,7 @@ def ink_extent(gray: Raster, dpi: int, *, margin_inches: Fraction) -> InkExtent:
     """The first and last rows of `gray` holding ink, and the content area blank below them.
 
     A row is ink when any pixel in it is below `WHITE_THRESHOLD`. The content area is the page
-    minus `margin_inches` at top and bottom -- the margin the PDF was printed with, exact, so a
+    minus `margin_inches` at top and bottom (the margin the PDF was printed with, exact), so a
     margin a whole number of rows long is not a hair off one; the blank share is measured from
     the last ink row to the content area's last row, clamped to 0..1, so ink in the bottom
     margin reads 0 and a blank page reads 1.
@@ -410,7 +410,7 @@ def _run_pdftoppm(arguments: list[str], timeout: float) -> None:
     """Run `pdftoppm` with `arguments`, bounded by `timeout`.
 
     Raises:
-        RasterError: it could not be started, outlived `timeout`, or exited non-zero -- the
+        RasterError: it could not be started, outlived `timeout`, or exited non-zero, the
             last naming the last line it wrote to stderr.
     """
     try:

@@ -4,18 +4,18 @@
 the tool writes. The keys are fixed: `make` emits every top-level key, `cannot_observe` only
 for Firefox; `read` its PDFs and totals; `compare` its one comparison. Reading one PDF and
 comparing two are `print_report_pdf`'s; the scrub every text passes through is
-`print_report_scrub`'s; what is done with a finished report -- its summary, exit code,
-normalized copy and file -- is `print_report_output`'s. Their entry points are re-exported
+`print_report_scrub`'s; what is done with a finished report (its summary, exit code,
+normalized copy and file) is `print_report_output`'s. Their entry points are re-exported
 here (`__all__`), so a caller imports the report from one place.
 
 A report is safe to share: every path in it is relative to the out dir (or a bare file
 name), and every problem text, each network entry, each expected off-loopback host, and each
-string the page itself supplied to a state's read-back -- an image's source, an animation's
-name and target, a read's text values, a stored value -- has passed through `scrub`, which
+string the page itself supplied to a state's read-back (an image's source, an animation's
+name and target, a read's text values, a stored value) has passed through `scrub`, which
 replaces the out dir, the home, the hostnames and any other home. The page's title is
 withheld instead when the privacy matcher flags it, as the PDF's Title it becomes is. The
-read-back's other words -- `ready_state`, `color_scheme`, `reduced_motion`, `fonts_status`
-and each image's `loading` -- are the browser's own, each from a fixed vocabulary the page
+read-back's other words (`ready_state`, `color_scheme`, `reduced_motion`, `fonts_status`
+and each image's `loading`) are the browser's own, each from a fixed vocabulary the page
 does not write (the probe's reader refuses a ready state, a color scheme, a reduced-motion
 setting, a font status or an image's loading outside its own), so none can carry a path or
 a hostname and none is scrubbed.
@@ -193,8 +193,9 @@ def _gecko_print_json(header_footer: bool) -> _Json:
 
     Read from the body itself, less the parameter each PDF sets, each under its
     `_GECKO_PRINT_KEYS` name. `tagged` and `header_footer` are the Playwright entry's keys,
-    each false here for good: the command has no tagging parameter and prints no header or
-    footer. `cannot_control` says so in words, with the `Title` it never writes.
+    each false here because each says what was requested, and the command takes no tagging
+    parameter and prints no header or footer. Whether the build tagged a PDF anyway is that
+    PDF's `metadata.tagged`. `cannot_control` says so in words, with the `Title` it cannot set.
 
     Raises:
         KeyError: a parameter sent has no report name in `_GECKO_PRINT_KEYS`, which the

@@ -1,6 +1,6 @@
 // The in-page probe's motion half (both loads' settles): every animation that moves with time
 // is stilled before each poll, so paced or endless motion is measured at rest rather than in its
-// first pause -- and in the late-script load, only motion that moves no layout.
+// first pause; and in the late-script load, only motion that moves no layout.
 //
 // WHAT THIS SUITE COVERS. Which animations `stillMotion` touches, what it does to each, and how
 // it counts them. One the page paused, one already finished and one never started are what a
@@ -9,8 +9,8 @@
 // never ends is paused, then sent to its first iteration start at or after local time 0. Asked
 // for layout-inert motion alone (`layoutInertOnly`, the late-script load), one moving any other
 // property, or naming none, is left running too, and counted as running. What a CSS animation
-// moves -- the names its applied `@keyframes` rule declares, which the late-script load's driver
-// hands back -- is test_page_probe_motion_rules.mjs's.
+// moves (the names its applied `@keyframes` rule declares, which the late-script load's driver
+// hands back) is test_page_probe_motion_rules.mjs's.
 //
 // WHAT IS FAKED. The animations, as page_probe_motion_helpers.mjs's header says.
 import assert from "node:assert/strict";
@@ -117,14 +117,14 @@ test("an endless one begun before time 0 is sent to its next iteration start aft
     running: 0,
   });
   // Three iterations began before 0, so the next starts at 500ms; exactly two began before 0
-  // in the second, whose third starts AT 0 -- at or after, so that one.
+  // in the second, whose third starts at 0: at or after, so that one.
   assert.deepEqual(animations[0].log, [["pause"], ["seek", 500]]);
   assert.deepEqual(animations[1].log, [["pause"], ["seek", 0]]);
 });
 
 test("one endless iteration a script made is sent to its delay or to 0, never to a NaN time", () => {
-  // Its one iteration never ends, so none is skipped, and 0 * Infinity -- NaN, which an engine
-  // refuses as a time -- must not be what the seek is handed. Begun before 0, it has no
+  // Its one iteration never ends, so none is skipped, and 0 * Infinity (NaN, which an engine
+  // refuses as a time) must not be what the seek is handed. Begun before 0, it has no
   // iteration start at or after 0; at 0 it shows its first frame, as it does at every time.
   const { page, animations } = pageWith([
     { timing: endless(300, Infinity) },

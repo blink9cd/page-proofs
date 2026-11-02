@@ -1,6 +1,6 @@
 # commit_facts
 
-Which commit a tree is at, and whether the tree differs from it — or that git cannot say.
+Which commit a tree is at, and whether the tree differs from it, or that git cannot say.
 A library, not a CLI: there is nothing to run.
 
 ## What it is for
@@ -22,7 +22,7 @@ from whichever repository holds it. Each measuring caller maps the result's `sha
 neither. Those names predate this module and stay as they are, because
 recorded baselines and earlier reports are read by them.
 
-The caller reads it **before** anything is served. The tree measured is the tree at the
+The caller reads it before anything is served. The tree measured is the tree at the
 start, so a commit made during a long run is not recorded as the one measured. A git that
 fails or hangs then costs only its own bound, never the finished measurement.
 

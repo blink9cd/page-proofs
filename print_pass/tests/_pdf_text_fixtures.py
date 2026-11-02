@@ -118,7 +118,7 @@ def figure_pdf(path: Path, *lines: Line) -> Path:
 
 
 class TempDirCase(unittest.TestCase):
-    """A case with a fresh temporary directory, removed afterwards."""
+    """A case with a fresh temporary directory, removed after it."""
 
     def setUp(self) -> None:
         """Make the directory every PDF in the test is written into."""

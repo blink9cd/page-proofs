@@ -50,7 +50,7 @@ _WAGGING_PAGE = """<!doctype html><html lang="en"><head><title>wagging</title>
 
 #: The same box moving forever by its `margin-top` instead, which moves the layout beneath it.
 #: Its neighbors have no margins: a paragraph's would collapse with it, and hold the box still
-#: while its own margin was the smaller -- long enough, measured, to read as settled.
+#: while its own margin was the smaller: long enough, measured, to read as settled.
 _BOBBING_PAGE = """<!doctype html><html lang="en"><head><title>bobbing</title>
 <style>
 p { margin: 0; }
@@ -76,7 +76,7 @@ p { margin: 0; }
 """
 
 #: What every DECOY page shares: the registered `--m`, neighbors with no margins, and a document
-#: rule called `drift` moving only `transform` -- the rule a search of the page's own sheets finds
+#: rule called `drift` moving only `transform`, the rule a search of the page's own sheets finds
 #: first, while the cascade applies another `drift`, moving `--m`, from where that search cannot
 #: see. BOX is the moving box's declarations, APPLIED the rule that truly moves it.
 _DECOY_HEAD = """<style>
@@ -188,7 +188,7 @@ def setUpModule() -> None:  # noqa: N802 - unittest's own hook name
     """Point Playwright at the pinned builds and start the shared engine.
 
     Cleanups rather than a `tearDownModule`, so a start that fails part way still undoes
-    what did start -- the shared engine first, then the site, whose stop checks the budget.
+    what did start: the shared engine first, then the site, whose stop checks the budget.
     """
     _SITE.start()
     unittest.addModuleCleanup(_SITE.stop)
@@ -364,7 +364,7 @@ class CostTests(unittest.TestCase):
         self,
     ) -> None:
         # Its getKeyframes() names `margin-top`, so it is left running whatever its rule
-        # declares -- the rule's names only add to those -- and reading the rule decides
+        # declares (the rule's names only add to those), and reading the rule decides
         # nothing. Read anyway, every such animation cost every poll a resolution of its own:
         # measured on a real page, seconds a poll for a few hundred of them.
         bobbing, bobbing_polls = _served_polls(

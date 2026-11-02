@@ -3,13 +3,15 @@
 An engine's `document.getAnimations()` leaves out an animation whose target lives inside a shadow
 root: only that root's own `getAnimations()` lists it, and a root nested in another is listed by
 the inner root alone. So both settles read every OPEN root the page can reach, found recursively,
-beside the document -- the page-load settle in Chromium, Firefox and WebKit, and the late-script
-load in Chromium -- and a root's motion goes through exactly the verdicts the document's does. A
+beside the document (the page-load settle in Chromium, Firefox and WebKit, and the late-script
+load in Chromium), and a root's motion goes through exactly the verdicts the document's does. A
 CLOSED root is out of the page's reach (its host's `shadowRoot` reads null), so its motion is
 neither stilled nor counted: the documented limit, pinned here. Each page carries one endless
 loop, served alone on loopback; one browser per engine serves the module, each test in a fresh
 context. `_live_fixtures.py` holds the setup.
 """
+
+# gate-serves: none (temporary trees, and its own samples/site, gated with its tool)
 
 from __future__ import annotations
 
@@ -110,7 +112,7 @@ def setUpModule() -> None:  # noqa: N802 - unittest's own hook name
     """Point Playwright at the pinned builds and start the shared engines.
 
     Cleanups rather than a `tearDownModule`, so a start that fails part way still undoes what
-    did start -- the shared engines first, then the site, whose stop checks the budget.
+    did start: the shared engines first, then the site, whose stop checks the budget.
     """
     _SITE.start()
     unittest.addModuleCleanup(_SITE.stop)

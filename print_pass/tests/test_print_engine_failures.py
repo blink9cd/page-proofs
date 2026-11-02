@@ -1,4 +1,4 @@
-"""Suite: a browser failing outside the probe -- an EngineError naming where; every browser closes.
+"""Suite: a browser failing outside the probe: an EngineError naming where; every browser closes.
 
 A browser, context or page that fails on any call but the probe's means the run could not
 measure honestly: it stops with an `EngineError` (the tool's exit 2) naming the state it was

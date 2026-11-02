@@ -1,4 +1,4 @@
-"""Suite: the engine's run over a targets file -- launching, the record of a state, closing.
+"""Suite: the engine's run over a targets file (launching, the record of a state, closing).
 
 Everything runs against the fake Playwright in `_print_playwright_fixtures`, whose one log
 shows what the engine called and in what order. What a single state does between load and

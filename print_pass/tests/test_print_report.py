@@ -1,8 +1,8 @@
-"""Suite: the report's JSON, shaped from fixed records -- make, read and compare -- and its paths.
+"""Suite: the report's JSON, shaped from fixed records (make, read and compare), and its paths.
 
 Every case builds the report from the fixed state, PDF reading and comparison in
 `_print_report_fixtures` and compares it with the documented shape there, whole. What is done
-with a finished report -- its summary, exit code, normalization and writing -- is the sibling
+with a finished report (its summary, exit code, normalization and writing) is the sibling
 `test_print_report_output`'s.
 
 Entry point assumptions: run by `unittest` discovery from the tool folder, or by the tool's

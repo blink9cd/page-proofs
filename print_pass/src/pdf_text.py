@@ -173,7 +173,7 @@ def _resolved(value: PdfObject | None) -> PdfObject | None:
 def _as_text(value: PdfObject | None) -> str | None:
     """A PDF value as text: a string or name as itself, an array in PDF syntax.
 
-    Anything else -- a dictionary, a number, a stream -- is read as `<ClassName>`: a
+    Anything else (a dictionary, a number, a stream) is read as `<ClassName>`: a
     dictionary's text would carry every value it holds, and none is a destination's name.
     """
     if value is None or isinstance(value, str | bytes):

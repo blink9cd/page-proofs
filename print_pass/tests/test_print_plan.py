@@ -1,4 +1,4 @@
-"""Grouped suite: print_plan -- what the CLI needs before a run, imported without a PDF reader.
+"""Grouped suite: print_plan, what the CLI needs before a run, imported without a PDF reader.
 
 What this module promises beyond its names is what it does NOT import: the PDF readers and
 Playwright, so the CLI importing it shows --help and refuses a run without them. That is

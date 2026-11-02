@@ -127,8 +127,8 @@ def _image_problems(
     """Images not complete at print, fonts not loaded, and images that loaded broken.
 
     Only an image with a src attribute is judged, `src=""` included. One without requested
-    nothing -- a carousel's slide left sourceless until it is needed, while the carousel
-    prints only the slide showing -- so it is never requested, neither broken nor loading.
+    nothing (a carousel's slide left sourceless until it is needed, while the carousel
+    prints only the slide showing), so it is never requested, neither broken nor loading.
     A static image missing its src is an HTML validator's to catch.
     """
     requested = [image for image in probe.images if image.has_src]

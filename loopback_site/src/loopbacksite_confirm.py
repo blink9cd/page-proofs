@@ -216,7 +216,7 @@ def confirm_serves(
             the server could not be reached, or it answered a page that has its file with an
             error status.
         SiteServeError: the server answered with other bytes, or with another status for a
-            page that has no file -- it is serving another tree; without `follow_redirects`,
+            page that has no file, so it is serving another tree; without `follow_redirects`,
             it answered with a redirect. Or `page` names a file outside `directory`, refused
             before anything is read or fetched.
     """

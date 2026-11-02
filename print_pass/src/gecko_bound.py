@@ -29,9 +29,9 @@ from gecko_process import LISTING_OVERRUN_SECONDS, LISTING_TIMEOUT_SECONDS
 #: a start takes, so the port is used soon after it is named.
 POLL_SECONDS: Final = 0.05
 
-#: Timeouts in one watchdog bound (`watchdog_seconds`): a stop's four waits at most -- for
+#: Timeouts in one watchdog bound (`watchdog_seconds`): a stop's four waits at most (for
 #: geckodriver, for its reap after a kill, for the rest of its group, and for the group again
-#: after a kill -- and one of slack.
+#: after a kill), and one of slack.
 _TIMEOUTS_PER_BOUND: Final = 5
 
 #: Tree kills in one watchdog bound: a stop's two at most, of geckodriver and of its group.

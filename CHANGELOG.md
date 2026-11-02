@@ -2,6 +2,35 @@
 
 Notable changes to this project, newest first.
 
+## 0.2.1 - 2026-11-02
+
+### Changed
+
+- `browser_pass`, `print_pass`, and `lighthouse_run` no longer show `(default: None)` or
+  `(default: False)` in `--help` for an option or flag that has no default to give.
+
+### Fixed
+
+- `print_pass --engine firefox` no longer says in its report that Firefox's PDF is always
+  untagged and never carries a `Title`. Firefox 159 on macOS tags the PDF and writes the page's
+  title as its `Title`, so the report's `cannot_control` now says that both are the Firefox
+  build's choice. `print_pass.md` and the sample's README describe what Firefox 159 was
+  measured to print, and `print_pass.md` says that the report's `tagged` is what was
+  requested, while each PDF's `metadata.tagged` is what the build did.
+
+### Documentation
+
+- The README starts with an install step into a virtual environment, because Homebrew and
+  Debian Python refuse a system-wide `pip install`. The commands in the README, in each tool's
+  reference and samples, and in the live suites' install hints run the venv's `python` rather
+  than `python3.12`.
+- The docs, comments, docstrings, and `--help` text are reworded without dashes: the spaced
+  double hyphens used as dashes are gone, and so are the em dashes, most of them in
+  `bounded_run.md` and `stdio_utf8.md`, apart from a few that stand for an empty table cell or
+  are test data. Scattered bold and capitals are gone from the docs. The shared libraries' docs
+  no longer describe the larger repository they came from.
+- `pyproject.toml` no longer holds settings for development tools that do not ship here.
+
 ## 0.2.0 - 2026-10-27
 
 ### Added

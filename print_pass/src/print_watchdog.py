@@ -6,7 +6,7 @@ dispatcher wedged by a handler never does. Playwright's synchronous API may be c
 from the thread that started it, so a stalled call cannot be interrupted from another thread
 either. What a second thread CAN do is watch the clock. Each call runs inside
 `Watchdog.bound`; if it overruns, the watch thread calls `on_expire(what)`. The default,
-`abandon`, names the call on stderr and ends the process with exit 2 -- the tool's "could
+`abandon`, names the call on stderr and ends the process with exit 2: the tool's "could
 not measure honestly". Ending the process closes Playwright's driver pipe, and the driver
 then closes its browsers, so a stalled print fails fast instead of hanging the run.
 
@@ -65,7 +65,7 @@ def check_bound(seconds: float) -> None:
 
     Zero, a negative number and NaN would expire at once. A bound past
     `threading.TIMEOUT_MAX` raises inside the watch thread's first wait, which would kill
-    the thread silently and leave the call unbounded -- the one failure this module exists
+    the thread silently and leave the call unbounded, the one failure this module exists
     to prevent. Public so a stand-in for the watchdog refuses exactly what it refuses.
 
     Raises:

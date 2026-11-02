@@ -91,7 +91,7 @@ def _write_script(path: Path, body: str) -> Path:
 
 
 class RenderTests(unittest.TestCase):
-    """`pdftoppm` run for real -- a fake one -- and its files read back in page order."""
+    """`pdftoppm` run for real (a fake one), and its files read back in page order."""
 
     def setUp(self) -> None:
         scratch = tempfile.TemporaryDirectory()
@@ -120,7 +120,7 @@ class RenderTests(unittest.TestCase):
     def rasters(
         self, *, gray: bool, pages: int | None = None, **steering: str
     ) -> tuple[Raster, ...]:
-        """Render `self.pdf`'s `pages` -- by default as many as the fake writes -- to rasters."""
+        """Render `self.pdf`'s `pages` (by default as many as the fake writes) to rasters."""
         count = (
             int(steering.get("FAKE_PDFTOPPM_PAGES", "1")) if pages is None else pages
         )

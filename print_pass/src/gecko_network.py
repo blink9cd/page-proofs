@@ -32,7 +32,7 @@ Only the status decides. A transfer size of 0 is also what a response from the c
 so it says nothing the status does not, and no row carries it.
 
 Two things the rows can show lie outside the record. `isolation_failures` lists how the page
-left loopback -- a request answered off it, or a document off it -- and is the engine's
+left loopback (a request answered off it, or a document off it), and is the engine's
 signal to raise `EngineError` (exit 2) before it prints: such a page measures nothing
 honestly, and the record has no true name for it. A document at a local scheme (`about:`,
 `data:`, `blob:`) gives no line there: the engine refuses a document that is not on the
@@ -105,8 +105,8 @@ _ANSWERED_OFF_LOOPBACK: Final = "request answered off loopback"
 
 # A page error as Firefox writes it to standard output, which geckodriver logs: the
 # script's URL, its line, then the error's message, the rest of the line. Matched from the
-# start of a line, so a line that only quotes one -- the page's own console output, which
-# Firefox writes behind a prefix of its own -- is not one.
+# start of a line, so a line that only quotes one (the page's own console output, which
+# Firefox writes behind a prefix of its own) is not one.
 _PAGE_ERROR: Final = re.compile(
     r"JavaScript error: (?P<url>.*?), line [0-9]+: (?P<message>.*)"
 )

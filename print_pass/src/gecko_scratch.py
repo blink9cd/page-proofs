@@ -1,8 +1,8 @@
 """The run's scratch folder: the folders Firefox would find for itself, redirected under one root.
 
-`make_scratch` names and makes the folders geckodriver's environment points Firefox at -- a home
+`make_scratch` names and makes the folders geckodriver's environment points Firefox at (a home
 for macOS's frameworks, the application-data folders, the temporary folder, and the root
-geckodriver makes each session's profile in -- so that what Firefox writes to each of those
+geckodriver makes each session's profile in), so that what Firefox writes to each of those
 lands here rather than in the reader's own, and `remove_scratch` removes it all once the run
 is done. One folder is not among them: Firefox's crash helper is handed one in the system's
 per-user temporary folder, which `TMPDIR` does not redirect (`gecko_command` says more).
@@ -14,8 +14,8 @@ plain recursive removal of the scratch then fails on each (measured). Two measur
 and both are kept. `make_scratch` makes the folders macOS was seen to make first, as ordinary
 folders, so that a scratch left behind by a run that died can still be removed by hand. And
 `remove_scratch` strips every ACL in the tree before it removes it, since macOS may make
-another such folder at any point in a session -- `Documents` was first seen made as a session
-stopped -- and a list made ahead of time cannot be known to be whole.
+another such folder at any point in a session (`Documents` was first seen made as a session
+stopped), and a list made ahead of time cannot be known to be whole.
 
 Every behavior claimed here was measured on macOS, the one platform the Firefox engine runs on.
 

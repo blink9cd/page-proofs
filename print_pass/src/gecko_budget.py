@@ -10,7 +10,7 @@ bound of its own. `state_seconds` adds all of it up from those named constants: 
 `state_calls` counts at its own bound, and every wait's window. Kept apart from the state
 runner, whose steps it counts, so each can be read whole.
 
-A wait -- settling, or an action's look for its element -- is counted as its window, the
+A wait (settling, or an action's look for its element) is counted as its window, the
 timeout and one poll past it, and then the one look that may begin just before the window
 ends, whose calls run their bounds past it. Every earlier look runs inside the window, so
 `state_calls` is what a state makes when each wait ends at its first look.
@@ -32,8 +32,8 @@ from print_targets import Action, State
 #: Firefox's own script or page-load timeout error to arrive first, and be the one reported.
 TRANSPORT_MARGIN_SECONDS: Final = 5.0
 
-#: How often a state polls its page -- the probe while settling, an action's look for its
-#: element -- and the longest single sleep of any wait: the Chromium engine's settle poll.
+#: How often a state polls its page (the probe while settling, an action's look for its
+#: element), and the longest single sleep of any wait: the Chromium engine's settle poll.
 PAGE_POLL_SECONDS: Final = SETTLE_POLL_MS / MS_PER_SECOND
 
 #: How long one process listing may take: its own timeout, and its overrun past that.

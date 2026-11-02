@@ -2,7 +2,7 @@
 """Measure a built site with the project's pinned Lighthouse: interleaved runs, medians, JSON.
 
 A later performance run compares with an earlier one only when both used the same Lighthouse,
-the same flags, the same interleaving and the same arithmetic -- which is why all four are held
+the same flags, the same interleaving and the same arithmetic, which is why all four are held
 here rather than written down as a command sequence that drifts.
 
 One invocation, in order:
@@ -13,25 +13,25 @@ One invocation, in order:
    disk. `--runs` below the median floor, a malformed `--url` and a combination of target
    options that names no single tree are refused at parse time.
 2. **Reads the commit the tree is at, then serves that tree on 127.0.0.1**, on a port the
-   operating system picks, and confirms every page's bytes against disk -- so the tree
+   operating system picks, and confirms every page's bytes against disk, so the tree
    measured is the tree named, never a stale server holding a well-known port. With `--url`
    it serves nothing: it confirms every page the HOST answers against the `--expect` folder
    instead, with the same shared check, and refuses a page the host redirects. The commit is
    read first, so it names the tree as served, and a git that fails is recorded as unknown,
-   never as clean. A tree outside any repository -- a built site in a scratch folder -- is
+   never as clean. A tree outside any repository (a built site in a scratch folder) is
    recorded as unknown too, with nothing wrong.
    Which tree, and where its pages are fetched from, lives in `src/run_target.py`.
 3. **Interleaves the runs**: every page on every preset once per round, for `--runs` rounds,
    so a slow moment on the machine lands across all of them rather than on one page.
-4. **Writes** every raw report and a `summary.json` -- per-run numbers and audits, their
+4. **Writes** every raw report and a `summary.json` (per-run numbers and audits, their
    medians, the tree measured and any hosted base url, the commit, the Lighthouse and Chrome
-   versions and the exact flags -- into a new timestamped folder under `--out`, and prints the
+   versions and the exact flags) into a new timestamped folder under `--out`, and prints the
    medians as a Markdown table, then the audits' as a second. The record's shape lives in
    `src/run_summary.py`; which audits are read, and from where, in `src/lighthouse_audits.py`.
 
 **Privacy.** Lighthouse launches Chrome with its own fresh temporary profile (no profile flag
 is ever passed), error reporting to Lighthouse's maintainers is switched off explicitly, and
-the raw reports -- which embed the measured urls and the host's user agent -- and the summary,
+the raw reports (which embed the measured urls and the host's user agent) and the summary,
 whose `served` is the folder as given and so can be an absolute local path, and whose `url` is
 any hosted base, go to a gitignored folder by default. To measure a private address, pass
 `--out` a folder outside the repository, and outside anything backed up off the machine.
@@ -138,7 +138,7 @@ _CHROME_PATH_ENV = "CHROME_PATH"
 
 @dataclass(frozen=True)
 class Plan:
-    """What one invocation measures -- which tree, fetched from where -- and for how long."""
+    """What one invocation measures (which tree, fetched from where) and for how long."""
 
     target: run_target.Target
     pages: tuple[str, ...]
@@ -148,13 +148,13 @@ class Plan:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    """The argument parser: named options only, each optional's live default shown."""
+    """The argument parser: named options only, each set default shown."""
     parser = argparse.ArgumentParser(
         description=(
             "Measure a built site's pages with the project's pinned Lighthouse, as interleaved "
             "runs reduced to per-metric medians."
         ),
-        formatter_class=help_formatter.ReqAwareDefaultsFormatter,
+        formatter_class=help_formatter.UnsetHidingFormatter,
         epilog=(
             "Prerequisites: run `npm ci` in the project first, so node_modules/.bin/lighthouse "
             "is the pinned version; node and Google Chrome must be installed. Leave the machine "
@@ -378,7 +378,7 @@ def read_commit(served: Path) -> commit_facts.CommitFacts:
 
     Before, because the tree served is the tree at the start: a commit made during a long run
     would otherwise be recorded as the one measured. And a git that fails or hangs then costs
-    only its own bound, never the finished runs -- the summary records the commit as unknown.
+    only its own bound, never the finished runs: the summary records the commit as unknown.
     A tree outside any repository is unknown as well, and says nothing: nothing went wrong.
     """
     commit = commit_facts.read(

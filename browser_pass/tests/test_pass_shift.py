@@ -1,4 +1,4 @@
-"""Grouped suite: the late-script layout-shift detector's verdicts -- pure, no browser.
+"""Grouped suite: the late-script layout-shift detector's verdicts, pure, with no browser.
 
 What the in-page probe recorded is turned into a score here: only shifts AFTER the held scripts
 were released count, grouped into session windows the way Cumulative Layout Shift groups them.
@@ -182,7 +182,7 @@ class PresentableTests(unittest.TestCase):
     The hold normally ends on the page having painted in its own fonts, so the release IS the
     moment it became presentable and the two are the same instant. They come apart on the one
     path that releases early: a held script the page cannot paint without (`blocking="render"`)
-    is let through at once, because no paint will come until it runs -- so the release precedes
+    is let through at once, because no paint will come until it runs. So the release precedes
     the first paint, and a web font swapping in after that paint would be charged to the
     scripts. That is exactly what waiting for the fonts exists to prevent, and it lapsed on this
     path alone.
@@ -242,7 +242,7 @@ class RecordFaultTests(unittest.TestCase):
         self.assertEqual(self._faults(), [])
 
     def test_a_blocked_page_that_never_became_presentable_is_refused(self) -> None:
-        # The page could not paint until its scripts ran, and then never finished its fonts --
+        # The page could not paint until its scripts ran, and then never finished its fonts,
         # so every shift recorded sits in the window where a face swapping in cannot be told
         # from a script moving the page. Refused rather than measured against that risk, which
         # is the choice the fonts half of the hold already makes on the other path.
@@ -270,8 +270,8 @@ class RecordFaultTests(unittest.TestCase):
 class AwaitsPresentableTests(unittest.TestCase):
     """Which records lack only the moment the page became presentable, which frames still bring.
 
-    That moment is marked in the page by its frames -- the first paint, then two animation frames
-    after the fonts are in -- so on a loaded machine it can come well after the page has loaded
+    That moment is marked in the page by its frames (the first paint, then two animation frames
+    after the fonts are in), so on a loaded machine it can come well after the page has loaded
     and its layout has stopped changing. A record waiting on it is not yet a verdict.
     """
 

@@ -1,9 +1,9 @@
-"""Grouped suite: the LIVE boundary for an extension -- loaded, acting, and held to loopback.
+"""Grouped suite: the live boundary for an extension (loaded, acting, and held to loopback).
 
 The committed fixture, `fixture_extension/`, is a tiny MV3 extension: its content script marks
 the page's root and inserts a `<style>`, and its service worker opens a welcome tab off loopback
-on install, as real extensions do, and a page of its own once the first page it marks is loading
--- one breaking the extension's own policy while the pass measures. The guarded page
+on install, as real extensions do, and a page of its own once the first page it marks is loading,
+one breaking the extension's own policy while the pass measures. The guarded page
 (`_guard_fixtures.py`) reads both insertions back from its own script and says what it found as
 a console error, which the `console_error` detector reports: so the full Chromium build, launched
 by `run_matrix` the way the CLI launches it, is shown to have loaded the extension and the
@@ -82,7 +82,7 @@ def setUpModule() -> None:  # noqa: N802 - unittest's own hook name
         # a run measuring this suite's coverage never is; `absent_builds` is tested on its own.
         raise absent_builds(
             f"the full Chromium build is not installed in {looked_in}",
-            "python3.12 -m playwright install chromium",
+            "python -m playwright install chromium",
         )
 
 

@@ -402,7 +402,7 @@ class MalformedTests(unittest.TestCase):
         self.assertIsNone(_read(report)["document_latency"]["uses_compression"])
 
 
-#: Arbitrary JSON values -- what any file on disk can parse to.
+#: Arbitrary JSON values: what any file on disk can parse to.
 _JSON = st.recursive(
     st.none() | st.booleans() | st.integers() | st.floats() | st.text(max_size=5),
     lambda children: (
@@ -449,7 +449,7 @@ class PropertyTests(unittest.TestCase):
     """Whatever a report holds, the reader answers, and answers in the recorded shape."""
 
     def assert_number(self, value: object) -> None:
-        """Assert `value` is None or a finite float -- never a bool, an int or a NaN."""
+        """Assert `value` is None or a finite float, never a bool, an int or a NaN."""
         finite = isinstance(value, float) and math.isfinite(value)
         self.assertTrue(value is None or finite, repr(value))
 

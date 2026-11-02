@@ -1,7 +1,7 @@
 """The checks a targets file's values pass, each refusing with the path to the value.
 
-`print_targets` knows every key a targets file may hold; what a value must BE -- a table, an
-array, a non-empty string, one of a set, a whole number, a boolean -- is checked here, with no
+`print_targets` knows every key a targets file may hold; what a value must be (a table, an
+array, a non-empty string, one of a set, a whole number, a boolean) is checked here, with no
 key of the file known. Each refusal is a `TargetsError` whose message opens with the PATH to
 the value, `target[1].state[2].color_scheme`, arrays counted from zero in file order, because
 that path is the whole of what an operator is shown.
@@ -51,7 +51,7 @@ def optional[T](
     """`parse` the value at `key` in the table at `where`, or `absent` when it is left out.
 
     Presence is `key in table`, never a None test: TOML has no null, so a None comes only
-    from a Python caller, and it is parsed -- and refused -- like any other wrong type.
+    from a Python caller, and it is parsed, and refused, like any other wrong type.
     """
     return parse(table[key], at(where, key)) if key in table else absent
 

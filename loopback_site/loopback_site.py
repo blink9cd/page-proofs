@@ -3,7 +3,7 @@
 `python3 -m http.server` binds EVERY interface unless given `--bind`, which on a laptop
 publishes the working tree to the local network for as long as it runs. This binds `127.0.0.1`
 only, by default on a port the operating system picks, so it can neither be reached from the
-network nor collide with another server already holding a fixed port -- the collision that once
+network nor collide with another server already holding a fixed port, the collision that once
 had a browser silently answer from someone else's tree. A caller that needs
 a fixed port (a launch configuration) names one, and a port already held is refused, exit 2.
 
@@ -98,21 +98,23 @@ _JOIN_SECONDS = 10.0
 
 #: How often the serving loop looks for a shutdown request. `shutdown()` blocks until the
 #: loop's current `select` times out, so this is what every exit from `serve_directory` costs:
-#: at socketserver's own 0.5 s each exit took nearly all of it, paid once per served tree -- by
+#: at socketserver's own 0.5 s each exit took nearly all of it, paid once per served tree by
 #: a test suite that serves one per case, many times a run. Twenty idle wake-ups a second cost
 #: nothing measurable.
 _SHUTDOWN_POLL_SECONDS = 0.05
 
-#: What a client hanging up mid-request raises in the handler: a write raises either,
-#: depending on timing, and a read raises the first. A browser hangs up like this whenever it
-#: closes a page or abandons a connection mid-request, so neither is a fault of the server.
-_CLIENT_HANG_UPS = (ConnectionResetError, BrokenPipeError)
+#: What a client hanging up mid-request raises in the handler: on POSIX a write raises either
+#: of the first two, depending on timing, and a read raises the first; on Windows a write to a
+#: client that closed mid-response raises the third (WinError 10053). A browser hangs up like
+#: this whenever it closes a page or abandons a connection mid-request, so none is a fault of
+#: the server.
+_CLIENT_HANG_UPS = (ConnectionResetError, BrokenPipeError, ConnectionAbortedError)
 
 #: The server paths the CLI confirms when `--pages` is not given.
 DEFAULT_PAGES = ("/",)
 
 #: The characters a page to confirm may hold: printable ASCII without the space. `http.client`
-#: refuses to send anything else in a request path, raising an error that is no `OSError` --
+#: refuses to send anything else in a request path, raising an error that is no `OSError`:
 #: the very traceback a refusal at parse time exists to prevent.
 PAGE_CHARACTERS = frozenset(map(chr, range(ord("!"), ord("~") + 1)))
 
@@ -137,7 +139,7 @@ def _is_encodable_path(path: str) -> bool:
     """Whether `open()` could even try `path`, rather than refusing it with ValueError.
 
     `open()` refuses two kinds of name before the OS sees them, each with a ValueError: one
-    holding NUL (`%00` decodes to it), and one the filesystem encoding cannot encode -- a lone
+    holding NUL (`%00` decodes to it), and one the filesystem encoding cannot encode: a lone
     surrogate such as `%ED%A0%80`, which the standard library's path translation decodes with
     `surrogatepass`. `os.fsencode` catches the second and passes NUL through, so both are
     tested. Every other name the OS cannot open fails with OSError, which the standard library
@@ -233,8 +235,8 @@ class _LoopbackOnlyHandler(SimpleHTTPRequestHandler):
         """Answer a 404 with the not-found file when there is one; any other error as usual.
 
         Every "no file here" decision the standard library makes ends in this call with 404,
-        so answering here keeps its own resolution -- the index lookup, and the redirect that
-        adds a directory's missing slash -- rather than re-deriving it.
+        so answering here keeps its own resolution (the index lookup, and the redirect that
+        adds a directory's missing slash) rather than re-deriving it.
         """
         body = self._not_found_body() if code == HTTPStatus.NOT_FOUND else None
         if body is None:

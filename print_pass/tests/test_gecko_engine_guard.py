@@ -1,4 +1,4 @@
-"""Grouped suite: the run watchdog's expiry -- kill, say the scratch was left, abandon.
+"""Grouped suite: the run watchdog's expiry (kill, say the scratch was left, abandon).
 
 `RunGuard.on_expire` is what the run's watchdog calls when a bounded call overruns. It
 kills the driver's whole tree, writes one stderr line naming the scratch folder it leaves in

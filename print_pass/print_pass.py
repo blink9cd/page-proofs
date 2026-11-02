@@ -11,7 +11,7 @@ One invocation, in order:
    the pages a targets file names, or `--page` names; `read` reads one or more `--pdf`;
    `compare` compares exactly two. An option of another mode is refused, naming that mode.
 2. **Refuses `--out`** (exit 2) when it already exists, when its parent folder does not, or
-   when the parent lies inside a git work tree -- or when git cannot say where it lies. A
+   when the parent lies inside a git work tree, or when git cannot say where it lies. A
    PDF records when it was made, so `--out` is refused inside any work tree by construction,
    whatever its ignore rules say, rather than trusted to a later scan
    (`src/print_preflight.py`).
@@ -20,9 +20,9 @@ One invocation, in order:
    and one not installed refuses the run, exit 2). `make` loads the targets, finds the pinned
    engine builds for a Playwright engine (`--browsers`, else `$PLAYWRIGHT_BROWSERS_PATH`,
    else the folder Playwright itself installs them into), serves
-   `--serve` on 127.0.0.1, prints every state of every target through the engine --
-   Playwright's `page.pdf()` for the shell and installed Chrome, WebDriver's Print through
-   geckodriver for Firefox -- then reads every PDF made and compares each backgrounds off
+   `--serve` on 127.0.0.1, prints every state of every target through the engine
+   (Playwright's `page.pdf()` for the shell and installed Chrome, WebDriver's Print through
+   geckodriver for Firefox), then reads every PDF made and compares each backgrounds off
    and on pair. `read` reads each PDF; `compare` renders the two and compares them.
 5. **Records** `<out>/report.json`, prints its summary (findings first), and exits with
    the report's own code.
@@ -35,7 +35,7 @@ line can name an executable's path.
 
 Exit codes: `0` every state printed and every PDF read without a finding (compare: the two
 render identically); `1` a finding (compare: they differ); `2` the run could not measure
-honestly -- bad usage or targets, `--out` refused, Playwright, geckodriver, a PDF reader or
+honestly: bad usage or targets, `--out` refused, Playwright, geckodriver, a PDF reader or
 a poppler reader missing, Firefox asked for off macOS, a browser call that failed (an engine
 build, installed Chrome or installed Firefox absent among them), a fault in the CSP
 collector, a compare PDF that cannot render, a bounded call abandoned, or an unexpected
@@ -170,13 +170,13 @@ def _dpi(text: str) -> int:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    """The argument parser: named options only, each optional's live default shown."""
+    """The argument parser: named options only, each set default shown."""
     parser = stdio_utf8.EscapingArgumentParser(
         description=(
             "Print a site's pages to PDF through Playwright's Chromium or Firefox's "
             "WebDriver Print, read any PDF, or compare two."
         ),
-        formatter_class=help_formatter.ReqAwareDefaultsFormatter,
+        formatter_class=help_formatter.UnsetHidingFormatter,
         epilog=(
             "Prerequisites: the shared CSP collector csp_watch, in the folder beside "
             "this tool's own; in every mode, the repository's `print` extra "
@@ -488,7 +488,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         return _run(plan)
     except Exception:
         # Nothing is silenced: the traceback is printed whole. What this catch is for is
-        # the EXIT CODE -- an escaping exception leaves the interpreter with 1, which here
+        # the exit code: an escaping exception leaves the interpreter with 1, which here
         # means a finding, and a run that died found nothing.
         print_plan.warn(f"the run could not finish:\n{traceback.format_exc()}")
         return EXIT_CANNOT_MEASURE

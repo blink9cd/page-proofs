@@ -2,8 +2,8 @@
 
 A state may name the width, in CSS px, its page is laid out at; the tool turns it into one
 margin, the same on all four sides of US Letter, `(816 - page_width) / 2` px. This suite
-holds that arithmetic, each engine's print builder taking the margin -- Chromium's
-`page.pdf` options as a CSS length, Firefox's WebDriver Print body in centimeters -- and the
+holds that arithmetic, each engine's print builder taking the margin (Chromium's
+`page.pdf` options as a CSS length, Firefox's WebDriver Print body in centimeters), and the
 report's two fields for it. A width in odd pixels gives a half-pixel margin, which both
 builders must carry exactly as far as their unit allows. The engines handing a state's
 margin to their builders is the sibling `test_print_page_width_engines.py`'s.

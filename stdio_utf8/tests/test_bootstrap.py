@@ -14,7 +14,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-# A sibling tool sits one level ABOVE the folder the bootstrap above reaches, so it
+# A sibling tool sits one level above the folder the bootstrap above reaches, so it
 # needs its own insert. Directory and depth both come from the original suite.
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "bounded_run"))
 
@@ -23,31 +23,30 @@ import bounded_run  # noqa: E402 - reached by its own insert above
 
 
 #: A generous ceiling for the black-box child: a hung CLI must fail this suite
-#: rather than hang it.
+#: rather than hang it, because unattended runs have no one to notice a hang.
 _SUBPROCESS_TIMEOUT = 120
 
 
 class TestPortableBootstrapResolution(unittest.TestCase):
-    """The documented upward-search bootstrap must resolve in BOTH shipped layouts.
+    """The documented upward-search bootstrap must resolve in both shipped layouts.
 
-    stdio_utf8.md tells a tool outside utilities/ to find this library by walking up from
-    its own file, accepting a ``utilities/`` folder holding ``stdio_utf8/`` or
-    ``<root>/stdio_utf8/`` (a tree shipped without utilities/, which must vendor a copy there).
+    stdio_utf8.md tells a tool with no sibling copy to find this library by walking up from
+    its own file, accepting ``<root>/utilities/<name>/`` (a shared-helpers folder) or
+    ``<root>/stdio_utf8/`` (a copy placed directly in an ancestor folder).
 
-    Wherever this library sits, only one of those resolves, so a typo in the other would
-    pass every other test here and fail only in a tree of the other layout. These build each
-    layout on disk
-    and run a tool out of it in a real subprocess -- the only way to reach the archive
-    branch at all, and the only way to prove the search rather than an already-loaded module.
+    A tree normally holds only one of those, so a typo in the other would pass every other
+    test here and fail only in a tree of the other shape. These build each layout on disk
+    and run a tool out of it in a real subprocess: the only way to reach both branches, and
+    the only way to prove the search rather than an already-loaded module.
 
-    The search walks every ancestor up to the filesystem root, so it can also MATCH a
-    same-named folder planted above the tree -- a shared temporary directory, or a checkout
-    enclosing a copy of the tree. The last three tests pin the two properties that keep
-    such a folder harmless, one each: only the NEAREST match joins sys.path, and it joins at
-    the END, where it cannot shadow the standard library or the tool's own modules.
+    The search walks every ancestor up to the filesystem root, so it can also match a
+    same-named folder planted above the tree: a shared temporary directory, or an enclosing
+    checkout. The last three tests pin the two properties that keep such a folder harmless,
+    one each: only the nearest match joins sys.path, and it joins at the end, where it
+    cannot shadow the standard library or the tool's own modules.
     """
 
-    #: The bootstrap exactly as stdio_utf8.md publishes it.
+    #: The bootstrap exactly as stdio_utf8.md publishes it and the adopting tools carry it.
     BOOTSTRAP = (
         "sys.path += [\n"
         "    str(folder)\n"
@@ -77,7 +76,7 @@ class TestPortableBootstrapResolution(unittest.TestCase):
         """Write a tool carrying *bootstrap*, nested as deeply as a real one.
 
         After the bootstrap the tool imports this library, each of *modules*, and then
-        ``json`` -- a standard-library module imported late on purpose, because a folder the
+        ``json``, a standard-library module imported late on purpose, because a folder the
         bootstrap wrongly admits ahead of the standard library would shadow it. It prints the
         file each came from, the library's encoding, and its final sys.path, one per line.
         """
@@ -126,7 +125,7 @@ class TestPortableBootstrapResolution(unittest.TestCase):
         return folder
 
     def _plant_decoy(self, folder: Path) -> Path:
-        """Plant a WORKING copy of this library in *folder*, with a ``json.py`` beside it.
+        """Plant a working copy of this library in *folder*, with a ``json.py`` beside it.
 
         A working copy, so a tool that wrongly resolves the library here still runs and the
         test observes what it imported rather than a crash.
@@ -144,23 +143,23 @@ class TestPortableBootstrapResolution(unittest.TestCase):
         return origins["encoding"]
 
     def test_resolves_in_the_repository_layout(self) -> None:
-        """A ``utilities/`` folder holding ``stdio_utf8/`` -- a tree of shared libraries."""
+        """A ``utilities/`` folder holding ``stdio_utf8/``: the shared-helpers layout."""
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
             found = self._run_with_library_at(root, root / "utilities" / "stdio_utf8")
         self.assertEqual(found, stdio_utf8.ENCODING)
 
     def test_resolves_in_the_delivered_archive_layout(self) -> None:
-        """``<root>/stdio_utf8/`` with NO utilities/ tree -- the vendored layout.
+        """``<root>/stdio_utf8/`` with no utilities/ folder: the library placed directly in an ancestor.
 
-        Built here rather than left to the layout this library happens to sit in, so the
-        second candidate is exercised wherever the suite runs.
+        Where a utilities/ folder holds a copy, the first candidate always matches first, so only
+        a synthetic tree without one exercises the second.
         """
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
             found = self._run_with_library_at(root, root / "stdio_utf8")
             self.assertFalse(
-                (root / "utilities").exists(), "the archive layout has no utilities/"
+                (root / "utilities").exists(), "this layout has no utilities/"
             )
         self.assertEqual(found, stdio_utf8.ENCODING)
 
@@ -176,12 +175,12 @@ class TestPortableBootstrapResolution(unittest.TestCase):
         self.assertNotIn(str(decoy), path)
 
     def test_a_sole_planted_copy_cannot_shadow_the_standard_library(self) -> None:
-        """Append: when the planted copy is the ONLY match, it still comes after the stdlib.
+        """Append: when the planted copy is the only match, it still comes after the stdlib.
 
         The search cannot tell a planted copy from a vendored one, so here it resolves the
-        library itself from the planted folder -- the tool asked for a library by that name
-        and nothing nearer has one. What it must not do is let that folder's OTHER modules
-        replace anything the tool imports afterwards.
+        library itself from the planted folder: the tool asked for a library by that name
+        and nothing nearer has one. What it must not do is let that folder's other modules
+        replace anything the tool imports afterward.
         """
         with tempfile.TemporaryDirectory() as td:
             above = Path(td).resolve()

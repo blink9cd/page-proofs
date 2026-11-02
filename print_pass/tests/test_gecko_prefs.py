@@ -1,8 +1,8 @@
-"""Suite: what a Firefox session asks for -- the isolation and state prefs, the capabilities --
+"""Suite: what a Firefox session asks for (the isolation and state prefs, the capabilities),
 and the dead port the isolation prefs point the proxy at.
 
 The prefs and the capabilities are pure values. `DeadPort` is proven on real loopback sockets,
-since what it promises -- every connection ended at once, a port no rival can bind -- is the
+since what it promises (every connection ended at once, a port no rival can bind) is the
 kernel's behavior, not this module's; its accept loop's retry is proven over a stand-in
 listener, since a failed accept cannot be made to happen on demand. Each name is also checked
 to be the very object `gecko_launch` gives, so whichever module a caller imports, it gets the

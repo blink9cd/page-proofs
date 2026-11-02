@@ -1,8 +1,8 @@
-"""Grouped suite: the LIVE boundary for states -- a page reached by a click, in the pinned engines.
+"""Grouped suite: the live boundary for states (a page reached by a click, in the pinned engines).
 
 `samples/site/popover.html` opens a panel from a button, with no script: the browser's own
 popover. The panel holds a button too small to tap, so a load of the page reports nothing and
-the same page reached by a click reports exactly that button -- which is what proves the
+the same page reached by a click reports exactly that button, which is what proves the
 detectors ran after the actions, in each engine, rather than on the page as it loaded. The state's
 page carries a query, which the server answers with the page's own file. Beside it: an action
 that cannot complete is a fault naming it, and stored values are in place on the served origin.

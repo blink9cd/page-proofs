@@ -1,7 +1,7 @@
 """The egress guard: what each engine is launched with under `--loopback-only`.
 
-`--loopback-only` is the egress guard: requests off the served origin fail -- 127.0.0.1 at the
-port the pages are served on -- an extension's own included. A page's script could otherwise
+`--loopback-only` is the egress guard: requests off the served origin (127.0.0.1 at the
+port the pages are served on) fail, an extension's own included. A page's script could otherwise
 reach whatever else listens on the machine's loopback, a development server or a local API. It
 is implied by an extension (`pass_extension`), and exists on its own so the no-extension
 BASELINE can be measured under the same guard. The served port is known only once the pages are
@@ -12,10 +12,10 @@ guards beyond that differs:
 - **Chromium** sends every request but the served origin's, a WebSocket's included, to a proxy
   on a port nothing listens on, loopback's too (measured: an image, a fetch and a WebSocket to
   another loopback port reached nothing); resolves no name but 127.0.0.1
-  (`--host-resolver-rules`); sends no UDP that no proxy carries -- and an HTTP proxy carries
-  none -- so WebRTC sends none (measured: a STUN request to a loopback port stopped), and speaks
+  (`--host-resolver-rules`); sends no UDP that no proxy carries (and an HTTP proxy carries
+  none), so WebRTC sends none (measured: a STUN request to a loopback port stopped), and speaks
   no QUIC; and runs its FULL build (`channel="chromium"`) rather than the headless shell, which
-  cannot load an extension -- so a baseline is measured in the very build its extension run is;
+  cannot load an extension, so a baseline is measured in the very build its extension run is;
 - **Firefox** sends every request but the served origin's to such a proxy, loopback's too, and
   lets no add-on bypass it; and has no WebRTC (measured: `RTCPeerConnection` is gone), no
   WebTransport, no HTTP/3 and no DNS prefetch, each set by a pref;
@@ -69,7 +69,7 @@ CHROMIUM_GUARD_ARGS = (
 #: bypass, and which the served origin alone does: `network.proxy.no_proxies_on`, added at launch
 #: (`_firefox_prefs`), names its port, which Firefox matches (measured). The served origin stays
 #: a secure context, as loopback is, so a page keeps its secure-only APIs. Then every channel
-#: that would not go through the proxy -- WebRTC, WebTransport, HTTP/3 (each UDP), and the name
+#: that would not go through the proxy (WebRTC, WebTransport, HTTP/3, each UDP), and the name
 #: lookups a page's links would prefetch.
 FIREFOX_GUARD_PREFS: dict[str, str | int | bool] = {
     "network.proxy.type": 1,

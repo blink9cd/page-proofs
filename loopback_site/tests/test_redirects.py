@@ -1,9 +1,11 @@
-"""Grouped suite: the library -- a page answered with a redirect.
+"""Grouped suite: the library, on a page answered with a redirect.
 
 `confirm_serves` follows a redirect by default. With `follow_redirects=False` it refuses the page,
 naming its status and never the address the redirect points at, and the not-found check reads a
 redirect as the status it is. Neither reads a malformed `Location` before declining it.
 """
+
+# gate-serves: none (serves only temporary trees built at test time)
 
 from __future__ import annotations
 

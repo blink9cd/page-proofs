@@ -4,7 +4,7 @@ What starts geckodriver and what is read of it are the `Protocol`s below; the gr
 and the probe for a member of it still running are two functions. geckodriver is started
 leading a session of its own, and the Firefox it starts, with every child process Firefox
 starts, stays in its group (measured), so the group is the one handle a stop has on all of
-them -- all but one. Firefox's crash helper leaves the group: launchd is its parent, and its
+them, all but one. Firefox's crash helper leaves the group: launchd is its parent, and its
 group is another (measured). So a driver records it from a listing of every process while
 its Firefox still runs, and a stop finds it again by that record (`recorded_helpers`). The
 reader's own Firefox runs a helper too, which may outlive it and name a pid our Firefox is
@@ -13,8 +13,8 @@ older than the Firefox it names, both ages read from one listing: ours is starte
 Firefox, while the reader's started before its own Firefox exited, so before ours could be
 given that pid. Ages are whole seconds, the wall clock now less a start that is a wall-clock
 time too (measured: `ps`'s `lstart` is a calendar time, and its `etime` is now less that). So
-only a full wrap of the pid space completed within one second -- from the reader's helper
-starting to our Firefox starting, given that pid -- could pass the reader's helper off as
+only a full wrap of the pid space completed within one second (from the reader's helper
+starting to our Firefox starting, given that pid) could pass the reader's helper off as
 ours. A step back of the clock between those two starts widens that second by the step,
 unless a step moves every running process's start with it; which one it does was not
 measured, since stepping the clock needs root, so the wider residual is the one stated.
@@ -87,14 +87,14 @@ _ETIME: Final = re.compile(
 #: A crash helper's arguments, as measured: its program, the pid of the Firefox it serves,
 #: then the pipe it listens on, named for that same pid, and more. The program is a path
 #: with no space in it, or the bare name; the pid has no leading zero. So the helper of a
-#: Firefox installed under a path with a space -- Firefox Nightly and Developer Edition
-#: install under such names -- is never recorded, and is left running.
+#: Firefox installed under a path with a space (Firefox Nightly and Developer Edition
+#: install under such names) is never recorded, and is left running.
 _CRASH_HELPER: Final = re.compile(
     r"(?:\S*/)?crashhelper ([1-9][0-9]{0,8}) gecko-crash-server-pipe\.\1(?: |\Z)"
 )
 
 #: launchd's pid, and its group's id: the parent a crash helper has (measured), and the
-#: highest group id never signaled -- group 0 is the sender's own.
+#: highest group id never signaled; group 0 is the sender's own.
 _LAUNCHD: Final = 1
 
 
@@ -178,9 +178,9 @@ def group_alive(pgid: int) -> bool:
     """Whether any process in group `pgid` still runs, asked with the null signal.
 
     No error means a member could be signaled, so one runs. ESRCH means no member is left.
-    EPERM means no member could be signaled. On macOS that was measured only for zombies --
-    the one member the leader, exited and unreaped, or a zombie child left once the leader
-    was reaped -- and no member of geckodriver's group runs as another user, so EPERM means
+    EPERM means no member could be signaled. On macOS that was measured only for zombies
+    (the one member the leader, exited and unreaped, or a zombie child left once the leader
+    was reaped), and no member of geckodriver's group runs as another user, so EPERM means
     every member left is a zombie. A zombie runs nothing and writes nothing, so it counts as
     gone, as it does for `terminate_group`.
     """

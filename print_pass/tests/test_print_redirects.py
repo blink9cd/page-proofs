@@ -11,6 +11,8 @@ aggregator; the bootstrap below names the tool's private `src/`, and `print_redi
 the shared loopback server itself.
 """
 
+# gate-serves: none (serves only temporary trees built at test time)
+
 from __future__ import annotations
 
 import sys

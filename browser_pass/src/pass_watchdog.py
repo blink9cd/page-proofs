@@ -5,7 +5,7 @@ synchronous API may only be called from the thread that started it, so a stalled
 be interrupted from another thread either. What a second thread CAN do is watch the clock. Each
 bounded step runs inside `Watchdog.bound`; if it overruns, the watchdog calls `on_expire` from
 its own thread. The default, `abandon`, names the step on stderr and ends the process with exit 2
--- the tool's "could not measure honestly" -- which also closes Playwright's driver pipe, and the
+(the tool's "could not measure honestly"), which also closes Playwright's driver pipe, and the
 driver then closes its browsers. A hung run therefore fails fast instead of producing nothing.
 
 Entry point assumptions: none beyond the standard library.

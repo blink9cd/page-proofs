@@ -1,4 +1,4 @@
-"""Grouped suite: the LIVE boundary -- the pinned engines, driven for real over the sample site.
+"""Grouped suite: the live boundary (the pinned engines, driven for real over the sample site).
 
 A fake browser cannot catch the faults this tool exists to stop: an emulation option an engine
 silently ignores, a scrollbar that shifts every width, a plant that never plants. So these tests
@@ -6,6 +6,8 @@ launch the real Chromium, Firefox and WebKit builds against `samples/site`, serv
 and check what each engine actually reports. The late-script load has its own live suite,
 `test_pass_late_live.py`; `_live_fixtures.py` holds the setup both share.
 """
+
+# gate-serves: none (temporary trees, and its own samples/site, gated with its tool)
 
 from __future__ import annotations
 
@@ -41,7 +43,7 @@ _TIMEOUT = TIMEOUT
 
 #: The engine launches this module may make (`LiveSite` fails it past them). Each proof, the
 #: landscape read-back and the watchdog wiring go through `run_matrix`, which launches its own
-#: browser -- that launch is what they test; the no-build refusal's attempt needs a driver of its
+#: browser (that launch is what they test); the no-build refusal's attempt needs a driver of its
 #: own, because Playwright reads the builds path once, at startup; the shared engines' own
 #: watchdog wiring starts one Chromium; the refusals share one; and the motion tests share one
 #: of each engine. So: Chromium 4, Firefox 2, WebKit 5.
@@ -236,7 +238,7 @@ class MissingBuildTests(unittest.TestCase):
 
 #: Where the motion sample's boxes rest, in px below the top of the stage holding them: the
 #: slide at the END of its move, the endless bob at its iteration start, and the box the page
-#: pauses itself at its first frame -- untouched, where a finish would have sent it to 160.
+#: pauses itself at its first frame, untouched, where a finish would have sent it to 160.
 _MOTION_AT_REST = {"#slide": 120.0, "#bob": 0.0, "#held": 40.0}
 
 

@@ -5,22 +5,23 @@ to Firefox's own print path: the static copy of the page made just after `before
 the one a reader's print is laid out from. The command measures the page and its margins
 in centimeters. The paper is US Letter, which Firefox also prints on when the command
 names none, and every margin is 0.5 in (1.27 cm), what Firefox's own print dialog puts on
-Letter, so a print here is laid out as a reader's would be who left the dialog alone --
+Letter, so a print here is laid out as a reader's would be who left the dialog alone,
 unless a state's `page_width` sets a page width of its own, whose margin the caller passes.
 Scale 1, shrink-to-fit and portrait are the command's own defaults, sent all the same, so
 the report can state each from the body itself rather than from a default it assumes.
 
 What the command cannot set is `CANNOT_CONTROL`, and the report states it beside the
-body. The command has no tagging parameter, and Firefox's PDF is always untagged; it never
-prints the dialog's header and footer; and it writes no `Title` into the PDF, where the
-dialog's own Save to PDF copies the page's `<title>`.
+body. The command has no tagging parameter and no title parameter, so whether the PDF is
+tagged, and whether its `Title` is the page's `<title>`, is the Firefox build's choice:
+measured, Firefox 159 on macOS does both, and an earlier build did neither. It never prints
+the dialog's header and footer.
 
-The margin is held as exact inches -- `MARGIN_INCHES`, or the one a caller passes -- which
+The margin is held as exact inches (`MARGIN_INCHES`, or the one a caller passes), which
 a Firefox PDF's ink is measured against; the centimeters the command is sent are derived
 from it here, so the two cannot drift.
 
-Nothing here is checked at run time. Firefox does not check the values either -- a 5 cm
-margin on a 1 cm page printed without a word -- so the suite proves the default margins
+Nothing here is checked at run time. Firefox does not check the values either (a 5 cm
+margin on a 1 cm page printed without a word), so the suite proves the default margins
 leave a printable area on the page, and `print_targets` bounds a page width so its margin
 always does.
 
@@ -48,10 +49,11 @@ MARGIN_CM: Final = float(MARGIN_INCHES * CM_PER_INCH)
 #: What WebDriver's Print cannot set, one sentence each: tagging, the header and footer,
 #: and the Title.
 CANNOT_CONTROL: Final[tuple[str, ...]] = (
-    "WebDriver's Print takes no tagging parameter, and Firefox's PDF is always untagged.",
+    "WebDriver's Print takes no tagging parameter, so whether the PDF is tagged is "
+    "the Firefox build's choice.",
     "WebDriver's Print never prints the print dialog's header and footer.",
-    "WebDriver's Print writes no Title into the PDF, where the dialog's Save to PDF "
-    "copies the page's title.",
+    "WebDriver's Print takes no title parameter, so whether the PDF's Title is the "
+    "page's title is the Firefox build's choice.",
 )
 
 # The four sides the command's `margin` names, in the order the W3C command lists them.

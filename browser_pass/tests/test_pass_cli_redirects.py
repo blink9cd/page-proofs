@@ -1,4 +1,4 @@
-"""Grouped suite: the CLI with a meta-refresh page -- followed when declared, refused when not.
+"""Grouped suite: the CLI with a meta-refresh page (followed when declared, refused when not).
 
 The scratch project's `/archive/` becomes a 0-second meta refresh to its year page, as a
 generated archive stub often is. These tests drive the CLI through `_cli_fixtures.FakeEngine`
@@ -88,7 +88,7 @@ class RedirectCliTests(CliCase):
         self.assertEqual(code, 0)
         (call,) = self.engine.calls
         renderings = cast("list[Rendering]", call["renderings"])
-        # One page's worth: two orientations, two modes, scripts on and off -- not two pages'.
+        # One page's worth (two orientations, two modes, scripts on and off), not two pages'.
         self.assertEqual(len(renderings), 2 * 2 * 2)
         self.assertEqual({r.page for r in renderings}, {"/archive/2026/"})
 

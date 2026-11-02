@@ -1,4 +1,4 @@
-"""Grouped suite: one Firefox state end to end -- its session, window, storage, page and print.
+"""Grouped suite: one Firefox state end to end (its session, window, storage, page and print).
 
 A state opens a session asking for the isolation and its own prefs, notes the Firefox it
 names, sizes the window until the page reads the viewport asked, seeds storage from the

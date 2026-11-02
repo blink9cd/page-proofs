@@ -253,7 +253,7 @@ class TestSelection(unittest.TestCase):
     # fuzz-explore: selection
     @given(st.text())
     def test_selection_answers_or_raises_value_error(self, value: str) -> None:
-        """Any string either comes back unchanged or raises ValueError -- nothing else."""
+        """Any string either comes back unchanged or raises ValueError, nothing else."""
         env = {suite_select.SELECT_ENV: value}
         try:
             result = suite_select.selection(env)

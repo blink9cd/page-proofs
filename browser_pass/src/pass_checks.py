@@ -171,7 +171,7 @@ def emulation_faults(rendering: Rendering, state: PageState) -> list[str]:
 
 
 def _scripting_faults(scripts: str, scripting_none: bool) -> list[str]:
-    """Scripting as the PAGE sees it -- the media query a stylesheet actually reads."""
+    """Scripting as the page sees it: the media query a stylesheet actually reads."""
     if scripts == "off" and not scripting_none:
         return [
             "(scripting: none) does not match with scripts off: scripting is still on"
@@ -236,8 +236,8 @@ def merged_findings(
 ) -> dict[str, tuple[str, ...]]:
     """Each detector's findings from every part in turn; empty ones dropped.
 
-    One rendering's two loads can both find something for one detector -- the page load and
-    the late-script load both watch for CSP violations -- and neither may overwrite the other.
+    One rendering's two loads can both find something for one detector (the page load and
+    the late-script load both watch for CSP violations), and neither may overwrite the other.
     A violation both loads report is one finding, as it is within one load; every other
     detector keeps its findings as it made them, repeats and all.
     """
@@ -306,7 +306,7 @@ def plant_took_from(raw: object) -> dict[str, bool]:
     """Which plants took, per detector.
 
     Anything but a literal `true` did not take, so a malformed record can only ever turn into
-    `not planted` -- an instrument fault, never a pass.
+    `not planted`: an instrument fault, never a pass.
     """
     record = record_mapping(raw, "plant")
     return {detector: record.get(detector) is True for detector in DETECTORS}

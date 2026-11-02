@@ -1,4 +1,4 @@
-"""Grouped suite: the CLI -- its options, every refusal, and what a run writes and prints.
+"""Grouped suite: the CLI (its options, every refusal, and what a run writes and prints).
 
 The engine is replaced here by `_cli_fixtures.FakeEngine`, which returns scripted results, so these
 tests reach every exit path without a browser. The real engines are driven in `test_pass_live.py`,
@@ -21,6 +21,7 @@ from typing import Any
 from unittest import mock
 
 import browser_pass
+import pass_extension
 import pass_facts
 from pass_motion import Motion
 from pass_report import JSON_NAME, MARKDOWN_NAME
@@ -30,7 +31,7 @@ from pass_targets import Rendering
 _FAKE_COMMIT = "0123456789abcdef0123456789abcdef01234567"
 
 #: A fake `git` that logs each call's arguments to `FAKE_GIT_LOG`, then answers HEAD with
-#: `_FAKE_COMMIT` and a clean status -- or hangs, when `FAKE_GIT_MODE` is `hang`.
+#: `_FAKE_COMMIT` and a clean status, or hangs, when `FAKE_GIT_MODE` is `hang`.
 _FAKE_GIT = f"""#!{sys.executable}
 import os, sys, time
 with open(os.environ["FAKE_GIT_LOG"], "a", encoding="utf-8") as log:
@@ -75,6 +76,13 @@ class ParserTests(unittest.TestCase):
         text = browser_pass.build_parser().format_help()
         self.assertIn("(default: 30.0)", text)
         self.assertIn("Installing the engines", text)
+
+    def test_help_shows_no_default_an_option_left_out_never_had(self) -> None:
+        # Flattened: argparse may wrap a default note across two lines.
+        text = " ".join(browser_pass.build_parser().format_help().split())
+        for unset in ("(default: None)", "(default: False)"):
+            with self.subTest(unset=unset):
+                self.assertNotIn(unset, text)
 
 
 class RefusalTests(CliCase):
@@ -164,7 +172,7 @@ class RunTests(CliCase):
         self.assertEqual(code, 0)
         lines = out.splitlines()
         (motion,) = [line for line in lines if "motion" in line]
-        # Eight renderings of `/` -- two orientations, two modes, scripts on and off -- each
+        # Eight renderings of `/` (two orientations, two modes, scripts on and off), each
         # stilling the same, and none of `/archive/`, which the line does not name.
         self.assertEqual(
             motion,
@@ -222,6 +230,20 @@ class RunTests(CliCase):
         self.assertRegex(str(call["base_url"]), r"^http://127\.0\.0\.1:[1-9][0-9]*$")
         self.assertEqual((call["timeout"], call["prove"]), (12.0, True))
         self.assertTrue(call["scratch_exists"])
+
+    def test_each_flag_left_out_reaches_the_run_as_false(self) -> None:
+        # A flag left out parses as None, so --help shows no default; the run gets False.
+        self.run_cli("--serve", str(self.site))
+        (call,) = self.engine.calls
+        isolation = call["isolation"]
+        assert isinstance(isolation, pass_extension.Isolation)
+        for flag, value in (
+            ("--prove", call["prove"]),
+            ("--require-csp", call["require_csp"]),
+            ("--loopback-only", isolation.loopback_only),
+        ):
+            with self.subTest(flag=flag):
+                self.assertIs(value, False)
 
     def test_points_playwright_at_the_named_engine_builds(self) -> None:
         chosen = self.root / "chosen-builds"

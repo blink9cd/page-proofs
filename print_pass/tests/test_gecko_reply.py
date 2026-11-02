@@ -1,8 +1,8 @@
 """`gecko_reply`: the client's error, a reply decoded, and each value read from one parsed.
 
 Every reply geckodriver sends is decoded here into its `value` or one `WebDriverError`, and
-the values the client reads further -- New Session's id, version and Firefox pid, Find
-Element's reference, Print's PDF -- are parsed here too, each refusal naming the command it is
+the values the client reads further (New Session's id, version and Firefox pid, Find
+Element's reference, Print's PDF) are parsed here too, each refusal naming the command it is
 handed. The client sending them is `test_gecko_client.py`; `decode_response` by property is
 `test_gecko_reply_fuzz.py`.
 

@@ -12,7 +12,7 @@ once its bytes had finished arriving by that paint. Both are OBSERVED clocks on 
 simulated FCP Lighthouse scores is a model of a slower network, and no request ever finished
 at a simulated time.
 
-Entry point assumptions: none -- pure functions over an already-parsed JSON value.
+Entry point assumptions: none. These are pure functions over an already-parsed JSON value.
 """
 
 from __future__ import annotations

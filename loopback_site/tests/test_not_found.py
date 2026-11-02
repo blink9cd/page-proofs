@@ -6,6 +6,8 @@ the default: without `not_found`, a miss is still Python's own script-free error
 a caller may depend on.
 """
 
+# gate-serves: none (serves only temporary trees built at test time)
+
 from __future__ import annotations
 
 import contextlib

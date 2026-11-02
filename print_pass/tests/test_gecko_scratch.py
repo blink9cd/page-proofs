@@ -1,4 +1,4 @@
-"""Suite: removing the run's scratch folder -- every ACL in it stripped, then the tree removed.
+"""Suite: removing the run's scratch folder: every ACL in it stripped, then the tree removed.
 
 macOS makes some folders in a home it is pointed at with an everyone-deny-delete ACL, so a
 plain recursive removal of the scratch fails on them. `remove_scratch` names every entry of the
@@ -273,7 +273,7 @@ def _deny_delete(path: Path) -> None:
 def _lift(path: Path) -> None:
     """Strip every ACL from `path`, which this suite made, so its cleanup can remove it.
 
-    A path already gone -- a passing case removed it -- is skipped, so chmod says nothing.
+    A path already gone (a passing case removed it) is skipped, so chmod says nothing.
     """
     if not os.path.lexists(path):
         return

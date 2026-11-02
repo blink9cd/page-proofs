@@ -1,8 +1,8 @@
 """The engine: print every state of every target to PDF through Playwright, and record each.
 
 `run_targets` is the one entry point. It launches each browser the first time a state needs
-it -- the engine the settings name, and installed Chrome forced dark for any `native-dark`
-state, since the pinned shell ignores that flag -- runs the states in file order, and closes
+it (the engine the settings name, and installed Chrome forced dark for any `native-dark`
+state, since the pinned shell ignores that flag), runs the states in file order, and closes
 every browser however the run ends. Firefox is no engine of this module's: it prints
 through geckodriver's WebDriver Print, and handed here it is refused as the programming
 error it is. Every launch and close runs inside the watchdog, as every call a state makes

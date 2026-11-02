@@ -1,9 +1,9 @@
 """Read the audits that explain a run's numbers out of one Lighthouse report.
 
 `lighthouse_report` reads the numbers a run is MEASURED by, and refuses a report missing any of
-them: a missing metric is a failed run. This module reads what EXPLAINS those numbers --
-render-blocking requests, the request dependency chain, unused CSS, the LCP element, cache
-lifetimes, the document's own latency -- and refuses nothing. Each field is read on its own
+them: a missing metric is a failed run. This module reads what explains those numbers
+(render-blocking requests, the request dependency chain, unused CSS, the LCP element, cache
+lifetimes, the document's own latency) and refuses nothing. Each field is read on its own
 and is `None` when Lighthouse did not write it, or wrote it in a shape this reader does not
 know, so an explanation missing from one run never costs the run its numbers.
 
@@ -16,7 +16,7 @@ below. Three readings are not obvious from the field names:
   The page's origin is the report's `finalDisplayedUrl`, else its `mainDocumentUrl`.
 - **A blocking request's `wastedMs` is its simulated download time**, not a saving, and
   Lighthouse leaves it off a request under 50 ms, or one not in its first-paint graph. So a
-  request recorded with `None` downloaded in under 50 ms -- a bound, not an unknown -- or
+  request recorded with `None` downloaded in under 50 ms (a bound, not an unknown), or
   its `wastedMs` was unreadable: present, but not a finite number. Real desktop runs leave
   it off most of their requests.
 - **A text LCP has no discovery checklist**: no request fetched the element, so Lighthouse
@@ -28,7 +28,7 @@ below. Three readings are not obvious from the field names:
 **Privacy.** The LCP element is recorded by its CSS selector alone, never by the
 `nodeLabel` or `snippet` Lighthouse writes beside it: those carry the page's own text.
 
-Entry point assumptions: none -- pure functions over an already-parsed JSON value.
+Entry point assumptions: none. These are pure functions over an already-parsed JSON value.
 """
 
 from __future__ import annotations
@@ -130,7 +130,7 @@ def _list(value: object) -> Sequence[object] | None:
 
 
 def _number(value: object) -> float | None:
-    """`value` as a finite float, or None -- never a bool, which JSON keeps apart."""
+    """`value` as a finite float, or None; never a bool, which JSON keeps apart."""
     if isinstance(value, bool) or not isinstance(value, (int, float)):
         return None
     try:

@@ -1,14 +1,14 @@
 """Grouped suite: measuring a hosted copy (`--url`), confirmed against a local folder (`--expect`).
 
 No test here opens a connection off this machine. The "host" is a folder this suite serves on
-loopback itself, through the same shared server a loopback run uses, and that server's base url
-is what `--url` names: the runner fetches over a real socket from a server it did not start.
-The hosts that misbehave -- one that never answers, one that hangs up mid-body, one that
-redirects every page, to the package's host or to a malformed address -- are tiny loopback
-servers of this suite's own. Tests that never get past parsing use names under
-`example.invalid`, which RFC 2606 reserves so that no resolver answers them.
+loopback, through the same shared server a loopback run uses, and that server's base url is
+what `--url` names: the runner fetches over a real socket from a server it did not start. The
+misbehaving hosts (silent, hanging up mid-body, or redirecting every page to the package's host
+or a malformed address) are tiny loopback servers of the suite's own. Tests that never get past
+parsing use names under `example.invalid`, which RFC 2606 reserves so no resolver answers them.
 """
 
+# gate-serves: none (serves only temporary trees built at test time)
 from __future__ import annotations
 
 import contextlib

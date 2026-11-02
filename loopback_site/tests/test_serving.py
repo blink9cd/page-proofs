@@ -1,10 +1,12 @@
-"""Grouped suite: the library -- serving a directory on loopback, and proving what it serves.
+"""Grouped suite: the library, serving a directory on loopback and proving what it serves.
 
 Covers `serve_directory` binding and stopping, `confirm_serves` against the tree on disk, the
 Host check that refuses every origin but the server's own loopback port, and which handler
 failures reach stderr. A page answered with a redirect has a suite of its own,
 `test_redirects.py`.
 """
+
+# gate-serves: none (serves only temporary trees built at test time)
 
 from __future__ import annotations
 
@@ -48,13 +50,19 @@ _PROMPT_EXIT_SECONDS = 0.3
 #: Exits timed per run; the median keeps one scheduling hiccup from deciding the verdict.
 _EXIT_SAMPLES = 5
 
-#: What a client hanging up mid-request raises on the server's side of the socket.
-_CLIENT_HANG_UPS: tuple[type[OSError], ...] = (ConnectionResetError, BrokenPipeError)
+#: What a client hanging up mid-request raises on the server's side of the socket. Windows
+#: reports a client that closed mid-response as ConnectionAbortedError (WinError 10053) from
+#: the body write, so it is a hang-up there.
+_CLIENT_HANG_UPS: tuple[type[OSError], ...] = (
+    ConnectionResetError,
+    BrokenPipeError,
+    ConnectionAbortedError,
+)
 
 #: Handler failures that are not a hang-up, so their traceback must still print.
-#: ConnectionAbortedError shares the hang-ups' ConnectionError base, so it pins the quiet path
-#: to the two named types rather than to that whole family.
-_OTHER_FAILURES: tuple[type[Exception], ...] = (ValueError, ConnectionAbortedError)
+#: ConnectionRefusedError shares the hang-ups' ConnectionError base, so it pins the quiet path
+#: to the named types rather than to that whole family.
+_OTHER_FAILURES: tuple[type[Exception], ...] = (ValueError, ConnectionRefusedError)
 
 #: A body far larger than both loopback socket buffers together, so the server is still
 #: writing it when the client resets the connection. Written sparse, so it costs no disk.

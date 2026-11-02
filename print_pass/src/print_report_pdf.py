@@ -1,8 +1,8 @@
 """The report's reading half: one PDF read by every reader and two compared, safe to share.
 
-`read_pdf` runs every reader over one PDF, in order -- poppler's inspectors, pypdf's links
+`read_pdf` runs every reader over one PDF, in order (poppler's inspectors, pypdf's links
 and metadata and pdfminer's text (together, in one bounded child process), the renders,
-their levels and ink, the privacy matcher -- and keeps going when one fails: a reader's own
+their levels and ink, the privacy matcher), and keeps going when one fails: a reader's own
 error becomes a finding naming its step, and the other steps still run, so one broken
 reader never costs the rest of the report. An encrypted PDF skips the pypdf and pdfminer
 readers, with a warning. `compare_pdfs` renders two PDFs in color and compares them page by
@@ -427,8 +427,8 @@ def _privacy_info(
 ) -> Mapping[str, str]:
     """The Info fields the privacy matcher searches.
 
-    pypdf's Info dictionary when it was read; otherwise -- an encrypted PDF, or a failed
-    metadata read -- every field pdfinfo printed; with neither, none.
+    pypdf's Info dictionary when it was read; otherwise (an encrypted PDF, or a failed
+    metadata read) every field pdfinfo printed; with neither, none.
     """
     if metadata is not None:
         return metadata

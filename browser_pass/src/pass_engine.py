@@ -6,10 +6,10 @@ reduced motion OFF, and scripting through the engine's own switch. Then, in orde
 
 1. **Load**, with every console error, uncaught page error, HTTP >= 400 response and failed
    request collected from the first byte (`pass_listeners`: a page with no file is excused its
-   own expected 404, and nothing else) -- and, with scripts on, every Content Security Policy
+   own expected 404, and nothing else), and, with scripts on, every Content Security Policy
    violation, through the collector `pass_csp` puts on the context before its page.
 2. **Settle**: the layout signature is polled until it holds still for a quiet window. At `load`
-   a scripted page can still be building itself, and an animation can still be moving -- so
+   a scripted page can still be building itself, and an animation can still be moving. So
    before each poll every animation still running on the document's timeline, in the
    document or in any open shadow root, is brought to rest (`pass_motion`), and a paced or
    endless one is measured at rest, not in a pause.
@@ -21,7 +21,7 @@ reduced motion OFF, and scripting through the engine's own switch. Then, in orde
 6. **Prove** (with `--prove`): plant one fault per detector and read every detector again, the
    CSP plant last, so the policy it adds refuses nothing the page restyles while they are read.
 7. **Load it again for late shifts** (Chromium, scripts on, never a state): in a context of its
-   own, so the detectors above are neither slowed nor perturbed -- see `pass_late_load`.
+   own, so the detectors above are neither slowed nor perturbed: see `pass_late_load`.
 
 **Firefox reads its per-user data folder at startup even when handed a throwaway profile**,
 and on macOS that folder is the machine user's real Firefox profile store. So Firefox is
@@ -115,7 +115,7 @@ Launched = Browser | PersistentBrowser
 
 
 class EngineError(RuntimeError):
-    """An engine could not be launched -- most often, its pinned build is not installed."""
+    """An engine could not be launched, most often because its pinned build is not installed."""
 
 
 def playwright_version() -> str:
@@ -349,7 +349,7 @@ def render(
     require_csp: bool = False,
     missing: bool = False,
 ) -> RenderingResult:
-    """One rendering in its own context, closed afterwards whatever happened, then late shifts.
+    """One rendering in its own context, closed after it whatever happened, then late shifts.
 
     A rendering of a `state` has its stored values in that context, and no late-script load.
     With `require_csp`, a page load declaring no policy is a finding (`pass_csp`); a payload its

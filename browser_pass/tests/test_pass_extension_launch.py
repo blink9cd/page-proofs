@@ -3,8 +3,8 @@
 `PersistentBrowser` stands where a launched browser stands when an engine runs with an extension:
 each context it opens is its own browser launch, in a fresh profile under the run's scratch
 folder, confirmed to have loaded the extension before it is handed back. The stand-in browser
-type in `_launch_fakes.py` records every launch, and its contexts play the engine's part -- a
-service worker that starts or never does, an `extensions.json` Firefox writes or never does -- so
+type in `_launch_fakes.py` records every launch, and its contexts play the engine's part (a
+service worker that starts or never does, an `extensions.json` Firefox writes or never does), so
 each branch is reached with no engine build installed. The live suite,
 `test_pass_extension_live.py`, drives the real one; `test_pass_extension_tabs.py` the tabs and
 faults around a launch.
@@ -177,6 +177,22 @@ class ProfileTests(LaunchCase):
         browser.close()
         self.assertEqual(self.log[-1], "close context")
         self.assertFalse(two.exists())
+
+    def test_a_context_already_closed_is_not_closed_again_but_its_profile_goes(
+        self,
+    ) -> None:
+        # Only a live test reached this branch, and it does not run on every host, so a
+        # Windows run's coverage missed it.
+        context = Context(self.log, workers=(self.worker_url(),))
+        browser_type = BrowserType([context])
+        browser = self.persistent(browser_type, self.chromium)
+        browser.new_context(**CONTEXT_OPTIONS)
+        profile = browser_type.launches[0]["user_data_dir"]
+        context.close()
+        closes = self.log.count("close context")
+        browser.close()
+        self.assertEqual(self.log.count("close context"), closes)
+        self.assertFalse(profile.exists())
 
     def test_closing_with_nothing_open_closes_nothing(self) -> None:
         browser = self.persistent(BrowserType([]), self.chromium)

@@ -1,4 +1,4 @@
-"""Grouped suite: print_preflight -- where --out may go, poppler, the engine builds, Playwright.
+"""Grouped suite: print_preflight (where --out may go, poppler, the engine builds, Playwright).
 
 Each case calls a check itself, apart from any run: `refuse_out` against the real git (and a
 git whose answer is scripted, for what no real layout here gives), `missing_poppler`, where

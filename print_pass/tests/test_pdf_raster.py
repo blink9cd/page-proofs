@@ -1,4 +1,4 @@
-"""Suite: pdf_raster's pure half -- PNM parsing, dominant shares, ink extent, comparison.
+"""Suite: pdf_raster's pure half (PNM parsing, dominant shares, ink extent, comparison).
 
 Every raster is built from bytes here, so each figure asserted is known exactly. The renders,
 which cross the subprocess boundary, are `test_pdf_raster_render.py`'s.

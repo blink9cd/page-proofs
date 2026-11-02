@@ -312,7 +312,7 @@ def child_config(config: CanaryConfig, report: str) -> CanaryConfig:
 def outcome_of(action: Callable[[], str | None]) -> str:
     """What `action` gave: `OK`, `LOOKUP_FAILED`, the errno's name, or the error's type.
 
-    An action that names its own outcome -- the service check, `sandbox_check`'s answer --
+    An action that names its own outcome (the service check, `sandbox_check`'s answer)
     gives that instead of `OK`.
     """
     try:
@@ -448,7 +448,7 @@ def _actions(
 def main(config_text: str) -> int:
     """Read the config, probe, write the report; then, as the proof's canary, run the child.
 
-    The canary the proof started -- the one told of a child -- then waits to be checked:
+    The canary the proof started (the one told of a child) then waits to be checked:
     `sandbox_check` can answer only for a process still running under the profile.
 
     Raises:

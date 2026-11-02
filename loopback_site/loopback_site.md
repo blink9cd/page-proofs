@@ -11,7 +11,7 @@ port silently shows the other server's tree.
 
 This server closes both. It binds loopback only, by default on a port the operating system
 picks, and it fetches every page it is asked about and compares the bytes with the file on disk
-before it reports a url -- so the url it prints is evidence of which tree answers, not an
+before it reports a url, so the url it prints is evidence of which tree answers, not an
 assumption. A caller that needs a fixed port names one with `--port`; one already held is refused
 with exit `2`, never shared.
 
@@ -20,15 +20,15 @@ with exit `2`, never shared.
 A loopback bind keeps other machines off the port. It does not keep off a public page open in the
 viewer's own browser, which can aim a request at `127.0.0.1` and, through DNS rebinding, make that
 request look same-origin. So the server answers only a `Host` of `127.0.0.1:<port>` or
-`localhost:<port>`. Anything else -- another name, a loopback name without the port, no `Host` at
-all -- gets `403` before a file is opened, and no response carries a CORS header.
+`localhost:<port>`. Anything else (another name, a loopback name without the port, no `Host` at
+all) gets `403` before a file is opened, and no response carries a CORS header.
 
 ## The listen queue
 
 `ThreadingHTTPServer` threads the handling of a request, not the accepting of a connection: one
 loop accepts them all, and whatever arrives faster waits in the socket's listen queue. The server
-inherits `socketserver`'s queue of 5, and one browser load of a site page -- its stylesheets and
-module graph -- opens more connections than that in parallel. On macOS a connection that finds the
+inherits `socketserver`'s queue of 5, and one browser load of a site page (its stylesheets and
+module graph) opens more connections than that in parallel. On macOS a connection that finds the
 queue full is reset rather than retried, so the browser reports `ERR_CONNECTION_RESET` on a random
 subresource: a failed module import aborts the whole module graph, and a failed stylesheet leaves
 the page part-styled. That shows a reviewer a broken page the change under review did not cause.
@@ -49,33 +49,35 @@ takes an exit to a few hundredths of a second for a handful of idle wake-ups.
 
 A browser that closes a page, or abandons a connection it opened, resets that connection
 mid-request. The handler's next write then raises `BrokenPipeError` or `ConnectionResetError`,
-depending on timing -- both seen on macOS from the same send -- and its next read raises
-`ConnectionResetError`. `socketserver`'s default
-`handle_error` prints a full traceback for either. So a live test whose browser closed pages
+depending on timing (both seen on macOS from the same send), and its next read raises
+`ConnectionResetError`. On Windows the same write, to a client that closed mid-response,
+raises `ConnectionAbortedError` (`WinError 10053`) instead. `socketserver`'s default
+`handle_error` prints a full traceback for each. So a live test whose browser closed pages
 mid-request passed with tracebacks on stderr, and a real failure in the same run read as one
 more of them.
 
-The server overrides `handle_error` to drop exactly those two, matched on the exception being
-handled, and hands every other failure to the default report. The match is the two types, not
-their `ConnectionError` base, so `ConnectionAbortedError` still reports: on POSIX it means this
-end's own stack aborted the connection, not that the client hung up.
+The server overrides `handle_error` to drop exactly those three, matched on the exception being
+handled, and hands every other failure to the default report. The match is the three types, not
+their `ConnectionError` base, so `ConnectionRefusedError` still reports. On POSIX `ConnectionAbortedError` can instead mean
+this end's own stack aborted the connection, and that is now dropped silently as well: an
+accepted cost of one tuple for every platform.
 
 ## A request path no file can have
 
 `open()` refuses two kinds of name with `ValueError` rather than the `OSError` the standard
 library answers `404` for: one holding NUL, which `%00` decodes to, and one the filesystem
-encoding cannot encode -- a lone surrogate such as `%ED%A0%80`, which the standard library's path
+encoding cannot encode: a lone surrogate such as `%ED%A0%80`, which the standard library's path
 translation decodes with `surrogatepass`. Left to the standard library, the handler died
 mid-request: a traceback on stderr and a connection reset at the client, which reads like a crash
-rather than a miss. The handler answers such a path `404` before any file is opened -- after the
-`Host` check, and with the `--not-found` file when there is one -- because no file can have that
+rather than a miss. The handler answers such a path `404` before any file is opened (after the
+`Host` check, and with the `--not-found` file when there is one), because no file can have that
 name, so it is a miss like any other. Every other name the OS cannot open fails with `OSError` and
 gets the same `404` from the standard library.
 
 ## A site's own 404 page (`--not-found`)
 
 GitHub Pages answers a path with no file using a site's own `404.html`, with status `404`. A
-site whose 404 page does something -- reacts to the address it was reached at, say -- can only be
+site whose 404 page does something (reacts to the address it was reached at, say) can only be
 reviewed or measured locally if the local server answers a miss the same way. Name that file with
 `--not-found PATH` (library: `not_found=`), a server path such as `/404.html`:
 
@@ -95,7 +97,7 @@ reviewed or measured locally if the local server answers a miss the same way. Na
   is `/404.html` whether or not an `x/` exists, and a `..` after a symlinked directory never
   climbs from the link's target.
 
-It is **opt-in**, and the default must not change: without it a miss is Python's own error page,
+It is opt-in, and the default must not change: without it a miss is Python's own error page,
 which runs no script. A caller may rely on that: one that loads a reserved missing path and
 refuses to continue unless the page it lands on holds no script needs exactly that page, which a
 site's own 404 page need not satisfy. A test pins the default against the standard library's own
@@ -146,7 +148,7 @@ left running, and it is why the url is read from the output rather than remember
 `SIGINT` or `SIGTERM` (`kill <pid>`); either exits `0`.
 
 Both signals get a handler installed explicitly. A process launched in the background can inherit
-`SIGINT` as ignored -- a non-interactive shell hands exactly that to an `&` child -- and an ignored
+`SIGINT` as ignored (a non-interactive shell hands exactly that to an `&` child), and an ignored
 signal never becomes Python's `KeyboardInterrupt`, so relying on the default would leave an
 interrupt doing nothing at all.
 
@@ -160,7 +162,7 @@ interrupt doing nothing at all.
 - `confirm_serves(base_url, directory, page, timeout=..., not_found=None,
   follow_redirects=True)` fetches one page. It raises `OSError` when the file is missing, the
   server cannot be reached or it answers an error status, and `SiteServeError` when the bytes
-  differ -- the server is answering from another tree. With `not_found`, a page that has no file
+  differ: the server is answering from another tree. With `not_found`, a page that has no file
   must instead answer `404` with exactly the bytes of the file `not_found` names, else
   `SiteServeError`; a page that has a file is confirmed as without it. That `404` is fetched
   without following a redirect, so a directory named without its slash is refused as the `301` it
@@ -168,7 +170,7 @@ interrupt doing nothing at all.
 - `follow_redirects` is keyword-only, and its default follows a redirect as a browser does, so
   every caller that does not pass it behaves as before. Passed `False`, a page that has its file
   is fetched the same way the `404` is: a redirect raises `SiteServeError` naming the page and the
-  status -- never the address it points at -- even when that address answers the very same bytes.
+  status, never the address it points at, even when that address answers the very same bytes.
   A caller measuring a host it does not run passes `False`, so the address confirmed is the
   address measured, not one an unreported hop away. Unfollowed, a redirect's address is never
   even read. `urllib`'s own redirect handler parses `Location` before it asks whether to follow,
@@ -214,7 +216,7 @@ a redirect, and whether its own list of pages declared it as one.
   charset, or UTF-8 when there is none or Python has no text codec by that name.
 - `parse_meta_refresh(html, page_url)` is the pure half. It returns the first `<meta>` whose
   `http-equiv` is `refresh` in any case and whose content the HTML spec's "shared declarative
-  refresh steps" accept -- the first that parses, not the first written, because a browser sets
+  refresh steps" accept: the first that parses, not the first written, because a browser sets
   its "will declaratively refresh" flag only on one it accepts. The content is read as those
   steps read it, including the quirk that a remainder merely starting like `url=` is the URL
   whole, and a refresh with no URL names the page itself.
@@ -239,7 +241,7 @@ insert.
 | Code | Meaning |
 | --- | --- |
 | `0` | Stopped cleanly by `SIGINT` or `SIGTERM`. |
-| `2` | Could not serve honestly: `--directory` is not a directory, `--not-found` names no file in it, `--port` is already held, or a page was not confirmed (missing on disk, unreachable, or answered with other bytes or another status). A parse error -- no `--directory`, or a page without a leading `/` or holding a space, a control or a non-ASCII character -- is also `2`, from argparse. |
+| `2` | Could not serve honestly: `--directory` is not a directory, `--not-found` names no file in it, `--port` is already held, or a page was not confirmed (missing on disk, unreachable, or answered with other bytes or another status). A parse error (no `--directory`, or a page without a leading `/` or holding a space, a control or a non-ASCII character) is also `2`, from argparse. |
 
 ## Tests
 
@@ -292,7 +294,7 @@ OS-picked port over a scratch tree the test writes, so nothing reaches the netwo
   `SimpleHTTPRequestHandler` serves the same tree beside it, and a miss and a directory listing
   must match it in status, `Content-Type` and body. So
   the pin holds whatever the standard library's page says, and fails the moment the two differ.
-- The signal test sets each disposition to ignored BEFORE installing the handlers and asserts it
+- The signal test sets each disposition to ignored before installing the handlers and asserts it
   changed. That assertion, not a stop-timing bar, is what catches a missing handler.
 - Three live tests launch the real CLI under the suite's own interpreter, on POSIX only. Two stop it
   with `SIGTERM`, and with `SIGINT` inherited as ignored through `exec`, and require exit `0`, a

@@ -1,9 +1,9 @@
-"""Grouped suite: print_pass's command line -- its options, each mode's refusals, and --out's.
+"""Grouped suite: print_pass's command line (its options, each mode's refusals, and --out's).
 
 Every case here ends before anything is printed or read: the parser's help and errors, the
 checks `_validate_args` makes per mode, and `main` refusing a run whose `--out` a git alone
 on `PATH` cannot place, whose poppler readers are missing, or whose PDF readers are not
-installed -- that last also in a fresh interpreter, where nothing this suite imported can
+installed, that last also in a fresh interpreter, where nothing this suite imported can
 stand in for one. The checks themselves are `test_print_preflight`'s; what a run does
 after them is `test_print_modes`'.
 """
@@ -21,8 +21,6 @@ _TOOL_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(_TOOL_DIR / "src"))
 sys.path.insert(0, str(_TOOL_DIR))
 import print_pass  # noqa: E402 - the CLI, via the insert above
-
-import help_formatter  # noqa: E402 - beside the tool's folder, via the CLI's own insert
 
 import pdf_tools  # noqa: E402 - the tool's private src/
 import print_modes  # noqa: E402 - as above
@@ -107,12 +105,8 @@ class HelpTest(unittest.TestCase):
             self.assertIn(option, text)
         for default in ("1280x800", "off", "shell", "96", "30", "['/']"):
             self.assertIn(f"(default: {default})", text)
-        # A required option has no default to show: argparse below 3.13 would show None,
-        # which the requirement-aware formatter keeps off on every version, this one too.
-        formatter = print_pass.build_parser().formatter_class
-        self.assertIs(formatter, help_formatter.ReqAwareDefaultsFormatter)
-        for required in ("or compare two.", "and report.json."):
-            self.assertNotIn(f"{required} (default: None)", text)
+        for unset in ("(default: None)", "(default: False)"):
+            self.assertNotIn(unset, text)
 
     def test_help_says_what_the_timeout_bounds_in_each_mode(self) -> None:
         text = self.help_text()

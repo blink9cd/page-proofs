@@ -90,7 +90,7 @@ class ChromeFactsTests(unittest.TestCase):
 
     def test_a_relative_project_root_still_resolves_through_lighthouse(self) -> None:
         # Regression: the operator's documented command is `--root .`, and node's
-        # createRequire refuses a relative manifest path -- the first live run exited 2 on
+        # createRequire refuses a relative manifest path: the first live run exited 2 on
         # exactly that, while the absolute root above passed.
         node = self.real_node()
         project = self.fake_launcher_project()

@@ -1,4 +1,4 @@
-"""Suite: `Geckodriver`'s stop and `kill` -- the whole group ended, within a bound, once.
+"""Suite: `Geckodriver`'s stop and `kill`: the whole group ended, within a bound, once.
 
 Every seam the class takes is faked, by `_gecko_launch_fixtures`: nothing here starts a process
 or signals one, and the pid every fake reports is never handed to the operating system.

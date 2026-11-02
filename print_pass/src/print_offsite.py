@@ -28,13 +28,13 @@ import print_targets_checks as checks
 from print_targets_checks import TargetsError
 
 #: The schemes a page's request to a host is made with: HTTP(S) and the WebSockets. Any
-#: other URL -- `file:`, `javascript:`, `data:` -- asks no host for anything.
+#: other URL (`file:`, `javascript:`, `data:`) asks no host for anything.
 NETWORK_SCHEMES: Final = frozenset({"http", "https", "ws", "wss"})
 
 # A label: lowercase letters, digits and hyphens, 1 to 63 of them, with no hyphen at either
 # end. A hostname is labels joined by one dot each, matched WHOLE: a `$` anchor would let a
-# trailing newline through, and nothing else -- a scheme, port, path, wildcard, space or
-# trailing dot -- matches at all.
+# trailing newline through, and nothing else (a scheme, port, path, wildcard, space or
+# trailing dot) matches at all.
 _LABEL: Final = r"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?"
 _HOSTNAME: Final = re.compile(rf"{_LABEL}(?:\.{_LABEL})*")
 
@@ -54,7 +54,7 @@ _IPV6_BRACKETS: Final = "[]"
 
 # A URL's host as the matcher reads it: labels of lowercase letters, digits, hyphens and
 # underscores, one dot between each, matched whole. The browser requests such a host as it
-# is written -- an underscore, a hyphen at a label's end and a label past 63 included -- and
+# is written (an underscore, a hyphen at a label's end and a label past 63 included), and
 # none of these characters ends a host to it or to `urlsplit`, so the host read here is the
 # browser's own. It requests other hosts too (`a$b`, `a%20b`, an empty label): those fail
 # closed, on no expected host, and each request stays a finding.
@@ -86,7 +86,7 @@ def on_expected_host(url: str, hosts: Collection[str]) -> bool:
 
     `img.example.org` is on `example.org`; `badexample.org` is not. Only a URL of one of
     `NETWORK_SCHEMES` is requested from a host: a `file:` or `javascript:` URL, and one with
-    no scheme -- a same-origin path, one opening `//` included -- is on none. Case is ignored
+    no scheme (a same-origin path, one opening `//` included) is on none. Case is ignored
     on both sides, and a port the browser accepts (an empty one included), a path, user info
     or a leading space changes nothing. On none, too, is a URL that does not parse, one the
     browser refuses or reads another way (a port past 65535 or not a number, a bracket or a

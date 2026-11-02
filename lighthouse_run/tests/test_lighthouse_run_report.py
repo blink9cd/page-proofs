@@ -1,4 +1,4 @@
-"""Grouped suite: reading one Lighthouse report -- the metrics, the font join, the refusals."""
+"""Grouped suite: reading one Lighthouse report (the metrics, the font join, the refusals)."""
 
 from __future__ import annotations
 
@@ -82,8 +82,8 @@ class FontJoinTests(unittest.TestCase):
         self.assertEqual(metrics.requests, 1)
 
     def test_the_join_places_request_times_on_the_network_clock(self) -> None:
-        # The same relative finish lands AFTER paint once the network clock starts 10ms
-        # later -- so a join comparing the relative number against paint directly fails.
+        # The same relative finish lands after paint once the network clock starts 10ms
+        # later, so a join comparing the relative number against paint directly fails.
         report = fake_report(requests=[font_request(100, 55.0)])
         network = _audits(report)["network-requests"]["details"]
         network["debugData"]["networkStartTimeTs"] = NETWORK_START_TS + 10_000
@@ -171,7 +171,7 @@ class MedianTests(unittest.TestCase):
         self.assertEqual(tuple(medians), lighthouse_report.METRIC_FIELDS)
 
 
-#: Arbitrary JSON values -- what any file on disk can parse to.
+#: Arbitrary JSON values: what any file on disk can parse to.
 _JSON = st.recursive(
     st.none() | st.booleans() | st.integers() | st.floats() | st.text(max_size=5),
     lambda children: (

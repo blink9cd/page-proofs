@@ -1,4 +1,4 @@
-"""Grouped suite: a whole Firefox run -- one scratch, one dead port, one driver, a session each.
+"""Grouped suite: a whole Firefox run (one scratch, one dead port, one driver, a session each).
 
 `run_targets` makes one scratch folder, holds one dead port, starts one geckodriver, runs
 every state of every target in file order in a session of its own, and stops the driver.

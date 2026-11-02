@@ -4,7 +4,7 @@
 //
 // WHAT THIS SUITE COVERS. What the log records and from when: whether the engine reports shifts
 // at all (one that does not must read as not measured, never as a page that did not move); the
-// moment the page became presentable -- painted, THEN in its own fonts, THEN two frames on, each
+// moment the page became presentable (painted, then in its own fonts, then two frames on, each
 // step load-bearing for the reasons page_probe.js gives; which scripts the page cannot paint
 // without; and what each shift's sources are called. Where the order of events is the point,
 // the test drives the events in that order and asserts between them.
@@ -165,7 +165,7 @@ test("the record carries the log, the paints and every shift, each source named"
 });
 
 test("a shifted text node atop an open shadow root is named through its host", () => {
-  // Its parentElement is null -- a root is not an element -- yet it is still in the page.
+  // Its parentElement is null (a root is not an element), yet it is still in the page.
   const page = loadProbe({ body: `<section id="host"></section>` });
   page.run("watchShifts");
   const root = page.document

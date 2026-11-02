@@ -1,7 +1,7 @@
 """Shape what a run brought back: outcomes grouped by page and preset, a summary, two tables.
 
 The runner schedules and executes; this module only shapes the results. It is kept apart so the
-record format -- what `summary.json` holds, and what the printed tables show -- reads in one
+record format (what `summary.json` holds, and what the printed tables show) reads in one
 place. Each run's audits, and each page and preset's reduction of them, are shaped by
 `audit_summary`; this module places them in the record.
 
@@ -142,13 +142,13 @@ def summary_document(
     `served` is the folder `--serve` named, as given, or `None` for the default `src/`. The
     commit alone cannot tell the two apart: a package in an ignored folder inside the checkout
     reads as the checkout's HEAD, clean, whatever commit it was built from. On a hosted run,
-    `served` is the `--expect` folder as given -- the tree whose bytes were measured -- and
+    `served` is the `--expect` folder as given (the tree whose bytes were measured), and
     `url` is the base measured; `url` is `None` on every loopback run, so a summary says which
     kind of run it records.
 
     Chrome's version is recorded and its path is not: the path is a fact about this machine's
     layout, and the version is what a later run compares against. `served` can be such a path
-    too -- an absolute folder is recorded as given -- and is kept anyway: it is the one field
+    too (an absolute folder is recorded as given), and is kept anyway: it is the one field
     naming the tree measured, which the commit cannot. That, and a `url` that may name a
     private address, is why a summary, like the raw reports beside it, stays a local record
     and is never committed.

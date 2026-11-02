@@ -1,8 +1,8 @@
 """Grouped suite: a page with no file, answered with the site's own 404 page (`not_found`).
 
 The targets file's key and its refusals, which served pages have no file, and the one load such a
-page is excused: its own document answering 404, as the engines report it -- the response, and
-the console line Chromium and WebKit echo it as. Everything else stays a finding: a subresource
+page is excused: its own document answering 404, as the engines report it (the response, and
+the console line Chromium and WebKit echo it as). Everything else stays a finding: a subresource
 the page cannot have, the `--prove` plant among them, any other status, any other document, and
 the same answer a second time. Responses and console lines are stand-ins carrying what
 Playwright hands over; the engine's wiring goes through `_csp_fixtures.py`'s scripted browser,

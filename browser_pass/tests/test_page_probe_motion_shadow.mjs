@@ -1,6 +1,6 @@
 // The in-page probe's motion half over shadow trees: an animation whose target lives INSIDE a
 // shadow root is stilled and counted exactly as the document's is, wherever the page can reach
-// that root -- and nowhere it cannot.
+// that root, and nowhere it cannot.
 //
 // WHAT THIS SUITE COVERS. Where the probe finds its animations. An engine's document lists only
 // its own tree's animations: one targeting an element inside a shadow root is listed by THAT

@@ -1,4 +1,4 @@
-"""Grouped suite: the targets file's `[[state]]` tables -- what a state holds, and each refusal.
+"""Grouped suite: the targets file's `[[state]]` tables (what a state holds, and each refusal).
 
 A state is a page reached by more than its load: values stored before it, actions run after it.
 `test_pass_targets.py` covers the rest of the file and the matrix a state joins.

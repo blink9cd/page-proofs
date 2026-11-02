@@ -1,10 +1,10 @@
 """Stand-ins for browser_pass's DevTools-session suite: a session that answers with scripted records.
 
 `test_pass_inert.py` drives the late-script load's settle (`pass_late_load._settled`) through
-`FakePage`, whose context opens a `FakeSession` -- or refuses one, as Playwright does for any
+`FakePage`, whose context opens a `FakeSession`, or refuses one, as Playwright does for any
 engine but Chromium. The session answers each call the stilling makes as the protocol would: the
 probe's listing as a handle on a record holding the listed array and the asks beside it, each
-ask's fields -- a null for an animation the listing asks nothing about -- a node for each target
+ask's fields (a null for an animation the listing asks nothing about), a node for each target
 and each pseudo-element, the `@keyframes` rules the style resolver applies to a node, and the
 stilling's record. It refuses the calls a test names, as the protocol refuses one about an object
 or node it no longer has, and logs every call, in order, so a test can read what the stilling was

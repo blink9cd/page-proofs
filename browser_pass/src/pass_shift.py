@@ -5,7 +5,7 @@ shows depends on a race: on a fast connection the scripts usually win it, so an 
 reads zero on the very page that jumps on a slow one. The detector's own load (`pass_late_load`)
 removes the race by HOLDING every script until the page has painted in its own fonts, then
 releasing them. What moves after the release is what a late script moves; what moved before it
--- a web font swapping in, say -- happens whatever the scripts do, and is not counted.
+(a web font swapping in, say) happens whatever the scripts do, and is not counted.
 
 Shifts after the release are grouped into session windows the way Cumulative Layout Shift groups
 them, and the score is the largest window. Each window above `THRESHOLD` is a finding.
@@ -40,7 +40,7 @@ SHIFT_ENGINES = ("chromium",)
 #: A session window scoring above this is a finding. Chosen against this detector's own
 #: numbers on the site it was built for: the late upgrade it exists to catch scores
 #: 0.017-0.259 on an anchored arrival, and 0.897 on a populated archive month, while the movements
-#: nobody would chase -- a band barely in view, a footer control appearing -- score 0.0012-0.0097.
+#: nobody would chase (a band barely in view, a footer control appearing) score 0.0012-0.0097.
 #: REJECTED, with the reason each was refused: 0.005, which flags that footer control; 0.025, at
 #: which an anchored arrival scoring 0.0174 reads green; and 0.1, the "good" line the Core Web
 #: Vitals draw for a whole page's Cumulative Layout Shift, which would pass the very fault this
@@ -161,11 +161,11 @@ def shift_record_from(raw: object) -> ShiftRecord:
     """Read the probe's `lateShifts` record, keeping only the shifts the scripts can own.
 
     Counting starts at the LATER of two moments: the release, and the first instant the page was
-    PRESENTABLE -- painted, in its own fonts. Usually they are the same instant, because that is
+    presentable: painted, in its own fonts. Usually they are the same instant, because that is
     what the hold waits for. They come apart on the one path that releases early: a held script
     the page cannot paint without is let through at once, since no paint will come until it runs.
     There the release precedes the first paint, and counting from it would charge the scripts
-    with a web font swapping in afterwards -- the very thing waiting for the fonts prevents.
+    with a web font swapping in later, the very thing waiting for the fonts prevents.
     Whichever moment is later is the one after which a shift is something a reader could see
     move, so `max` is the whole rule.
 
@@ -233,7 +233,7 @@ def record_faults(record: ShiftRecord) -> list[str]:
 
     A page that painted before its scripts ran is measured. So is one that could not paint
     until they ran, because a held script blocks its rendering: nothing was on screen to move.
-    Anything else -- no paint, nothing blocking it -- cannot tell a late shift from none.
+    Anything else (no paint, nothing blocking it) cannot tell a late shift from none.
     """
     faults = _unmeasurable(record)
     if faults:
@@ -249,7 +249,7 @@ def record_faults(record: ShiftRecord) -> list[str]:
 def awaits_presentable(record: ShiftRecord) -> bool:
     """Whether `record` lacks only the moment its page became presentable.
 
-    That moment -- painted, then in its own fonts -- is marked by the page's frames, which a
+    That moment (painted, then in its own fonts) is marked by the page's frames, which a
     loaded machine can leave well behind its main thread, so frames still to come can supply
     it and the record is not yet a verdict. A record refused for anything else is refused
     whatever its frames bring, and waits on nothing.

@@ -3,7 +3,7 @@
 Each case runs the engine over one target against the fake Playwright, whose page makes the
 requests and fires the events its script names, and reads the network record and findings
 the state returns. Nothing may leave the loopback address: a request that would is aborted,
-and a WebSocket that would is left unconnected, each recorded whole and judged once -- a
+and a WebSocket that would is left unconnected, each recorded whole and judged once: a
 finding, or a warning when the targets file expects its host. Problem texts are compared
 whole, since a later live suite asserts on them.
 """

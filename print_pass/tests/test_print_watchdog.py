@@ -4,7 +4,7 @@ The machine these run on can be heavily loaded, so no test here races the clock.
 that must outlive its bound waits on an Event the injected expiry sets, which proves the
 ORDER (the watch fired while the block still ran) however slow the machine is. A block that
 must NOT be expired runs under a bound far longer than the test, and the test then checks
-that the watch thread ended without firing -- a watch left running would still be alive.
+that the watch thread ended without firing: a watch left running would still be alive.
 
 `abandon` ends the process with `os._exit`, which in-process would end the test run too, so
 its real exit is proven in a child process. The in-process tests stand a recorder in for

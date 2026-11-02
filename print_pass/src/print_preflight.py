@@ -7,8 +7,8 @@ before it exits 2; a lookup that finds nothing comes back as None.
   tree. A PDF records when it was made, so `--out` is refused inside any work tree by
   construction, whatever its ignore rules say. git is asked, and only its two answers for
   "outside" allow the run: `false` (a `.git` folder is no work tree) and its fatal "not a
-  git repository (or any of the parent directories)". Any other answer -- git missing,
-  hung, refusing the folder, a `.git` file naming nothing, or saying anything else -- is
+  git repository (or any of the parent directories)". Any other answer (git missing,
+  hung, refusing the folder, a `.git` file naming nothing, or saying anything else) is
   no answer, and refuses the run rather than letting it write where git could not see.
 - `missing_poppler`: which poppler readers `PATH` lacks.
 - `browsers_dir`: where the pinned engine builds are, when something names a folder.

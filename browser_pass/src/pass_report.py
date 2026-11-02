@@ -2,7 +2,7 @@
 
 Exit codes: `0` every rendering measured and every detector silent (and, when proving, every
 plant caught); `1` a detector found something, or a detector missed its plant; `2` the
-measurement cannot be trusted -- an emulated state did not take, a page never settled, a plant
+measurement cannot be trusted: an emulated state did not take, a page never settled, a plant
 never planted, or nothing was measured at all. A `2` outranks a `1`: a finding from an instrument
 that is not measuring what it claims is not a finding.
 
@@ -306,7 +306,7 @@ def _detector_cell(
 ) -> str:
     """How many of `engine`'s renderings `detector` found something in, or why it saw none.
 
-    Never a bare 0 without a measurement behind it -- including for an engine with no
+    Never a bare 0 without a measurement behind it, including for an engine with no
     renderings at all, where 0 would read as a page that did not move.
     """
     mine = [r for r in results if r.rendering.engine == engine]
@@ -405,7 +405,7 @@ def _late_shift_section(
     """Per engine: renderings measured, how many moved above the threshold, and the largest."""
     head = (
         "## Late-script layout shifts\n\nEvery rendering with scripts on is loaded a second "
-        "time with its scripts held, then released -- once the page has painted in its own "
+        "time with its scripts held, then released: once the page has painted in its own "
         "fonts, or at once when a held script is one it cannot paint without. Its score is the "
         "largest session window of the shifts after it was PRESENTABLE (painted, in its own "
         "fonts), which is the release itself except on that early-release path, as Cumulative "

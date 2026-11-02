@@ -1,4 +1,4 @@
-"""The three runs: make PDFs of served pages, read given PDFs, compare two -- each to a report.
+"""The three runs: make PDFs of served pages, read given PDFs, compare two; each to a report.
 
 `run_make`, `run_read` and `run_compare` take a plan the CLI has already validated and whose
 `--out` it has already cleared, and return the exit code. A make run under `--engine firefox`
@@ -82,8 +82,8 @@ _NO_GECKODRIVER: Final = (
     "or Mozilla's installer"
 )
 
-#: The margin a PDF given to a read run is measured against. Such a PDF -- Safari's, or any
-#: made outside this tool -- states no margin of its own, so its blank share is measured as
+#: The margin a PDF given to a read run is measured against. Such a PDF (Safari's, or any
+#: made outside this tool) states no margin of its own, so its blank share is measured as
 #: though it had been printed at 1 cm, Chrome's dialog default: a stated assumption, chosen
 #: here at the one call that reads it, never a default inside the measurement.
 OUTSIDE_PDF_MARGIN_INCHES: Final = 1 / CM_PER_INCH

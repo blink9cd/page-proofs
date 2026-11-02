@@ -72,8 +72,8 @@ def decode_response(command: str, status: int, body: bytes) -> object:
 
     A success is status 200 with a JSON object holding `value`. Any other status must carry
     W3C's error object, `{"value": {"error": <code>, "message": <text>}}`, and raises its
-    code; its stack is never read. Anything else -- a body that is not UTF-8 or not JSON,
-    JSON that is not such an object, a code that is empty or spans lines -- raises
+    code; its stack is never read. Anything else (a body that is not UTF-8 or not JSON,
+    JSON that is not such an object, a code that is empty or spans lines) raises
     `INVALID_RESPONSE`. A refusal names the status and what was wrong, never the body.
 
     Raises:

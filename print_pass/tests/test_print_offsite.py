@@ -261,7 +261,7 @@ _URLS = st.one_of(
 
 # The URL standard's reading of an authority, written out here with no URL library, so the
 # property does not restate the matcher: what a parser drops before it reads a URL, what an
-# absolute URL opens with, and what ends its authority -- in a special scheme, a backslash too.
+# absolute URL opens with, and what ends its authority (in a special scheme, a backslash too).
 _C0_CONTROL_OR_SPACE = "".join(chr(code) for code in range(ord(" ") + 1))
 _TAB_OR_NEWLINE = ("\t", "\n", "\r")
 _ABSOLUTE = re.compile(r"(?P<scheme>[A-Za-z][A-Za-z0-9+.-]*)://(?P<rest>.*)", re.DOTALL)

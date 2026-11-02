@@ -1,4 +1,4 @@
-"""Grouped suite: the targets file -- what it accepts, what it refuses -- and the matrix it expands to."""
+"""Grouped suite: the targets file, what it accepts and refuses, and its expanded matrix."""
 
 from __future__ import annotations
 
@@ -260,7 +260,7 @@ class ParseTargetsTests(unittest.TestCase):
         )
     )
     def test_fuzz_parse_targets(self, document: dict[str, object]) -> None:
-        """Any shape parses or is refused as a TargetsError -- never another exception."""
+        """Any shape parses or is refused as a TargetsError, never another exception."""
         try:
             targets = pass_targets.parse_targets(document)
         except pass_targets.TargetsError:

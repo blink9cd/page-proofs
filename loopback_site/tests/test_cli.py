@@ -1,4 +1,4 @@
-"""Grouped suite: the CLI -- its options, its stop signals, and a real serving process.
+"""Grouped suite: the CLI (its options, its stop signals, and a real serving process).
 
 The live tests launch the script as a child and signal it, so the POSIX-only freeze and thaw
 helpers live here with them.
@@ -205,7 +205,7 @@ class StopTests(unittest.TestCase):
         self,
     ) -> None:
         # The ignored disposition is set FIRST, so a missing handler leaves the signal a no-op
-        # here rather than killing the suite -- and the disposition assertion, not the flag,
+        # here rather than killing the suite, and the disposition assertion, not the flag,
         # is what names that defect (a background launch hands SIGINT over ignored).
         for signum in (signal.SIGINT, signal.SIGTERM):
             with self.subTest(signal=signum.name):

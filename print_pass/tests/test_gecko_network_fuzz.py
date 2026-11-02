@@ -3,9 +3,9 @@
 Any rows, any document row, any base URL and any log text make a record, never an error,
 and every path the record names starts at the root, since a record names a loopback
 request by its path; the isolation failures they make each name a URL off loopback, and a
-status, never a bare 0. The strategies weight plausible input -- URLs on and off the
+status, never a bare 0. The strategies weight plausible input (URLs on and off the
 loopback address, statuses a browser reports, page-error lines on and off the served
-origin, inline and from the browser's own scripts -- so that each rule is reached, not only
+origin, inline and from the browser's own scripts), so that each rule is reached, not only
 the refusals; the same functions by example are `test_gecko_network.py`.
 
 Entry point assumptions: standalone, or discovered by `unittest discover`; the bootstrap

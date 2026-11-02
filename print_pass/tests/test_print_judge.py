@@ -3,7 +3,7 @@
 Each case hands `state_problems` one state, a read-back and a network record built here, with
 the off-loopback hosts the targets file expects, and compares the problems whole: their texts
 are fixed, since a live suite asserts on them. A request blocked on an expected host is still
-blocked -- the engine aborted it -- and is judged a warning; so is an image problem whose source
+blocked (the engine aborted it) and is judged a warning; so is an image problem whose source
 is on one. Everything else is judged as it always was. How a URL is matched against the hosts
 is `test_print_offsite.py`'s.
 """

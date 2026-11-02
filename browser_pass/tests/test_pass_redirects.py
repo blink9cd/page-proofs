@@ -1,4 +1,4 @@
-"""Grouped suite: a declared meta-refresh redirect -- the `redirects` key, and following it.
+"""Grouped suite: a declared meta-refresh redirect (the `redirects` key, and following it).
 
 A page that is a 0-second meta refresh navigates away as it loads, so a browser that measures it
 measures a page being torn down. The targets file's `redirects` names each page that is one, and

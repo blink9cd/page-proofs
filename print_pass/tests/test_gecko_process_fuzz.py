@@ -1,10 +1,10 @@
-"""Suite: the process listing's readers by property -- any text, and any rows written as `ps` would.
+"""Suite: the process listing's readers by property (any text, and any rows written as `ps` would).
 
 `parse_listing` reads a listing that names every process on the host, so its arguments are text
 anyone can choose, and it is fuzzed. Any text gives rows whose numbers are ASCII digits, nine at
 most, and whose arguments hold no newline: a row can never be forged across one. And any rows
-written as `ps` writes them -- each number right-aligned, then the elapsed time, then the
-arguments, which may hold any line break but a newline -- read back as exactly those rows.
+written as `ps` writes them (each number right-aligned, then the elapsed time, then the
+arguments, which may hold any line break but a newline) read back as exactly those rows.
 
 `parse_etime` reads each row's elapsed time, which decides whether a crash helper is ours, so it
 is fuzzed too. Any text gives None or a count of seconds; every `[[dd-]hh:]mm:ss` form reads as

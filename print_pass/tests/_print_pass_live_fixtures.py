@@ -1,15 +1,15 @@
 """Shared by print_pass's live suites: the real engine required, a site served, a run made.
 
 `test_print_pass_live.py` runs the committed sample through the whole tool once and checks
-what it reports; `test_print_pass_live_sites.py` runs the page no sample should carry -- an
+what it reports; `test_print_pass_live_sites.py` runs the page no sample should carry (an
 image and two WebSockets off loopback, motion in shadow trees, and a carousel of lazy slides
--- and `test_print_pass_live_chrome.py` the sample, with that carousel, on installed Chrome
+and `test_print_pass_live_chrome.py` the sample, with that carousel, on installed Chrome
 with a real dark setting; `test_print_pass_live_redirects.py` runs a meta-refresh stub,
 declared and undeclared, at a short timeout of its own. What they share lives here: the
 check that the real engine is there at all, the PNG the sample page draws (generated, since
 no binary is committed), the carousel and what it fails a state with, the Chrome run's
-targets and options, the served copy of a site, a make run -- always in a process of its
-own, killed at a bound, so a run that hangs fails its case rather than hanging the suite --
+targets and options, the served copy of a site, a make run (always in a process of its
+own, killed at a bound, so a run that hangs fails its case rather than hanging the suite),
 and the lookups into the report it writes. `test_print_pass_live_firefox.py` makes its run
 through the same `make_run_process`, given an environment of its own, and serves its page
 the same way.
@@ -178,7 +178,7 @@ CHROME_TIMEOUT_SECONDS: Final = (
 )
 
 #: The sample page in three states on installed Chrome: the host's own scheme, a real dark
-#: setting, and an emulated light scheme -- the light print a real dark one is compared to.
+#: setting, and an emulated light scheme: the light print a real dark one is compared to.
 CHROME_TARGETS: Final = """[[target]]
 name = "sample"
 page = "/"
@@ -433,8 +433,8 @@ def make_run_process(
 ) -> Outcome:
     """Run `--mode make` over `site` into `out` in a process of its own, killed at `timeout`.
 
-    A process of its own, for two reasons: a hang inside a run -- a Playwright dispatcher
-    spinning outside every bound the run keeps -- can be ended only from outside it; and a
+    A process of its own, for two reasons: a hang inside a run (a Playwright dispatcher
+    spinning outside every bound the run keeps) can be ended only from outside it; and a
     run that abandons an overrunning call leaves through `os._exit`, which in this process
     would end the whole suite with no case named. The run's exit code and streams come
     back; its report and PDFs are read from `out`. `env` is the run's whole environment,

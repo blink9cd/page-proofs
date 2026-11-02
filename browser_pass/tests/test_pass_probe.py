@@ -3,7 +3,7 @@
 The probe is three bare function expressions: `page_probe.js`, a function of the other two;
 `page_probe_motion.js`, the stilling both settles run; and `page_probe_trees.js`, the one walk
 over the page's elements, each open shadow root's included. The driver hands an engine ONE
-function's source -- the first applied to the other two -- and the late-script load's init script
+function's source (the first applied to the other two), and the late-script load's init script
 calls that same function. These tests pin the text. Whether an engine runs it is the live suites'
 question (`test_pass_live.py`, `test_pass_late_live.py`, whose late-script load needs the init
 script to run before the page's own code), and the JS suites compose the same three files through

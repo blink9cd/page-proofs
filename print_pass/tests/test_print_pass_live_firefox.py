@@ -1,4 +1,4 @@
-"""Grouped suite: the LIVE Firefox engine -- one page, one state, one run, inside a network fence.
+"""Grouped suite: the live Firefox engine (one page, one state, one run, inside a network fence).
 
 The Firefox engine keeps Firefox on loopback with its prefs, a dead proxy and a non-local
 guard, and keeps it out of the reader's own Firefox folders; only a real run can show those
@@ -6,7 +6,7 @@ held. So this module runs the whole tool once, with `--engine firefox`, over one
 one default state, through a geckodriver of the suite's own writing: a shim that records its
 pid and runs the real geckodriver inside a Seatbelt fence, under which nothing but loopback
 is reachable, no name is looked up, and nothing can be read or written under the two folders
-the reader's own Firefox keeps on macOS -- its profiles and its caches -- each found under
+the reader's own Firefox keeps on macOS (its profiles and its caches), each found under
 both the home `$HOME` names and the one the account record holds, by its resolved path. A
 fence that silently failed to apply would look like one that holds, so its canaries run
 first, under the same profile file, in a process and in a child it starts, and libSystem's

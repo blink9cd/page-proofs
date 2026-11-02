@@ -4,17 +4,17 @@
 // names back.
 //
 // WHAT THIS SUITE COVERS. The seam on the page's side. `listMotion` lists the running animations
-// into one array the page keeps, and beside each, in `asks`, what finding its rule takes -- its
-// name, its target and the pseudo-element of it -- for a CSS animation whose rule could decide
+// into one array the page keeps, and beside each, in `asks`, what finding its rule takes (its
+// name, its target and the pseudo-element of it), for a CSS animation whose rule could decide
 // its verdict alone: one that advances with time and whose getKeyframes() names layout-inert
 // properties only, or none. Every other stands beside a null, which costs the driver nothing.
 // `stillMotion` then stills that SAME array, handed back as `listed`, judging each animation by
-// the names beside it in `declared` together with its getKeyframes() -- Chromium leaves custom
+// the names beside it in `declared` together with its getKeyframes(): Chromium leaves custom
 // properties out of the latter for a CSS animation, registered or not, and a script may have
 // replaced the keyframes the rule gave it. Names unknown (anything but a list) leave a CSS animation running,
 // and so does having no list at all: the probe never reads a style sheet itself, since a
-// same-named rule it could reach need not be the one that applies. Any other animation -- a
-// transition, a script's animate() -- is read from getKeyframes() alone, which reports custom
+// same-named rule it could reach need not be the one that applies. Any other animation (a
+// transition, a script's animate()) is read from getKeyframes() alone, which reports custom
 // properties for those. How the driver reads the rule is test_pass_inert.py's.
 //
 // WHAT IS FAKED. The animations, as page_probe_motion_helpers.mjs's header says.

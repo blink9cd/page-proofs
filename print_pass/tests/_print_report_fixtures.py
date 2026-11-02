@@ -7,7 +7,7 @@ the report and checks it against the documented shape built here, which
 fixed value, and a case changes only what it is about with `dataclasses.replace`, so the
 checker sees every field it sets. Nothing here runs poppler, pypdf or pdfminer: the readers'
 own suites do. The rasters are real `Raster` values, so the pure readers the report calls on
-them -- dominant shares, ink extent, comparison -- run for real.
+them (dominant shares, ink extent, comparison) run for real.
 
 Entry point assumptions: imported by a suite that `unittest` discovery loaded with this folder
 as its top-level directory, AFTER that suite's bootstrap has put the tool's private `src/` on

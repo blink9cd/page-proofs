@@ -23,10 +23,11 @@ to print it, which is what `--engine firefox` is for (see "The Firefox engine").
 
 ## Usage
 
-From the root of this repository. `$P` is Python 3.12 or later with the repository's `print`
-extra installed; poppler's readers are on `PATH`, in every mode; and a make run needs what its
-`--engine` runs on. "Installing what it runs on" below gives each install. `--out` must be a
-new folder outside every git work tree, so each example puts it in a new temp folder.
+From the root of this repository. `$P` is the `python` of the virtual environment the
+README's "Install" makes, with the repository's `print` extra installed; poppler's readers are
+on `PATH`, in every mode; and a make run needs what its `--engine` runs on. "Installing what it
+runs on" below gives each install. `--out` must be a new folder outside every git work tree, so
+each example puts it in a new temp folder.
 
 Print a served folder in the states a targets file names:
 
@@ -321,8 +322,8 @@ written is not resident, so it is not counted. Windows has neither, so there `--
 bounds a read. A read that crashes either library, or whose line is no reply or holds more
 than `MAX_REPLY_CHARS` characters, is a finding naming its step and the PDF by its name alone,
 with the exception's class and never its message, which can quote a path; so is each read left
-without a line when the child times out, exits non-zero or prints nothing. Either way that PDF's other steps, and
-every other PDF, are still read.
+without a line when the child times out, exits non-zero or prints nothing. Either way that
+PDF's other steps, and every other PDF, are still read.
 
 ## The Firefox engine
 
@@ -381,9 +382,12 @@ Every PDF is US Letter at scale 1, shrink-to-fit and portrait, with 0.5 in (1.27
 what Firefox's own print dialog puts on Letter, so a print here is laid out as a reader's would
 be who left the dialog alone (`src/gecko_print.py`); a state's `page_width` replaces those
 margins with its own, sent in the command's centimeters. WebDriver's Print takes no tagging
-parameter, so every PDF is untagged; it never prints the dialog's header and footer; and it
-writes no `Title`. The report's `print` entry says so in words, in its `cannot_control`. Each
-PDF comes from macOS's own Quartz PDF writer, with `Firefox` as its `Creator`.
+parameter and no title, so whether a PDF is tagged, and whether its `Title` is the page's
+title, is the Firefox build's choice. Measured on macOS: Firefox 159 does both, and writes its
+PDFs through Skia's PDF backend; an earlier build did neither, and wrote through macOS's own
+Quartz PDF writer. It never prints the dialog's header and footer. The report's `print` entry
+says what the command cannot set, in words, in its `cannot_control`, and each PDF's own
+`metadata` says what the build did. Every PDF has `Firefox` as its `Creator`.
 
 ### Off the network, and out of the reader's own folders
 
@@ -707,17 +711,17 @@ script reporting through a Playwright binding, and WebDriver's classic commands 
 so a Firefox state's `csp_violations` is always empty, and the report's `cannot_observe` says
 so.
 
-| Key                      | Modes              | Holds                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| ------------------------ | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `tool`, `schema`, `mode` | all                | `print_pass`, the report's version, and the mode run.                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| `print`                  | make               | How every page was printed by default: a state's `page_width` changes only its margin, which its own entry names. Under Playwright, `format`, `margin`, `tagged`, `header_footer`, `prefer_css_page_size` and `scale`. Under Firefox, the WebDriver Print body's values under the report's own names (`_GECKO_PRINT_KEYS`, in `src/print_report.py`), less `background`, which each PDF sets for itself; `tagged` and `header_footer`, each false; and `cannot_control`, what that command cannot set, in words. |
-| `cannot_observe`         | make, Firefox only | What a Firefox run cannot observe, most of it what a state's network record cannot list, one sentence each (see "The Firefox engine").                                                                                                                                                                                                                                                                                                                                                                           |
-| `targets`                | make               | What the targets file set that weighs the problems: `expected_offsite_hosts`, its list in file order, scrubbed as every text is, and empty for a file that names none or a run given pages. Recorded once for the run, beside no state.                                                                                                                                                                                                                                                                          |
-| `redirects`              | make               | One entry per target whose page is a meta refresh, in file order, and empty for none: `target`, `page` as the target names it, `destination` (a server path and query on the served origin, else the whole URL, scrubbed), `followed`, and `problems`: none when followed, and the one finding when not (see "A page that is a meta refresh").                                                                                                                                                                   |
-| `states`                 | make               | One entry per state, below.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| `pdfs`                   | make, read         | One entry per PDF, below.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| `comparisons`            | make, compare      | One entry per pair compared, below.                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| `totals`                 | make, read         | `states` (make), `pdfs`, `findings` and `warnings`.                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| Key                      | Modes              | Holds                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| ------------------------ | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `tool`, `schema`, `mode` | all                | `print_pass`, the report's version, and the mode run.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `print`                  | make               | How every page was printed by default: a state's `page_width` changes only its margin, which its own entry names. Under Playwright, `format`, `margin`, `tagged`, `header_footer`, `prefer_css_page_size` and `scale`. Under Firefox, the WebDriver Print body's values under the report's own names (`_GECKO_PRINT_KEYS`, in `src/print_report.py`), less `background`, which each PDF sets for itself; `tagged` and `header_footer`, each false, since each says what was requested and the command takes no tagging parameter and prints no header or footer (whether the build tagged a PDF anyway is that PDF's `metadata.tagged`); and `cannot_control`, what that command cannot set, in words. |
+| `cannot_observe`         | make, Firefox only | What a Firefox run cannot observe, most of it what a state's network record cannot list, one sentence each (see "The Firefox engine").                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `targets`                | make               | What the targets file set that weighs the problems: `expected_offsite_hosts`, its list in file order, scrubbed as every text is, and empty for a file that names none or a run given pages. Recorded once for the run, beside no state.                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `redirects`              | make               | One entry per target whose page is a meta refresh, in file order, and empty for none: `target`, `page` as the target names it, `destination` (a server path and query on the served origin, else the whole URL, scrubbed), `followed`, and `problems`: none when followed, and the one finding when not (see "A page that is a meta refresh").                                                                                                                                                                                                                                                                                                                                                         |
+| `states`                 | make               | One entry per state, below.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| `pdfs`                   | make, read         | One entry per PDF, below.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| `comparisons`            | make, compare      | One entry per pair compared, below.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `totals`                 | make, read         | `states` (make), `pdfs`, `findings` and `warnings`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 
 Each state:
 
@@ -977,7 +981,7 @@ Each is a guard, measured where it says so.
 From the root of this repository, after the installs in the [root README](../README.md):
 
 ```bash
-python3.12 print_pass/test_print_pass.py
+python print_pass/test_print_pass.py
 ```
 
 `test_print_pass.py` aggregates the grouped suites under `tests/`, one or more per module, and
@@ -985,8 +989,8 @@ floors each file's test count separately in `_MIN_TESTS_BY_FILE`, so a suite tha
 fails rather than shrinking unseen. One suite, then the live suites alone:
 
 ```bash
-(cd print_pass && python3.12 -m unittest discover -s tests -t tests -p 'test_print_targets.py' -v)
-(cd print_pass && python3.12 -m unittest discover -s tests -t tests -p 'test_print_pass_live*.py' -v)
+(cd print_pass && python -m unittest discover -s tests -t tests -p 'test_print_targets.py' -v)
+(cd print_pass && python -m unittest discover -s tests -t tests -p 'test_print_pass_live*.py' -v)
 ```
 
 The aggregate includes the live suites, so it launches the pinned headless shell, installed
@@ -1000,7 +1004,7 @@ is a passing run, so a run that must measure the engine sets `PAGE_PROOFS_REQUIR
 and what is missing then fails the suite instead:
 
 ```bash
-PAGE_PROOFS_REQUIRE_BROWSERS=1 python3.12 print_pass/test_print_pass.py
+PAGE_PROOFS_REQUIRE_BROWSERS=1 python print_pass/test_print_pass.py
 ```
 
 - **Unit suites** fake the browser, poppler and this machine's identity, and write only under

@@ -6,9 +6,9 @@ imported sheet. The late load's settle (`pass_late_load._settled`) asks it over 
 session, and these tests drive that settle through a page whose session answers with scripted
 records and refuses where a browser would. What they read is what the stilling was handed: one
 entry per listed animation, the names its applied rule declares, or None where they are unknown
-or the listing asked nothing about it -- which the probe then leaves running, unless it has no
+or the listing asked nothing about it, which the probe then leaves running, unless it has no
 rule at all (`test_page_probe_motion_rules.mjs` pins that verdict, and
-`test_pass_late_motion_live.py` proves the whole of it in the pinned Chromium) -- and what each
+`test_pass_late_motion_live.py` proves the whole of it in the pinned Chromium); and what each
 poll cost. The page-load settle must open no session at all.
 """
 
@@ -252,7 +252,7 @@ class ListingTests(_SessionCase):
     def test_a_poll_that_fails_still_lets_its_handles_go_and_the_session_ends(
         self,
     ) -> None:
-        # A probe that throws, or a listing or a stilling the protocol refuses, fails the run --
+        # A probe that throws, or a listing or a stilling the protocol refuses, fails the run,
         # and neither the poll's handles nor the session may outlive it.
         wag = (Listed("wag"),)
         rules = {1: [rule("wag", ("rotate",))]}

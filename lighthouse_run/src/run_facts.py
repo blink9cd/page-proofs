@@ -3,7 +3,7 @@
 Two facts decide whether a later run compares with this one: the commit of the tree that was
 served, and the Chrome that rendered it. The commit is the shared `commit_facts`' to read;
 the Chrome is this module's. It is located the way
-Lighthouse locates it -- chrome-launcher, resolved from Lighthouse's OWN install -- and the
+Lighthouse locates it (chrome-launcher, resolved from Lighthouse's own install), and the
 runner hands that path to Lighthouse through `CHROME_PATH`, so the version recorded is the
 browser used by construction rather than a second guess. The report's user agent is no
 substitute: Chrome reduces it to the major version.

@@ -5,8 +5,8 @@
 // still receives ONE function. Given that walker, the probe's configuration and, from the
 // late-script load, the list it made, it returns its operations.
 //
-// `stillMotion` brings every animation the page can reach -- the document's, and every OPEN
-// shadow root's, however deeply nested (`reachableAnimations`) -- that is still RUNNING on the
+// `stillMotion` brings every animation the page can reach (the document's, and every open
+// shadow root's, however deeply nested: `reachableAnimations`) that is still running on the
 // document's timeline to rest: one that ends is finished, one that never ends is paused at an
 // iteration start. A page-paused, finished or idle animation is what a visitor sees, so it is
 // neither touched nor counted. One on another timeline (a scroll-driven one) or at a zero rate
@@ -59,9 +59,9 @@
     animation.timeline === document.timeline && animation.playbackRate !== 0;
 
   // Every animation the page can reach: the document's own, then each OPEN shadow root's, in
-  // tree order. Each tree lists only its own -- the document's getAnimations() leaves out one
+  // tree order. Each tree lists only its own: the document's getAnimations() leaves out one
   // targeting an element inside a shadow root, a root's leaves out the roots nested in it, and
-  // an element's `getAnimations({ subtree: true })` crosses into none -- so every root the
+  // an element's `getAnimations({ subtree: true })` crosses into none. So every root the
   // probe's walker reaches is asked, and the union counts nothing twice, since each animation is
   // in exactly one tree's list. A CLOSED root's host reads a null `shadowRoot` to the walker, so
   // its motion, and that of any root inside it, is out of reach: the documented limit.
@@ -96,7 +96,7 @@
   // Whether `animation` is PROVABLY layout-inert: it names at least one animated property, and
   // every one is layout-inert. A CSS animation's names include `ruleNames`, what its applied rule
   // declares, because Chromium leaves custom properties out of its getKeyframes(), registered or
-  // not -- a `--m` driving `margin-top` would otherwise read as moving nothing. Its getKeyframes()
+  // not: a `--m` driving `margin-top` would otherwise read as moving nothing. Its getKeyframes()
   // still counts beside them: a script may have replaced the keyframes the rule gave it. Names
   // that are not a list are unknown, so NOT inert, and so is naming none: an empty list cannot be
   // told from one an engine emptied, and an animation that truly moves nothing never changes the
@@ -117,7 +117,7 @@
   };
 
   // Whether `animation`'s applied rule could decide its verdict: a CSS animation that advances
-  // with time -- one that does not is never stilled -- and whose getKeyframes() names nothing
+  // with time (one that does not is never stilled) and whose getKeyframes() names nothing
   // but layout-inert properties, or nothing at all. One whose getKeyframes() names any other
   // property is left running whatever its rule declares, since the rule's names only add to
   // those, so reading its rule could change nothing.
@@ -129,8 +129,8 @@
 
   /**
    * The first iteration start at or after local time 0: the delay plus every whole iteration
-   * begun before 0. An infinite end implies a positive duration -- a zero one makes the active
-   * interval zero however many iterations there are -- so the division is safe. When no
+   * begun before 0. An infinite end implies a positive duration (a zero one makes the active
+   * interval zero however many iterations there are), so the division is safe. When no
    * iteration is skipped the start is the delay, or 0 for one begun before it: the only such
    * case is the one endless iteration a script can make, whose every frame is its first, and
    * `0 * Infinity` there would hand the seek a NaN, which an engine refuses as a time.
@@ -149,7 +149,7 @@
   // The late-script load's listing, which the driver reads through its handle on it: `listed`,
   // every reachable animation running now, and `asks`, beside each the question for the engine,
   // if any. Only an animation whose rule could decide its verdict is asked about, by its name,
-  // the element its effect targets -- inside a shadow root, for one a root listed -- and the
+  // the element its effect targets (inside a shadow root, for one a root listed) and the
   // pseudo-element of it: what finding that rule takes. Every other stands beside a null, which
   // costs the driver no call of its own, however many run.
   const listMotion = () => {

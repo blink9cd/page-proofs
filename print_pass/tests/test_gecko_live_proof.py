@@ -1,14 +1,14 @@
-"""Grouped suite: the fence's proof -- the canaries' verdict, and the real proof under the profile.
+"""Grouped suite: the fence's proof (the canaries' verdict, and the real proof under the profile).
 
 Before the live Firefox suite launches anything, it runs the canaries of `_gecko_canary` under
 its Seatbelt profile, in a process and in a child it starts, and asks libSystem's
 `sandbox_check` about the canary from outside. Here the verdict is checked on stand-in
 reports, and the real proof is run under `sandbox-exec`: on the real profile, which must
-hold, and on profiles each missing one rule, which must fail where that rule is missing --
+hold, and on profiles each missing one rule, which must fail where that rule is missing:
 the canary folder's denial, the resolver socket's, and the resolver's mach service's. Every
 profile here keeps the rules refusing TCP and UDP off loopback, so no probe reaches past it.
 No name is ever looked up under a profile whose resolver rules are weakened: such a profile
-is proven only once the canary is shown to stop before its lookup -- at the socket, which it
+is proven only once the canary is shown to stop before its lookup, at the socket, which it
 connects to sending nothing, or at the service, which it asks `sandbox_check` about.
 
 Entry point assumptions: discovered by the folder's aggregator, or run alone from this

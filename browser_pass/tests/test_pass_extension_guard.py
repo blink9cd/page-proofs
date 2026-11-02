@@ -1,13 +1,13 @@
-"""Grouped suite: the egress guard -- what each engine is launched with, and what it refuses.
+"""Grouped suite: the egress guard (what each engine is launched with, and what it refuses).
 
 `--loopback-only` launches each engine with its own guard, so a request off the served origin
-fails -- off 127.0.0.1, and in Chromium and Firefox to any other port on it, which a page's own
+fails off 127.0.0.1, and in Chromium and Firefox to any other port on it, which a page's own
 script could otherwise reach (a dev server, a local API). WebKit's proxy bypass names no port, so
 WebKit still reaches every loopback port; the docs say so, and the live suite holds it.
 `pass_guard.guard_options` says what that is: the launch arguments and prefs below, each one
 pinned, because a guard that loses one of them still loads every page and fails no test but
-this one. An extension that could route its requests around the guard -- one asking for the
-`proxy` permission -- is refused before any browser opens. The live suites,
+this one. An extension that could route its requests around the guard (one asking for the
+`proxy` permission) is refused before any browser opens. The live suites,
 `test_pass_extension_live.py` for Chromium and `test_pass_loopback_live.py` for Firefox and
 WebKit, show each engine's guard failing a real request.
 """

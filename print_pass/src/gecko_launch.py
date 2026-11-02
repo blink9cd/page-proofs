@@ -6,7 +6,7 @@ group, and Firefox's crash helper, which leaves that group. Everything else geck
 handed is re-exported below, so that an engine needs this one import for all of it: the
 platform the engine may run on, where geckodriver is, and the environment and command it runs
 with, which redirect Firefox's own folders into the scratch and set its non-local tripwire
-(`gecko_command`); what a session asks Firefox for -- the prefs that keep its network on
+(`gecko_command`); what a session asks Firefox for (the prefs that keep its network on
 loopback, the prefs a state asks for, the new-session body, and the dead port the proxy points
 at (`gecko_prefs`); the scratch folder Firefox's own folders are redirected into, and its
 removal (`gecko_scratch`); what geckodriver's log says (`gecko_log`); and the watchdog's
@@ -97,8 +97,8 @@ class Geckodriver:
     `driver.base_url` is where WebDriver commands then go; `driver.note_firefox` notes each
     Firefox a session names and records its crash helper, and `driver.record_helpers` records
     one started since, each only while that Firefox runs and only if no older than it. Leaving
-    the block signals the whole process group -- geckodriver, the Firefox it started and every
-    child of that -- reaps geckodriver, then polls until no member of the group still runs,
+    the block signals the whole process group (geckodriver, the Firefox it started and every
+    child of that), reaps geckodriver, then polls until no member of the group still runs,
     killing the tree if one outlives the timeout. Then it polls until no recorded crash helper
     runs, signaling one only past the timeout: a stop that returns has seen the whole group
     end, and every recorded helper. A helper never recorded is left running, and the stop
@@ -149,8 +149,8 @@ class Geckodriver:
         self._group_alive = group_alive
         self._processes = processes
         # Guards `_process` and `_killed`, which `kill` reads from the watchdog's thread. Its
-        # check and set are one step, so `kill` signals the tree at most once -- the stop's own
-        # kill of a group that outlives the timeout is a second signal, by design -- and a
+        # check and set are one step, so `kill` signals the tree at most once (the stop's own
+        # kill of a group that outlives the timeout is a second signal, by design), and a
         # `kill` that takes the lock after `_forget` signals nothing. The kill itself runs
         # outside the lock: one that read the pid just before a stop forgot it still signals
         # that pid, which would have to be reused within that moment to reach another process.
@@ -270,7 +270,7 @@ class Geckodriver:
         self._entered = True
         with self._bounder.bound(watchdog_seconds(self._timeout_s), _START):
             # Every process already running, so that no crash helper started before this
-            # geckodriver -- the reader's own -- is taken for ours, even should our Firefox be
+            # geckodriver (the reader's own) is taken for ours, even should our Firefox be
             # given the pid its Firefox had.
             self._present_before = frozenset(row.pid for row in self._processes())
             log = self._scratch.log.open("wb")

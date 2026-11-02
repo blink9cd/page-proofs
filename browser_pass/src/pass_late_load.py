@@ -6,15 +6,15 @@ page, then sees it jump. An ordinary load therefore reads zero on the very page 
 throttling the network only makes the race likelier to go one way. This load decides it instead:
 
 1. **Hold** every script request the page makes, letting everything else through.
-2. **Release** them once the page has painted -- or at once, when a held script is one the page
+2. **Release** them once the page has painted, or at once when a held script is one the page
    cannot paint without (`blocking="render"`, or a classic script in `<head>`), since no paint
    will come until it runs. The release time is marked inside the page.
-3. **Wait** until the page is PRESENTABLE -- painted, then in its own fonts -- which the page
+3. **Wait** until the page is presentable (painted, then in its own fonts), which the page
    marks from its frames, not from its main thread: on a loaded machine the layout can be
    loaded and still before a frame has even shown it. A page refused whatever comes is not
    waited for.
 4. **Settle** on the layout signature, then **read** every layout shift a buffered observer,
-   installed before any of the page's own code, recorded after the release -- or after the
+   installed before any of the page's own code, recorded after the release, or after the
    page became presentable, when that came later. Unlike the page-load settle it stills only
    motion PROVABLY layout-inert (`_settled`, `pass_inert`): seeking an animation that moves
    layout would itself record a layout shift, charged to the scripts. So a page whose motion
@@ -29,7 +29,7 @@ context for CSP violations too (`pass_csp`): what it reports is read once the lo
 before its plant, and the caller merges it with what the page load found.
 
 Entry point assumptions: Playwright is importable (the repository's `browser` extra); the caller opens
-the context in the rendering's state, closes it afterwards, and runs this only where
+the context in the rendering's state, closes it after the load, and runs this only where
 `pass_shift.not_measured` says the rendering is measured.
 """
 
@@ -227,7 +227,7 @@ def _hold_until_painted(
 def _wait_until_presentable(page: Page, held: list[str], *, timeout: float) -> bool:
     """Wait until the page's record no longer awaits its presentable moment; False on timeout.
 
-    That moment -- painted, then in its own fonts -- is marked by the page's frames, which a
+    That moment (painted, then in its own fonts) is marked by the page's frames, which a
     loaded machine can leave behind its main thread: measured with frames stalled at `load`,
     the layout was loaded and still while the timeline held no paint at all, and the page
     became presentable as soon as frames resumed. Read before then, its record refuses as
@@ -253,13 +253,13 @@ def _settled(page: Page, *, timeout: float) -> tuple[bool, Motion]:
 
     Each read first stills PROVABLY layout-inert motion alone: an animation naming at least one
     property, every one of them in the class `LAYOUT_INERT_PROPERTIES` in
-    `page_probe_motion.js` holds -- a CSS animation's names read, over a DevTools session, from
+    `page_probe_motion.js` holds: a CSS animation's names read, over a DevTools session, from
     the `@keyframes` rule Chromium's style resolver applies to it (`pass_inert`), since its
     `getKeyframes()` leaves custom properties out. A seek of it moves no layout, so the Layout
     Instability API reports nothing for it and the scripts are charged with nothing, while left
     running, an endless transform changes the signature every frame and the page never
     settles. Any other animation, and one whose names are unknown, is left running, since a
-    seek that moved layout would be a shift charged to the scripts -- so a page whose layout
+    seek that moved layout would be a shift charged to the scripts. So a page whose layout
     never stops moving is still refused, as a reader would feel it move.
     """
     motion = NO_MOTION

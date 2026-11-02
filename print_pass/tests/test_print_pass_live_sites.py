@@ -1,4 +1,4 @@
-"""Grouped suite: the LIVE run beside the sample -- requests off loopback -- and the budget.
+"""Grouped suite: the live run beside the sample (requests off loopback), and the budget.
 
 The live case here serves a site on loopback and runs the tool over it on the real engine:
 one page that reaches off loopback for an image and for two WebSockets, under a policy
@@ -163,9 +163,9 @@ _GATE_UNIT_TIMEOUT_SECONDS: Final = 600.0
 #: isolation and memory runs, the per-page renders), 25 s for 1,415 tests at a load near 9.
 #: No high load was at hand to re-measure, so the room stays a quarter again the longest
 #: figure, and has no slack left: a suite that grows must shorten a live bound first. The
-#: room also carries bounds no live entry counts -- the canary proofs, the shim's
+#: room also carries bounds no live entry counts (the canary proofs, the shim's
 #: behavioral run, the shadowing interpreters, and the Firefox class's process listings and
-#: its watcher's join -- each measured under a second, so a stall there spends the room,
+#: its watcher's join), each measured under a second, so a stall there spends the room,
 #: not a live bound.
 _OTHER_SUITES_ROOM_SECONDS: Final = 140.0
 

@@ -1,4 +1,4 @@
-"""Grouped suite: the LIVE run over a meta-refresh stub -- the regression for its race.
+"""Grouped suite: the live run over a meta-refresh stub, the regression for its race.
 
 The site's `/archive/` is the archive stub, a refresh at once to `2026/`, and the year page is
 real. One run, on the pinned headless shell, names the stub twice: declared with

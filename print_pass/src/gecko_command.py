@@ -1,7 +1,7 @@
 """What geckodriver is started with: the platform it runs on, where it is, its environment, its command.
 
 Two facts shape it, both measured on macOS, the one platform the engine runs on. Gecko resolves
-its per-user application-data folder -- the one holding the reader's own `profiles.ini` --
+its per-user application-data folder (the one holding the reader's own `profiles.ini`)
 before it uses the profile it was handed, so a throwaway profile alone does not keep it out of
 the reader's Library; `CFFIXED_USER_HOME`, `MOZ_APP_DATA` and `MOZ_LOCAL_APP_DATA` do, and the
 first of those is a macOS mechanism. And geckodriver drops `moz:firefoxOptions.env`, so those

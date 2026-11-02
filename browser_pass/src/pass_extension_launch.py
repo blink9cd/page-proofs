@@ -3,8 +3,8 @@
 An extension loads into a browser's profile, so a rendering cannot take a fresh context from one
 shared browser, as every other rendering does. `PersistentBrowser` stands where that browser
 stands: `pass_engine.open_context` asks it for a context exactly as it asks a browser, and it
-launches a persistent context in a fresh profile under the run's scratch folder -- never anyone's
-own profile -- with the rendering's own options and the engine's extension. Then, in order:
+launches a persistent context in a fresh profile under the run's scratch folder, never anyone's
+own profile, with the rendering's own options and the engine's extension. Then, in order:
 
 1. **Confirm the extension loaded**, within the step timeout. Chromium: its manifest's service
    worker is running, at a `chrome-extension://` url on the id Chromium derives from the
@@ -30,8 +30,8 @@ the pass opened itself (`pass_csp.open_page`): what another tab reports is never
 page's finding, closed in time or not. The page-level detectors (console, page and HTTP errors,
 failed requests) listen on the pass's own page alone.
 
-Whatever fails in getting a context -- a launch, a confirmation, a close, a Playwright call
-erroring other than by timing out, or the disk refusing a profile's files -- is `ExtensionFault`:
+Whatever fails in getting a context (a launch, a confirmation, a close, a Playwright call
+erroring other than by timing out, or the disk refusing a profile's files) is `ExtensionFault`:
 that rendering's instrument fault, and the run goes on. Closing a persistent context closes its
 browser; `render` closes each inside its rendering's bound, which `bound` widens for these
 launches. Each profile is removed once its context has closed.
@@ -39,7 +39,7 @@ launches. Each profile is removed once its context has closed.
 Firefox loads a sideloaded add-on only when it is Mozilla-signed, and only with its profile scopes
 enabled. The prefs below reach Firefox before it starts: Playwright writes every
 `firefox_user_prefs` entry into the profile's `user.js` as it prepares the profile (measured in
-Playwright 1.63's driver), so no `user.js` is written here -- it would be overwritten.
+Playwright 1.63's driver), so no `user.js` is written here: it would be overwritten.
 
 Entry point assumptions: Playwright is importable (the repository's `browser` extra); the
 launch options it is handed are the engine's own and its guard's
@@ -116,8 +116,8 @@ class PersistentBrowser:
         """Launch nothing yet: each `new_context` is its own launch, with `options` and more.
 
         Raises:
-            ValueError: `extension` names no id to confirm its load by -- Chromium's extension
-                id, or Firefox's gecko id -- which `pass_extension`'s readers always give: a
+            ValueError: `extension` names no id to confirm its load by (Chromium's extension
+                id, or Firefox's gecko id), which `pass_extension`'s readers always give: a
                 defect in the pass, never a load that failed.
         """
         self._type = browser_type

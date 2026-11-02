@@ -1,4 +1,4 @@
-"""Grouped suite: around a persistent launch -- the tabs an extension opens, and what can fail.
+"""Grouped suite: around a persistent launch (the tabs an extension opens, and what can fail).
 
 A context with an extension is the pass's for one rendering, but an extension can open a tab in
 it at any time, a welcome page after install, say. `PersistentBrowser` closes each one as it

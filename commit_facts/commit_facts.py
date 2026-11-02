@@ -1,19 +1,19 @@
-"""Which commit a tree is at, and whether the tree differs from it -- or that git cannot say.
+"""Which commit a tree is at, and whether the tree differs from it, or that git cannot say.
 
 A measurement compares with a later one only when both name the code they measured, so a
 tool that measures a site records this beside its numbers, for the tree it served:
 `lighthouse_run` the `--serve` folder, else the project's `src/`. This module is the one
 reading of it.
-The tree it is asked about -- its SCOPE -- is the caller's to name, and each caller maps the
+The tree it is asked about (its scope) is the caller's to name, and each caller maps the
 result onto its own report's field names, which predate this module and are left as they are.
 
 The answer is a pair, and it is only worth anything whole: a commit names the code measured
 only alongside whether the tree differed from it. So whenever git cannot answer BOTH halves,
-both are `None` -- never a commit beside a guess, which every report would print as a bare
+both are `None`: never a commit beside a guess, which every report would print as a bare
 commit and so as a clean tree. That covers three cases:
 
 - git is absent;
-- the scope is outside any repository (`rev-parse` fails) -- an ordinary case, such as a
+- the scope is outside any repository (`rev-parse` fails), an ordinary case, such as a
   built copy in a scratch folder;
 - git is there and fails: `status` exits non-zero, or either call times out or cannot start.
 

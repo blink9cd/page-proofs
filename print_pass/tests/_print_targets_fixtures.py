@@ -1,7 +1,7 @@
 """Shared by the print_targets suites: the minimal targets documents their cases build on.
 
-Each builder returns a plain dictionary shaped as `tomllib` would produce it -- one valid
-target, named `home` and served at `/` -- with the caller's keys layered on, so a case
+Each builder returns a plain dictionary shaped as `tomllib` would produce it (one valid
+target, named `home` and served at `/`), with the caller's keys layered on, so a case
 states only the one key it is about. Nothing here imports the subject, so this module
 imports alone and needs no `sys.path` insert of its own.
 """

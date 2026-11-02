@@ -418,8 +418,8 @@ _KNOWN_KEYS = tuple(sorted({key for keys in _TABLE_KEYS.values() for key in keys
 _KINDLESS_READ = {"name": "m", "selector": "h1"}
 _TEXT_READ = {**_KINDLESS_READ, "text": True}
 
-# Values some key accepts -- a name, a page, a selector, an enum value, or a whole state,
-# target or read table -- drawn beside arbitrary ones, so a drawn value often passes its
+# Values some key accepts (a name, a page, a selector, an enum value, or a whole state,
+# target or read table), drawn beside arbitrary ones, so a drawn value often passes its
 # own check and the next one runs.
 _VALID_SHAPED: tuple[object, ...] = (
     *("home", "s", "/", ":root", "dark", "reduce", "both", "native", "example.org"),
@@ -443,13 +443,13 @@ _DOCUMENTS = st.recursive(
 def _placements(drawn: object) -> list[Mapping[str, object]]:
     """`drawn` as a whole document, then planted at each key of an otherwise valid one.
 
-    A drawn document seldom reaches the deeper validators itself -- most drawn tables
-    hold some key another table owns -- so planted, each validator reads it directly.
+    A drawn document seldom reaches the deeper validators itself (most drawn tables
+    hold some key another table owns), so planted, each validator reads it directly.
     """
     own_kind = ("attribute", "property")
     return [
         drawn if isinstance(drawn, dict) else {"target": drawn},
-        # As each kind of table -- twice where tables are named, so a drawn table that
+        # As each kind of table, twice where tables are named, so a drawn table that
         # passes also meets the repeated-name refusal.
         {"target": [drawn, drawn]},
         doc(state=[drawn, drawn]),

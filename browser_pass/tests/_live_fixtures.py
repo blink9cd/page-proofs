@@ -75,9 +75,7 @@ HERMETIC_DRIVER = ("driver", "package")
 HERMETIC_FOLDER = ".local-browsers"
 
 #: What installs the headless builds the live suites launch.
-INSTALL_COMMAND = (
-    "python3.12 -m playwright install --only-shell chromium firefox webkit"
-)
+INSTALL_COMMAND = "python -m playwright install --only-shell chromium firefox webkit"
 
 #: The folder name each engine's headless build is installed under, before its revision number.
 BUILD_PREFIXES = {
@@ -153,8 +151,8 @@ def absent_builds(missing: str, command: str) -> Exception:
 
 
 #: The settle window the live suites render under, in place of production's. That one guards
-#: what the stilling of animations before each poll cannot reach -- a page still building
-#: itself, and motion a script drives -- and the pages these suites serve do neither for long:
+#: what the stilling of animations before each poll cannot reach (a page still building
+#: itself, and motion a script drives), and the pages these suites serve do neither for long:
 #: the sample site's one timer fires once, at 0 ms, the page-load settle stills its CSS motion,
 #: and the late-script load stills the motion sample's too, which moves only `transform`. So
 #: three polls still read a page that has stopped, and the restless page, which a script
@@ -210,8 +208,8 @@ def over_budget(
 class LiveSite:
     """The pinned engine builds pointed at, and the sample site served, for one live module.
 
-    It also holds the module to its launch budget. An engine launch -- a driver start and a
-    browser start -- is the dearest thing these suites do, and a test that quietly launches
+    It also holds the module to its launch budget. An engine launch (a driver start and a
+    browser start) is the dearest thing these suites do, and a test that quietly launches
     its own browser costs every test run after it, so every launch in the module is counted
     and `stop` fails the module when any engine went past the number it declared.
     """
@@ -305,7 +303,7 @@ class SharedEngines:
 
     The tool renders every page of an engine in one browser, each rendering in a fresh context
     (`pass_engine.run_matrix`), so tests sharing a browser that way measure what the tool
-    measures. What sharing saves is a driver start and an engine launch per test -- the work a
+    measures. What sharing saves is a driver start and an engine launch per test, the work a
     loaded machine slows most. A browser that has died is launched again on the next request,
     so one crashed engine fails its own test rather than every test after it (and shows up
     again as a launch past the module's budget).

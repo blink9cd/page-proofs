@@ -21,7 +21,7 @@ UNCAUGHT_VERDICTS = (MISS_VERDICT, FAULT_VERDICT)
 
 
 def announcement(result: RenderingResult) -> str | None:
-    """A finished rendering's line -- its faults, findings and uncaught plants -- or None."""
+    """A finished rendering's line (its faults, findings and uncaught plants), or None."""
     missed = [
         d for d, verdict in result.verdicts.items() if verdict in UNCAUGHT_VERDICTS
     ]
@@ -37,7 +37,7 @@ def states_left_out(targets: Targets, renderings: Sequence[Rendering]) -> str | 
     """How many of `targets`' states `renderings` render none of, and why; None if none.
 
     A state renders with scripts on only, so a run whose `--scripts` leaves that out renders
-    none -- counted and said rather than dropped in silence.
+    none: counted and said rather than dropped in silence.
     """
     rendered = {r.state for r in renderings}
     left_out = [s.name for s in targets.states if s.name not in rendered]

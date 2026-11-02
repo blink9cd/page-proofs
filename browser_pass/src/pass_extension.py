@@ -3,7 +3,7 @@
 A site's Content Security Policy is measured against the extensions its visitors install, so a
 run can load one: `--chromium-extension` an unpacked folder, `--firefox-extension` a signed
 `.xpi`. This module reads each one's manifest and refuses, before any browser opens, what cannot
-be measured -- a missing manifest, a Firefox add-on with no gecko id to file it under, a Chromium
+be measured: a missing manifest, a Firefox add-on with no gecko id to file it under, a Chromium
 one with no service worker to confirm its load by, one asking for the `proxy` permission, with
 which it could route requests around the guard (`pass_guard`), an engine `--engines` names that has no
 extension (WebKit cannot load one at all), or an extension for an engine the run leaves out.

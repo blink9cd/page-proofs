@@ -24,6 +24,8 @@ directory and the tool folder on ``sys.path``; Playwright is importable; the eng
 where ``PLAYWRIGHT_BROWSERS_PATH`` names, else where a plain ``playwright install`` puts them.
 """
 
+# gate-serves: none (its own tests/fixture tree, gated with its tool)
+
 from __future__ import annotations
 
 import contextlib
@@ -100,7 +102,7 @@ _SKIP_NOTICE: Final = "live suite skipped: "
 
 #: What installs the headless builds this module launches.
 _INSTALL_COMMAND: Final = (
-    "python3.12 -m playwright install --only-shell chromium firefox webkit"
+    "python -m playwright install --only-shell chromium firefox webkit"
 )
 
 #: Bound on each engine step, in seconds and in Playwright's milliseconds.

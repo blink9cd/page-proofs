@@ -5,6 +5,8 @@ because they pin lighthouse_run's contract with that dependency, reached at the 
 sibling path the runner's bootstrap uses.
 """
 
+# gate-serves: none (serves only temporary trees built at test time)
+
 from __future__ import annotations
 
 import contextlib

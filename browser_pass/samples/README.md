@@ -4,7 +4,7 @@ Six small pages, two small scripts and two targets files, to check the tool by h
 repository root:
 
 ```bash
-python3.12 browser_pass/browser_pass.py --targets browser_pass/samples/targets.toml \
+python browser_pass/browser_pass.py --targets browser_pass/samples/targets.toml \
   --serve browser_pass/samples/site --prove
 ```
 
@@ -16,7 +16,7 @@ targets file.
 
 ## What each page should report
 
-`site/clean.html` reports **nothing** in any rendering. It holds what a careless detector would
+`site/clean.html` reports nothing in any rendering. It holds what a careless detector would
 flag:
 
 - a link inside a sentence, exempt from the target size;
@@ -41,7 +41,7 @@ declaring a policy of its own (see below):
 | `csp_violation`   | `site/csp.html`: a policy, and one style attribute it refuses                  | scripts on; `not measured` with scripts off, where `console_error` still reports the refusal    |
 | `late_shift`      | `site/late.js`, a module that adds a banner above everything already on screen | Chromium with scripts on; `not measured` in Firefox and WebKit, `n/a` with scripts off          |
 
-`site/blocked.html` loads the **same** `late.js` with `blocking="render"`, so the banner is in
+`site/blocked.html` loads the same `late.js` with `blocking="render"`, so the banner is in
 place before anything is painted: it reports nothing. That is the fix the faulty page's late
 shift calls for, and the late-script load releases the held script at once rather than waiting
 for a paint that cannot come.
@@ -56,8 +56,8 @@ settle's stilling of motion exists for. It holds three boxes:
 - one the page pauses itself with `animation-play-state: paused`, showing its first frame.
 
 A settle that only waited for stillness would measure this page in its first pause, with the
-slide not yet moved. Every rendering reports **nothing** from any detector, and measures the
-slide at the END of its move, the bob at its iteration start and the paused box untouched, at
+slide not yet moved. Every rendering reports nothing from any detector, and measures the
+slide at the end of its move, the bob at its iteration start and the paused box untouched, at
 the frame the page shows. The report's Motion section lists the page with one animation
 finished and one paused in each of its 24 renderings, and none still running. Its late-script
 load part lists the page again, apart, with one finished and one paused in each of its 4
@@ -66,7 +66,7 @@ moving boxes move only their `transform`. The console names the page on two line
 verdict, one per load.
 
 `site/popover.html` opens a panel from its button with no script, through the browser's own
-popover, and the panel holds a 16x16 button. Loaded, the page reports **nothing**: the panel is
+popover, and the panel holds a 16x16 button. Loaded, the page reports nothing: the panel is
 closed, so the button is not rendered. The targets file's state `opened` reaches the same page
 (its address carrying a query, which the server answers with the same file), clicks the button
 and waits for the panel to show, and only then measures: each of its 12 renderings reports one
@@ -92,7 +92,7 @@ declares a policy. Its policy refuses none of the probe's plants, since each is 
 CSSOM, which a policy does not govern, so it is run with `--prove` as well:
 
 ```bash
-python3.12 browser_pass/browser_pass.py \
+python browser_pass/browser_pass.py \
   --targets browser_pass/samples/csp_targets.toml \
   --serve browser_pass/samples/site --require-csp --prove
 ```

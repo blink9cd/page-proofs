@@ -2,15 +2,15 @@
 """Render a site's pages across engines, viewports, orientations, modes and scripting, and measure.
 
 The browser pass, committed and repeatable. It REFUSES (exit 2) rather than report a zero it
-cannot stand behind -- the instrument faults that bought that rule are in browser_pass.md.
+cannot stand behind. The instrument faults that bought that rule are in browser_pass.md.
 
 One invocation, in order:
 
 1. **Validates** the targets file (pages, viewports, an optional base url, optional states) and
    the options.
-2. **Reads the commit** the measured tree is at -- first, so it names the tree as served, and as
-   unknown, never clean, when git fails -- then **serves** `--serve` on 127.0.0.1 through the
-   shared `loopback_site`, on a port the OS picks, and confirms every page's bytes against disk --
+2. **Reads the commit** the measured tree is at, first, so it names the tree as served (and as
+   unknown, never clean, when git fails); then **serves** `--serve` on 127.0.0.1 through the
+   shared `loopback_site`, on a port the OS picks, and confirms every page's bytes against disk,
    so the tree measured is the tree named. With the targets file's `not_found`, a page with no
    file is confirmed to answer 404 with that file instead, and its own 404 is no finding. A
    page that is a meta refresh is measured where it points if `redirects` declares it, else refused.
@@ -96,7 +96,7 @@ _Measured = tuple[str, pass_redirects.Followed, dict[str, str], pass_report.Resu
 
 
 class _Engine(Protocol):
-    """The part of `pass_engine` this CLI calls -- a seam the CLI tests replace."""
+    """The part of `pass_engine` this CLI calls: a seam the CLI tests replace."""
 
     @property
     def EngineError(self) -> type[Exception]: ...  # noqa: N802 - mirrors the module's class name
@@ -154,18 +154,18 @@ def _positive_seconds(text: str) -> float:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    """The argument parser: named options only, each optional's live default shown."""
+    """Named options only; a flag left out is None, so --help shows no default."""
     parser = argparse.ArgumentParser(
         description=(
             "Render a site's pages across engines, viewports (phones in both orientations), "
             "light and dark, scripts on and off; run the layout, console, network and CSP "
             "detectors on every rendering, and in Chromium the late-script layout-shift detector."
         ),
-        formatter_class=help_formatter.ReqAwareDefaultsFormatter,
+        formatter_class=help_formatter.UnsetHidingFormatter,
         epilog=(
             "Prerequisites: the repository's `browser` extra installed, and "
-            "the pinned engine builds installed where --browsers points -- browser_pass.md, "
-            "'Installing the engines', has both commands. "
+            "the pinned engine builds installed where --browsers points; "
+            "'Installing the engines' in browser_pass.md has both commands. "
             "Exit codes: 0 every detector silent, 1 a finding or a missed plant, "
             "2 the run could not measure honestly."
         ),
@@ -236,11 +236,13 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--prove",
         action="store_true",
+        default=None,
         help="Also plant one fault per detector in every rendering, and fail if one goes uncaught.",
     )
     parser.add_argument(
         "--require-csp",
         action="store_true",
+        default=None,
         help="Also find each page as it loads, scripts on and off, whose markup declares no "
         "Content-Security-Policy meta. A state is not held to it.",
     )
@@ -259,6 +261,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--loopback-only",
         action="store_true",
+        default=None,
         help="Refuse requests off the served origin (in WebKit, off 127.0.0.1; its UDP is not "
         "guarded). Chromium runs its full build. The baseline an extension run is compared with.",
     )
@@ -302,7 +305,7 @@ def plan_run(args: argparse.Namespace) -> Plan | str:
         args.engines,
         chromium=args.chromium_extension,
         firefox=args.firefox_extension,
-        loopback_only=args.loopback_only,
+        loopback_only=bool(args.loopback_only),
         base_url=None if args.serve else targets.base_url,
     )
     if isinstance(isolation, str):
@@ -331,8 +334,8 @@ def plan_run(args: argparse.Namespace) -> Plan | str:
         out_dir=args.out or args.targets.parent / RESULTS_DIR_NAME,
         facts_tree=args.serve or args.targets.parent,
         timeout=args.timeout,
-        prove=args.prove,
-        require_csp=args.require_csp,
+        prove=bool(args.prove),
+        require_csp=bool(args.require_csp),
         isolation=isolation,
         started=datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ"),
     )
@@ -383,7 +386,7 @@ def read_commit(plan: Plan) -> commit_facts.CommitFacts:
 
     Before, because the tree served is the tree at the start: a commit made during a long pass
     would otherwise be recorded as the one measured. And a git that fails or hangs then costs
-    only its own bound, never the finished matrix -- the report records the commit as unknown.
+    only its own bound, never the finished matrix: the report records the commit as unknown.
     """
     commit = commit_facts.read(
         plan.facts_tree, git=shutil.which("git"), timeout=_GIT_TIMEOUT_SECONDS
@@ -461,7 +464,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     try:
         return _measure_and_record(plan, engine)
     except Exception:
-        # Nothing is silenced -- the traceback is printed in full. What this
+        # Nothing is silenced: the traceback is printed in full. What this
         # catch is for is the EXIT CODE: an escaping exception leaves the interpreter with 1,
         # which here means a detector found something, and a run that died found nothing.
         _warn(f"the run could not finish:\n{traceback.format_exc()}")

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Aggregator for print_pass's grouped suites -- bare-runnable, 100% branch.
+"""Aggregator for print_pass's grouped suites: bare-runnable, 100% branch.
 
 This file holds no tests of its own beyond its guards. The real suites live in the sibling
 ``tests/`` directory, grouped by the module each exercises, and this file is the
@@ -10,8 +10,8 @@ launches the pinned headless shell, and installed Google Chrome where it is pres
 ``test_print_pass_live_firefox.py`` launches installed Firefox through geckodriver, both
 under ``sandbox-exec`` inside a network fence it proves first, where macOS, geckodriver and
 Firefox are all present. And on every macOS host with ``sandbox-exec``, Firefox or not, the
-fence's suites run its canaries under it -- the proof on the real profile and on each
-profile missing a rule -- and a stand-in driver through the fenced shim.
+fence's suites run its canaries under it (the proof on the real profile and on each
+profile missing a rule) and a stand-in driver through the fenced shim.
 
 Entry point assumptions: run bare, or under a coverage run from this folder scoped to
 ``print_pass`` and its ``src/``. Both put this directory on ``sys.path``; the insert below
@@ -151,7 +151,7 @@ def _tests_by_module(suite: unittest.TestSuite) -> dict[str, int]:
 
 
 class GroupedSuiteDiscoveryTest(unittest.TestCase):
-    """Fail loudly when a grouped suite is lost -- or when a guard in here is."""
+    """Fail loudly when a grouped suite is lost, or when a guard in here is."""
 
     def test_module_load_includes_the_grouped_suites(self) -> None:
         """Guards the ``load_tests`` WIRING, which a discovery-based check cannot see.

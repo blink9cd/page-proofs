@@ -9,7 +9,7 @@ build-backend = "setuptools.build_meta"
 # The repository's name. package.json, package-lock.json's two top-level "name" fields and
 # the README's title carry it too, so a rename changes all four.
 name = "page-proofs"
-version = "0.2.0"
+version = "0.2.1"
 description = "Tools that check a built static site's pages on your own machine, with a pinned Lighthouse, pinned browser engines and PDF proofs."
 readme = "README.md"
 license = "AGPL-3.0-or-later"
@@ -132,119 +132,6 @@ mypy_path = [
   "$MYPY_CONFIG_FILE_DIR/help_formatter",
   "$MYPY_CONFIG_FILE_DIR/live_pid_guard",
 ]
-
-[tool.prose_terms]
-# Words this repository's prose must not use, so they cannot creep back in. The first credits
-# a decision to a person the reader does not know; the rest name tools, a test convention and
-# a folder from the larger repository this was developed in, none of which ship here.
-# State the rule or the measured fact instead. Each entry waives itself: the declaration is
-# not prose. The license text and the npm lockfile are not this repository's prose.
-terms = [
-  # prose: ignore[owner] the declaration itself
-  "owner",
-  # prose: ignore[site_package] the declaration itself
-  "site_package",
-  # prose: ignore[python_gate] the declaration itself
-  "python_gate",
-  # prose: ignore[fuzz_gate] the declaration itself
-  "fuzz_gate",
-  # prose: ignore[tool_subdirs] the declaration itself
-  "tool_subdirs",
-  # prose: ignore[monorepo] the declaration itself
-  "monorepo",
-  # prose: ignore[js_test_gate] the declaration itself
-  "js_test_gate",
-  # prose: ignore[tools/web] the declaration itself
-  "tools/web",
-]
-exclude = ["LICENSE", "package-lock.json"]
-
-# Shapes no single word can express: a backlog or site tracking number, a review named by
-# its date or finding, the standards file and notes folder of that larger repository, and two
-# phrases from its own setup. Each is a pointer that resolves for no reader of this one.
-[tool.prose_terms.patterns]
-item-tag = '(?<![0-9A-Za-z_])(?:items?|site)\s+(?:item\s+)?\d+'  # prose: ignore[item-tag] the declaration itself
-review-tag = '''(?<![0-9A-Za-z_])review(?:'s)?\W+(?:[a-z]+\W+){0,2}?(?:20\d\d-\d\d-\d\d|(?-i:[A-Z])\d+(?![0-9A-Za-z_]))'''
-agents-file = '(?<![0-9A-Za-z_])AGENTS\.md'  # prose: ignore[agents-file] the declaration itself
-docs-path = '(?<![0-9A-Za-z_./])docs/'  # prose: ignore[docs-path] the declaration itself
-primary-checkout = '(?<![0-9A-Za-z_])primary\s+checkout'  # prose: ignore[primary-checkout] the declaration itself
-gate-interpreter = '(?<![0-9A-Za-z_])gate\s+interpreter'  # prose: ignore[gate-interpreter] the declaration itself
-
-[tool.dep_audit]
-# Pinning checks only in the inner loop; the network audit is run on demand.
-offline = "skip"
-
-[tool.pii_scan]
-# The license names its copyright holder, which is its purpose.
-exclude = ["LICENSE"]
-
-# prose: ignore[python_gate] the table this gate reads, named for it
-[tool.python_gate]
-# bounded_run ships two fixtures its live boundary tests launch, gc_child.py and
-# nest_child.py, and a human can run either by hand to watch the bound hold. Each is an
-# INPUT a test drives, not a module of the library -- and each does its work at import,
-# gc_child.py never exiting and nest_child.py waiting on it, so neither could be imported
-# by a paired test even in principle.
-exclude = ["bounded_run/samples"]
-
-[tool.samples_presence]
-# Folders that turn no input into an output a human could diff against a sample.
-exempt = [
-  # A library with no CLI whose output is a fact about whatever repository it is pointed
-  # at. A committed sample could not hold a repository to point it at, and the cases worth
-  # checking by hand -- a status that fails, a git that hangs -- are states a healthy
-  # repository cannot be put in. Its suite builds the repositories and fakes the failing
-  # git instead.
-  "commit_facts",
-  # A library with no CLI whose input is a page loaded in a live engine and whose output is a
-  # Python log of what that engine reported, never a file. What is worth checking by hand,
-  # that each engine reports a policy page's one violation and catches the plant, is what its
-  # live suite runs against tests/fixture/ in all three engines.
-  "csp_watch",
-  # A single argparse formatter class a CLI binds as its formatter_class: it transforms no
-  # input into an output.
-  "help_formatter",
-  # lighthouse_run measures rather than transforms: its output is the timing of a live
-  # Chrome run against a served tree, different on every run and every machine, so no
-  # committed input and output pair could be run again by hand and diffed. The part a
-  # reader would want to check by hand, the font bytes by first paint join, is pinned in
-  # its suite.
-  "lighthouse_run",
-  # A test library, imported only by bounded_run's own tests to reap what they start: no
-  # CLI, no transform.
-  "live_pid_guard",
-  # A server: it serves the directory it is pointed at rather than turning an input into an
-  # output, so there is no output a human could diff against a sample.
-  "loopback_site",
-  # A stream-policy library with no CLI: nothing in it is run by hand on an input to produce
-  # an output.
-  "stdio_utf8",
-  # A test library with no CLI: the names and helpers a grouped suite's aggregator shares with
-  # a runner that splits it, which no input and output pair could show.
-  "suite_select",
-]
-
-[tool.stdio_policy]
-# The whole tree, the vendored libraries included: a library is exactly where a stray
-# print() does not belong.
-paths = ["."]
-
-[tool.claim_check.allow_absent]
-# `npm ci` creates node_modules/.bin from the lockfile, so a fresh clone has none until the
-# reference's own first step has run. allow_absent rather than an ignore keeps a respelling
-# failing.
-"lighthouse_run/lighthouse_run.md" = ["node_modules/.bin"]
-
-[tool.claim_check.ignore_paths]
-# "samples/" names the folder a tool ships its hand-verification sample in, as a class:
-# help_formatter has no CLI and ships none, so the token is not a path in this tree.
-"help_formatter/help_formatter.md" = ["samples/"]
-# "text/html" is the Content-Type the server answers a miss with, and "x/" a hypothetical
-# folder in an example request path: neither is a file in this tree.
-"loopback_site/loopback_site.md" = ["text/html", "x/"]
-# "utilities/" names one of the two layouts the library can be found in -- a folder of
-# shared libraries -- which this repository does not use: it vendors the copy at its root.
-"stdio_utf8/stdio_utf8.md" = ["utilities/"]
 
 [tool.coverage.run]
 # Branch coverage, not line coverage: a line can run while one side of its condition never

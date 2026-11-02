@@ -5,9 +5,9 @@ what it always was, to the byte: the committed sample's report holds their entry
 prints through WebDriver's Print, so its entry is read from the parameters that command is
 sent, with what the command cannot set beside them, and a parameter the report has no name
 for fails the report; its report alone also says what its network record cannot list. A
-make run hands the report the engine its settings name. And a PDF made the way Firefox's
-WebDriver Print makes them -- untagged, with no `Title` -- is no problem for the readers on
-either count.
+make run hands the report the engine its settings name. And a PDF made the way an earlier
+Firefox build's WebDriver Print made them (untagged, with no `Title`) is no problem for the
+readers on either count.
 
 Entry point assumptions: run by `unittest` discovery from the tool folder, or by the tool's
 aggregator; the bootstrap below names the tool's private `src/` and the tool's own folder,
@@ -234,7 +234,7 @@ class MakeRunTests(RunCase):
 
 
 class FirefoxPdfTests(_OutCase):
-    """A PDF as Firefox's WebDriver Print writes it raises no problem for what it lacks."""
+    """A PDF as an earlier Firefox build printed it raises no problem for what it lacks."""
 
     def test_an_untagged_pdf_with_no_title_is_read_without_a_problem(self) -> None:
         firefox_info = dataclasses.replace(

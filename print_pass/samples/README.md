@@ -16,14 +16,15 @@ its own: it tests the instrument, not a site. It holds:
 - a 1400-pixel spacer, then a lazy image (`loading="lazy"`), below the fold of the 1280x800
   window each state is laid out in.
 
-The image is `pixel.png`, a 64 x 32 gray PNG that is **not committed**: no binary is. It is
+The image is `pixel.png`, a 64 x 32 gray PNG that is not committed: no binary is. It is
 written beside the page in a copy of the site, which is what gets served. The live suite writes
 the same bytes, and checks that the command below does too.
 
 ## Running it
 
-From the repository root, with `$P` a Python 3.12 or later interpreter that has the
-repository's `print` extra installed, and poppler's readers on `PATH`:
+From the repository root, with `$P` the `python` of the virtual environment the README's
+"Install" makes, with the repository's `print` extra installed, and poppler's readers on
+`PATH`:
 
 ```bash
 SITE="$(mktemp -d)/site"
@@ -67,15 +68,19 @@ installed, as `../print_pass.md` says in "The Firefox engine"; it does not need 
   --targets print_pass/samples/targets.toml --out "$(mktemp -d)/firefox"
 ```
 
-It exits `0` too, with no finding, and its warnings are of two kinds: the running `spin`
-animation, in every state, and `font without ToUnicode` for the `Times-Roman` font in every
-PDF. Every state reads the lazy image back complete, since each session widens Firefox's
-lazy-load margin. Backgrounds off and on print identically in every state, `emulated-dark`
-included, where the default engine's two differ (why they do not differ under Firefox was not
-measured). Its dark scheme is Firefox's own preference, so the report marks it not emulated
-and gives no EMULATED warning, though the page reads it back as `dark`.
-Each PDF is two Letter pages, the image on the second, and untagged, as every Firefox print
-is. `expected_report.json` is the default engine's report, not Firefox's.
+It exits `0` too, with no finding, and its only warnings are for the running `spin` animation,
+one in every state. Every state reads the lazy image back complete, since each session widens
+Firefox's lazy-load margin. Backgrounds off and on print identically in every state,
+`emulated-dark` included, where the default engine's two differ (why they do not differ under
+Firefox was not measured). Its dark scheme is Firefox's own preference, so the report marks it
+not emulated and gives no EMULATED warning, though the page reads it back as `dark`.
+
+What each PDF holds is the Firefox build's to decide, since the tool pins no Firefox. Measured
+with Firefox 159 on macOS: each PDF is two Letter pages, tagged, with the page's title as its
+`Title`, and its one font, `Times-Roman`, is embedded with a ToUnicode map. Each of the two
+links is listed twice, at the same place on the page. The image's ink is on the second page,
+but `pdfimages` finds no image object in the PDF, so the report's `images` list is empty.
+`expected_report.json` is the default engine's report, not Firefox's.
 
 ## The expected report
 

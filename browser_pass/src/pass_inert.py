@@ -13,13 +13,13 @@ its keyframes declares, custom properties included. The late load runs in Chromi
 DevTools session it is asked over lives only there; the page-load settle stills every animation
 that advances, whatever it moves, and opens none.
 
-ONE POLL (`still_inert`): the probe's `listMotion` lists the running animations -- the document's,
-and every open shadow root's, whose targets live inside the root -- into ONE array the page
+One poll (`still_inert`): the probe's `listMotion` lists the running animations (the document's,
+and every open shadow root's, whose targets live inside the root) into one array the page
 keeps, of which the driver holds a handle, not a copy, and beside each an ask where its rule could
 decide its verdict: a CSS animation that advances with time, whose `getKeyframes()` names nothing
 but layout-inert properties, or nothing. One whose `getKeyframes()` names another
 property is left running whatever its rule adds, and any other animation has no rule, so neither
-is asked about. For each ask, the animation's target -- or the pseudo-element of it -- is
+is asked about. For each ask, the animation's target, or the pseudo-element of it, is
 resolved to a node and its applied rule read; then the probe's `stillMotion` is called over that
 SAME array, handed the names, one entry per animation, None where nothing was asked. The poll's
 handles are let go however it ends, and the session however the settle does.
@@ -29,7 +29,7 @@ here enumerates twice and matches the two by index or name: the names go back be
 they were read from, and the probe judges each animation by the entry beside it. One started
 since the listing is not in the array, so it is left alone, and the next poll lists it; one
 stopped since is skipped by its play state, as at any poll. What no handle pins is a script
-rewriting a `@keyframes` rule between the reading and the stilling -- a window as wide as the
+rewriting a `@keyframes` rule between the reading and the stilling, a window as wide as the
 reading of every rule asked for: the probe's union with `getKeyframes()` catches any property but
 a custom one, and the next poll reads the rule anew.
 
@@ -111,7 +111,7 @@ def still_inert(page: Page, session: CDPSession | None) -> object:
         )
         return _at(_returned(stilled, "stillMotion"), "value")
     finally:
-        # However the poll ended -- a probe that threw, a call refused -- its handles go with it.
+        # However the poll ended (a probe that threw, a call refused), its handles go with it.
         session.send("Runtime.releaseObjectGroup", {"objectGroup": _OBJECT_GROUP})
 
 

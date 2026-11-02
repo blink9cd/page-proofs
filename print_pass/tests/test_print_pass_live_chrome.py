@@ -1,4 +1,4 @@
-"""Grouped suite: the LIVE run on installed Chrome -- a real dark setting, and lazy slides.
+"""Grouped suite: the live run on installed Chrome (a real dark setting, and lazy slides).
 
 The sample page, with a carousel of lazy slides added to its body, is printed once on
 installed Google Chrome in three states: the host's own scheme, a real dark setting, and an
@@ -144,7 +144,7 @@ class NativeDarkTest(unittest.TestCase):
 
         The engine widens Chromium's lazy margin at every launch, so no slide is read still
         loading, and the one no site serves is still a finding, broken. Those findings are
-        the run's only ones -- the totals count no other, and no PDF holds one -- so it
+        the run's only ones (the totals count no other, and no PDF holds one), so it
         exits with findings for them alone.
         """
         self.assertEqual(self.outcome.code, EXIT_FINDINGS, self.outcome.stderr)

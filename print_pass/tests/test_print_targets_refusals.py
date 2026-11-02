@@ -49,7 +49,7 @@ _DAY_MS = 24 * 60 * 60 * 1000
 _WIDTH_RANGE = "must be a whole number from 320 to 815"
 
 # Two reads sharing one name. Read-backs are reported by name, so a second read of one name
-# within a target -- the file's reads followed by its own -- is refused at the LATER read's
+# within a target (the file's reads followed by its own) is refused at the later read's
 # path.
 _FIRST_READ = {"name": "m", "selector": "h1", "text": True}
 _SECOND_READ = {**_FIRST_READ, "selector": "h2"}
@@ -450,7 +450,7 @@ class ExpectedOffsiteHostRefusalTests(_Refusals):
 class ExplicitNoneRefusalTests(_Refusals):
     """An explicit None is a wrong type, never "absent".
 
-    TOML has no null, so only a Python caller -- or the property test -- can send one; a
+    TOML has no null, so only a Python caller (or the property test) can send one; a
     key that is present is parsed, whatever it holds.
     """
 

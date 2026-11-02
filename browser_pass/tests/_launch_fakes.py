@@ -2,8 +2,8 @@
 
 `PersistentBrowser` (`pass_extension_launch`) launches each context of an engine with an
 extension. The stand-in browser type here records every launch, and its contexts play the
-engine's part -- a service worker that starts or never does, an `extensions.json` Firefox writes
-or never does, a tab an extension opens, a call that fails -- so every branch is reached with no
+engine's part (a service worker that starts or never does, an `extensions.json` Firefox writes
+or never does, a tab an extension opens, a call that fails), so every branch is reached with no
 engine build installed. `test_pass_extension_launch.py` drives the launches and their
 confirmation, `test_pass_extension_tabs.py` the tabs and faults around them.
 

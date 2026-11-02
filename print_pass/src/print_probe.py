@@ -5,7 +5,7 @@
 got, every image and whether it has a src attribute, the animations still running, the
 targets' `[[read]]` values and the storage keys asked for, and changes nothing. This module
 builds its argument from the targets' reads and turns what it returns into a typed
-`ProbeResult`, refusing any shape the probe never returns -- so a probe and a parser that
+`ProbeResult`, refusing any shape the probe never returns, so a probe and a parser that
 drift apart fail here, loudly, instead of as a report that silently says less. The argument
 carries the bounds the probe cuts a page's strings and lists to, `MAX_PROBE_TEXT` and
 `MAX_PROBE_ITEMS`, and the parse refuses past them, so one constant here bounds both halves.

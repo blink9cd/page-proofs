@@ -6,7 +6,7 @@ where a rendering needs it, so the engine's own modules each make one call into 
 
 - **Installed** on a rendering's context before that context's first page, with scripts on,
   keeping only the reports of the pages the pass opens through `open_page`, from their
-  documents on the measured origin -- the one the page's main frame is at as it reports,
+  documents on the measured origin: the one the page's main frame is at as it reports,
   wherever a redirect of the base url landed it, in every run: a tab a browser extension opens
   in the context, or an iframe one injects into the measured page, reports to the same binding,
   and its violations are the extension's own, never the measured page's. A frame of the
@@ -126,7 +126,7 @@ def open_page(context: BrowserContext, watched: CspWatch) -> Page:
 def _opened(source: object, pages: list[Page]) -> bool:
     """Whether the binding's caller, `source`, is a document of the measured page's own.
 
-    Its page must be one of `pages` -- the same object, not an equal one -- and its frame on
+    Its page must be one of `pages` (the same object, not an equal one), and its frame on
     the origin that page's main frame is at now. That is the measured origin, and not the
     base url's: a base url that redirects (http to https, a bare host to www) lands the page
     on another, as can one differing only in its host's case. A frame's page is its

@@ -3,7 +3,7 @@
 Two kinds of run measure the same way and differ only here. A LOOPBACK run serves a folder on
 127.0.0.1 itself: `src/` under `--root`, or the folder `--serve` names. A HOSTED run starts no
 server: it fetches a copy a real host serves (`--url`), and `--expect` names the local folder
-holding the bytes that host must serve -- a built site of the deployed commit. Either way,
+holding the bytes that host must serve: a built site of the deployed commit. Either way,
 every page is confirmed byte-for-byte against that folder before any run, through the same
 shared check, so the tree measured is the tree named whoever serves it. A hosted page must
 answer at its own address: one the host redirects is refused, wherever the redirect points,
@@ -50,7 +50,7 @@ class Target:
     """What one run measures.
 
     `tree` is the folder every page's bytes must match. `named` is that folder as the operator
-    gave it (`--serve` or `--expect`), `None` for the default `src/` -- the summary records it
+    gave it (`--serve` or `--expect`), `None` for the default `src/`, and the summary records it
     that way. `url` is the hosted base, `None` on a loopback run.
     """
 
@@ -93,7 +93,7 @@ def confirm_hosted(
 
     Raises:
         HostedPageError: a page answered other bytes, a redirect or another non-2xx status,
-            has no file under `tree`, or could not be fetched within `timeout` -- named once
+            has no file under `tree`, or could not be fetched within `timeout`, named once
             in the message.
     """
     for page in pages:

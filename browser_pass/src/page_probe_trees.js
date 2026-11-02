@@ -6,7 +6,7 @@
 // of its own.
 //
 // A selector query never crosses into a shadow root, so the walk enters each root it finds
-// through its host's `shadowRoot`, recursively -- `tree`'s own root included -- and lists the
+// through its host's `shadowRoot`, recursively (`tree`'s own root included), and lists the
 // root's elements right after their host, ahead of the host's own light children: tree order, with each root read where its host
 // stands. An element slotted into a root lives in the light tree and is listed there, once. A
 // CLOSED root's host reads a null `shadowRoot` to any page script, so a closed root, and every
@@ -24,8 +24,8 @@
     [...node.querySelectorAll("*")].flatMap((element) =>
       element.shadowRoot ? [element, ...walk(element.shadowRoot)] : [element],
     );
-  // A query lists a tree's descendants, never the tree itself, so a root on `tree` -- one on
-  // <body>, say, for the reads that start there -- is entered here, its elements first, as a
+  // A query lists a tree's descendants, never the tree itself, so a root on `tree` (one on
+  // <body>, say, for the reads that start there) is entered here, its elements first, as a
   // host's always are.
   const own = "shadowRoot" in tree ? tree.shadowRoot : null;
   return own ? [...walk(own), ...walk(tree)] : walk(tree);

@@ -1,10 +1,10 @@
 """Grouped suite: what the live Firefox suite's watch is built from, proven without Firefox.
 
 While the live Firefox run lasts, a watcher lists every process and records the fenced shim's
-process group and its Firefox's crash helper; afterwards it reports what survived, and kills
+process group and its Firefox's crash helper; after the run it reports what survived, and kills
 that alone, by recorded rows. And the run's lookups are read from Firefox's host-resolver log.
 Both are checked here on stand-in listings and log lines: which rows the watcher records,
-reports as survivors and signals -- never one by its name -- how its watch ends, and which
+reports as survivors and signals (never one by its name), how its watch ends, and which
 log lines count as a lookup.
 
 Entry point assumptions: discovered by the folder's aggregator, or run alone from this

@@ -1,11 +1,11 @@
-"""What the CLI hands a run, and the prefix every message opens with -- with no PDF reader.
+"""What the CLI hands a run, and the prefix every message opens with, with no PDF reader.
 
 `print_modes` runs a plan, and its imports reach the PDF readers (pypdf, pdfminer.six)
 through the report. The CLI's must not: a host without them still shows `--help`, and
 refuses a run with exit 2 rather than dying at import with 1, which here is the code of a
-finding. So what the CLI needs before a run starts lives here -- the plans it validates,
+finding. So what the CLI needs before a run starts lives here (the plans it validates,
 the protocol of the runs it hands them to, the code of a run that cannot measure, and the
-message prefix -- and this module imports neither the report nor a reader, nor
+message prefix), and this module imports neither the report nor a reader, nor
 Playwright.
 
 Entry point assumptions: the CLI's bootstrap has put this folder on the path; the shared

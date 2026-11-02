@@ -1,4 +1,4 @@
-"""Grouped suite: the LIVE boundary for a meta-refresh page -- the whole CLI, in real Chromium.
+"""Grouped suite: the live boundary for a meta-refresh page (the whole CLI, in real Chromium).
 
 A scratch site whose `archive/index.html` is a 0-second meta refresh to `2026/`, a year-archive
 stub as a site generator writes one, beside a real `archive/2026/index.html`. Loaded in the

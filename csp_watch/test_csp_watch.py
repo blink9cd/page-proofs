@@ -272,7 +272,7 @@ class RecordTest(unittest.TestCase):
         )
     )
     def test_fuzz_violation_from(self, payload: object) -> None:
-        # Whatever a page hands the binding -- its own script can call it too -- the answer is a
+        # Whatever a page hands the binding (its own script can call it too), the answer is a
         # Violation of four strings or the instrument fault, never another exception.
         try:
             violation = csp_watch.violation_from(payload)
@@ -444,7 +444,7 @@ def _tests_by_module(suite: unittest.TestSuite) -> dict[str, int]:
 
 
 class GroupedSuiteDiscoveryTest(unittest.TestCase):
-    """Fail loudly when the grouped suite is lost -- or when a test in here is."""
+    """Fail loudly when the grouped suite is lost, or when a test in here is."""
 
     def test_module_load_includes_the_grouped_suites(self) -> None:
         """Guards the ``load_tests`` WIRING, which a discovery-based check cannot see.

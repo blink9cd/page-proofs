@@ -3,8 +3,8 @@
 `test_pass_csp.py` drives `pass_engine.render` through `FakeBrowser`. Each context it hands out
 logs every call made of it, in order, so a test can read the ORDER of the wiring: the collector
 exposed before the first page, the CSP plant after every other read. Each page answers the probe
-with records that measure -- a faithful read-back, a still page, every plant taken, a late-script
-record that is presentable -- and delivers the violations its `Script` names through the exposed
+with records that measure (a faithful read-back, a still page, every plant taken, a late-script
+record that is presentable), and delivers the violations its `Script` names through the exposed
 binding, only where the listener's init script would run: never with scripts off.
 
 Entry point assumptions: imported by a suite in this folder; it puts the tool's `src/` on
@@ -35,8 +35,8 @@ from playwright.sync_api import Error as PlaywrightError  # noqa: E402 - after t
 
 BASE_URL = "http://127.0.0.1:8123"
 
-#: Short, because a poll that cannot succeed here -- the listener plants nobody reports, a plant
-#: the log never sees -- busy-waits it out against a pause that does not sleep.
+#: Short, because a poll that cannot succeed here (the listener plants nobody reports, a plant
+#: the log never sees) busy-waits it out against a pause that does not sleep.
 TIMEOUT = 0.05
 
 #: WebKit, so the rendering opens one context: only Chromium gets a late-script load.

@@ -1,14 +1,14 @@
 // The in-page probe's page-load reads over shadow trees: the layout signature, the digest and the
 // three element detectors read a box inside an OPEN shadow root exactly as they read the
-// document's, however deeply the root is nested -- and read nothing inside a CLOSED one.
+// document's, however deeply the root is nested, and read nothing inside a closed one.
 //
 // WHAT THIS SUITE COVERS. Where the probe finds the elements it reads. A selector query on the
 // document never crosses into a shadow root, so every read walks the document and each open root
 // it finds through a host's `shadowRoot`, recursively, through the one walker
 // page_probe_trees.js holds. It pins the names such an element is given (through its host, so
 // the cross-engine comparison still matches rows), and the two places the detectors climb from
-// an element toward <body> -- the overflow exemption's scroller-or-clip search, and the inert
-// check on a target -- which follow the route the box is laid out by: from a root's top to its
+// an element toward <body> (the overflow exemption's scroller-or-clip search, and the inert
+// check on a target), which follow the route the box is laid out by: from a root's top to its
 // host, and from a slotted element to the slot it renders in. A CLOSED root's host reads a null
 // `shadowRoot` and a slotted element a null `assignedSlot` there, so nothing inside one is read:
 // the documented limit, pinned here so the doc cannot go stale.

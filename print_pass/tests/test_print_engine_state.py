@@ -1,4 +1,4 @@
-"""Suite: one state from opening to print -- actions, settle, the print moment, PDFs, problems.
+"""Suite: one state from opening to print (actions, settle, the print moment, PDFs, problems).
 
 Each case runs the engine over one target against the fake Playwright and reads the record it
 returns, or the log of its calls, where every Playwright call sits inside a watchdog bound.

@@ -1,15 +1,17 @@
-"""Grouped suite: the library -- a loopback read never goes through a configured proxy.
+"""Grouped suite: the library. A loopback read never goes through a configured proxy.
 
 urllib's default opener holds a `ProxyHandler` that reads `http_proxy` / `HTTP_PROXY` (and, on
 some platforms, the system proxy settings), and a proxied request for `127.0.0.1` is sent to the
 proxy host rather than to loopback. Both `read_meta_refresh` and `confirm_serves` promise a
 loopback-only read, so each must reach the real loopback server with a proxy configured.
 
-The handler reads the environment once, when it is built -- at import for a module-level opener,
+The handler reads the environment once, when it is built: at import for a module-level opener,
 and on the first `urlopen` for urllib's global one. Patching the environment of this process
 would arrive after both, so the reads run in a fresh interpreter that inherits the patched
 environment and imports the tool there.
 """
+
+# gate-serves: none (serves only temporary trees built at test time)
 
 from __future__ import annotations
 

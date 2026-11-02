@@ -44,7 +44,7 @@ NOT_YET_PRESENTABLE: dict[str, object] = {
     "entries": [],
 }
 
-#: The same page once its frames came: painted at 30ms, its face swapping in at 40ms -- before
+#: The same page once its frames came: painted at 30ms, its face swapping in at 40ms, before
 #: the presentable moment at 80ms, so the swap is not the scripts' doing.
 PRESENTABLE: dict[str, object] = {
     **NOT_YET_PRESENTABLE,

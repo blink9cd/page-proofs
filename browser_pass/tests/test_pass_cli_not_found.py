@@ -1,4 +1,4 @@
-"""Grouped suite: the CLI with a targets file's `not_found` -- refused, served, and passed on.
+"""Grouped suite: the CLI with a targets file's `not_found` (refused, served, and passed on).
 
 `not_found` serves the tree the way GitHub Pages serves a site, a request with no file answered
 with the site's own 404 page and status 404, so a page with no file can be measured. These tests

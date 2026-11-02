@@ -1,4 +1,4 @@
-"""Suite: `Geckodriver`, the process that drives Firefox -- started, awaited, its log read.
+"""Suite: `Geckodriver`, the process that drives Firefox: started, awaited, its log read.
 
 Every seam the class takes is faked, by `_gecko_launch_fixtures`: nothing here starts a process
 or signals one. Only the start, the log and the construction are proven here: the stop and

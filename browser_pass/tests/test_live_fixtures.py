@@ -223,7 +223,7 @@ class PinTests(unittest.TestCase):
     def test_the_installed_playwright_matches_the_browser_pin(self) -> None:
         # Filtered rather than unpacked from the whole list: the extra also pins
         # playwright's own closure, and the contract is that the playwright entry
-        # agrees with the installed engine -- not that it is the only entry.
+        # agrees with the installed engine, not that it is the only entry.
         (pin,) = [
             match
             for match in (

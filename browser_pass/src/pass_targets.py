@@ -1,13 +1,13 @@
 """The targets file, and the matrix of renderings it expands to.
 
 A targets file is TOML: the server paths to measure, the viewports to measure them at, an
-optional base url for a server something else is running, and optional STATES -- a page reached
+optional base url for a server something else is running, and optional states: a page reached
 by more than its load, through values stored before it and actions run after it. Everything
 site-specific lives in that file, so the tool itself carries no knowledge of any one site.
 
 A viewport marked `rotates` is a phone: it runs PORTRAIT (the taller shape) and LANDSCAPE (width
 and height swapped), whichever way round the file writes it. A viewport without it runs once, as
-written -- a desktop window does not turn on its side.
+written; a desktop window does not turn on its side.
 
 A state's keys are `name`, `page`, `storage` and `actions`, each action one of `click`,
 `wait_for` and `wait_ms`. A name's alphabet (`[a-z0-9][a-z0-9-]*`) and the `wait_ms` ceiling
@@ -41,7 +41,7 @@ ORIENTATIONS = ("portrait", "landscape")
 #: The color schemes a page is asked to render in.
 MODES = ("light", "dark")
 
-#: Scripting on, and scripting off in the engine itself -- never a CSP, which leaves
+#: Scripting on, and scripting off in the engine itself, never a CSP, which leaves
 #: `(scripting: enabled)` matching and so renders a page no scripts-off browser ever shows.
 SCRIPTS = ("on", "off")
 
@@ -142,7 +142,7 @@ class Rendering:
 
     @property
     def orientation(self) -> str:
-        """`landscape` when wider than tall, else `portrait` -- what the page's media query sees."""
+        """`landscape` when wider than tall, else `portrait`: what the page's media query sees."""
         return "landscape" if self.width > self.height else "portrait"
 
     @property

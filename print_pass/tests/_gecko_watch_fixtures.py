@@ -2,7 +2,7 @@
 
 `GroupWatcher` lists every process on a thread of its own while a live run lasts, at a fixed
 poll, within a bound. It records every row in the process group the fenced shim names in its
-pid file -- geckodriver, the Firefox it starts and that Firefox's children -- and every crash
+pid file (geckodriver, the Firefox it starts and that Firefox's children), and every crash
 helper serving one of that group's processes, as `gecko_process.crash_helpers` recognizes one:
 by its arguments, its parent and its age beside its Firefox's, never by its name, since the
 reader may be running Firefox too. After the run it reports what still runs of either, and,
