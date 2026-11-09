@@ -74,13 +74,33 @@ window.addEventListener("load", () => {
 #: How long the WebRTC probe waits for its candidates to be gathered before it says it gave up.
 GATHER_BOUND_MS = 5000
 
+#: How often the probe adds a hidden element while it awaits its verdict. Well inside the
+#: settle polls' interval, so no two polls read the same count while the probe is waiting.
+_HOLD_TICK_MS = 50
+
 #: The page's WebRTC probe: whether WebRTC is there at all, and a STUN server on the loopback
 #: port `{port}`, which a STUN request reaches over UDP unless the engine's guard stops it. A
 #: count of none proves nothing until gathering is complete (the STUN request, if any, is sent
-#: by then), so it says when it is, or that it gave up after `{bound}` ms.
+#: by then), so it says when it is, or that it gave up after `{bound}` ms. `{delay}` ms hold its
+#: "gathered" line back, 0 but in the suite proving a measurement waits for a late verdict.
+#: Until a verdict is written, the probe holds the page unsettled: every `{tick}` ms it adds a
+#: hidden element, which changes the layout signature's element count without moving any box,
+#: so the measurement's settle waits for the verdict instead of racing it. A measurement is read
+#: once layout holds still, and nothing else ties that moment to gathering.
 _RTC = """const absent = typeof RTCPeerConnection === "undefined";
 console.error(`webrtc: ${absent ? "absent" : "present"}`);
 if (!absent) {
+  const hold = setInterval(() => {
+    if (document.body) {
+      const marker = document.createElement("span");
+      marker.hidden = true;
+      document.body.append(marker);
+    }
+  }, {tick});
+  const verdict = (line) => {
+    clearInterval(hold);
+    console.error(line);
+  };
   const connection = new RTCPeerConnection({
     iceServers: [{ urls: "stun:127.0.0.1:{port}" }],
   });
@@ -88,7 +108,7 @@ if (!absent) {
   const gathered = () => {
     if (!done) {
       done = true;
-      console.error("webrtc: gathered");
+      setTimeout(() => verdict("webrtc: gathered"), {delay});
     }
   };
   connection.addEventListener("icegatheringstatechange", () => {
@@ -98,7 +118,7 @@ if (!absent) {
     if (event.candidate === null) gathered();
   });
   setTimeout(() => {
-    if (!done) console.error("webrtc: gathering unfinished after {bound} ms");
+    if (!done) verdict("webrtc: gathering unfinished after {bound} ms");
   }, {bound});
   connection.createDataChannel("probe");
   connection.createOffer().then((offer) => connection.setLocalDescription(offer));
@@ -201,11 +221,13 @@ def measure(
     site: LiveSite,
     isolation: Isolation,
     renderings: list[Rendering],
+    gather_delay_ms: int = 0,
 ) -> Measured:
     """Serve the guarded page from `case`'s scratch, and run `renderings` over it in `site`.
 
-    Returns the results, how many datagrams the page's WebRTC probes sent their STUN server, and
-    how many connections reached the other loopback port.
+    `gather_delay_ms` holds the probe's "gathered" line back that long, to stand in for a
+    gathering slower than the settle window. Returns the results, how many datagrams the page's
+    WebRTC probes sent their STUN server, and how many connections reached the other loopback port.
     """
     folder = scratch(case)
     with _other_port() as (other, connections), _stun_server() as (port, received):
@@ -214,7 +236,12 @@ def measure(
         )
         (folder / "index.html").write_text(page, encoding="utf-8", newline="\n")
         (folder / "report.js").write_text(report, encoding="utf-8", newline="\n")
-        rtc = _RTC.replace("{port}", str(port)).replace("{bound}", str(GATHER_BOUND_MS))
+        rtc = (
+            _RTC.replace("{port}", str(port))
+            .replace("{bound}", str(GATHER_BOUND_MS))
+            .replace("{delay}", str(gather_delay_ms))
+            .replace("{tick}", str(_HOLD_TICK_MS))
+        )
         (folder / "rtc.js").write_text(rtc, encoding="utf-8", newline="\n")
         with loopback_site.serve_directory(folder) as base_url:
             versions, results = site.run(

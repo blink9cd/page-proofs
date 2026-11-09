@@ -23,8 +23,11 @@ from pathlib import Path
 # can shadow it.
 sys.path.insert(1, str(Path(__file__).resolve().parents[2] / "loopback_site"))
 
-import loopback_site
-from _lighthouse_run_fixtures import PAGE_FILES, write_pages
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+import lighthouse_run  # noqa: E402 - import follows the sys.path bootstrap above
+import loopback_site  # noqa: E402 - import follows the sys.path bootstrap above
+from _lighthouse_run_fixtures import write_pages  # noqa: E402 - as above
 
 _TIMEOUT = 5.0
 
@@ -89,9 +92,8 @@ class ConfirmTests(unittest.TestCase):
 
     def test_confirms_every_default_page(self) -> None:
         with loopback_site.serve_directory(self.src) as base_url:
-            for page in ("/", "/archive/", "/404.html"):
+            for page in lighthouse_run.DEFAULT_PAGES:
                 loopback_site.confirm_serves(base_url, self.src, page, timeout=_TIMEOUT)
-        self.assertEqual(len(PAGE_FILES), 3)
 
     def test_refuses_a_server_answering_from_another_tree(self) -> None:
         other = self.root / "other"

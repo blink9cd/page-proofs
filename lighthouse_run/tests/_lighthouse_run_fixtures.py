@@ -29,7 +29,8 @@ FCP_OFFSET_MS = 60.0
 #: reproduces it here is the join that measured it there.
 FONT_BYTES_BEFORE_FCP = 32_953 + 34_961
 
-#: The default pages every run serves, as files under `src/`.
+#: The pages every run serves, as files under `src/`: the default home page, plus the pages
+#: that tests naming `--pages` measure.
 PAGE_FILES: Mapping[str, str] = {
     "index.html": "<!doctype html><title>home</title>\n",
     "archive/index.html": "<!doctype html><title>archive</title>\n",

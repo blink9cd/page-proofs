@@ -59,7 +59,8 @@ from pass_targets import Rendering
 SIGNED_XPI_ENV = "BROWSER_PASS_SIGNED_XPI"
 
 #: Each `run_matrix` launches its engine once; a persistent context is not a launch it counts.
-_LAUNCH_BUDGET = {"chromium": 2, "firefox": 1}
+#: Chromium's three are the extension case, the loopback baseline and the slow-gathering case.
+_LAUNCH_BUDGET = {"chromium": 3, "firefox": 1}
 _SITE = LiveSite(launch_budget=_LAUNCH_BUDGET)
 
 #: How Chromium names a request its guard's proxy refused.
@@ -68,6 +69,10 @@ _PROXY_REFUSAL = "net::ERR_PROXY_CONNECTION_FAILED"
 #: How Chromium names the off-loopback image its guard refused: at the proxy, which every
 #: request but the served origin's is sent to, before any name is resolved.
 _NOT_RESOLVED = [f"failed {OFF_LOOPBACK} ({_PROXY_REFUSAL})"]
+
+#: How late the slow-gathering case's verdict arrives: past the live suites' settle window
+#: (`_live_fixtures.TEST_SETTLE_QUIET_SECONDS`) several times over, within the probe's bound.
+_LATE_GATHER_MS = 1500
 
 
 def setUpModule() -> None:  # noqa: N802 - unittest's own hook name
@@ -142,6 +147,22 @@ class ChromiumExtensionLiveTests(unittest.TestCase):
         self.assertIn("webrtc: present", console)
         self.assertIn(GATHERED, console)
         self.assertEqual(datagrams, 0, "the guard let a STUN request out over UDP")
+
+    def test_a_gathering_slower_than_the_settle_window_is_still_read(self) -> None:
+        # Regression: a gathering that outlasted the settle window was read before its verdict,
+        # so GATHERED went missing on a loaded machine (two nightly sweeps). The delay stands in
+        # for that slow gathering, several times the live suites' quiet window.
+        loaded = Rendering("chromium", "/index.html", 390, 844, "light", "on")
+        measured = measure(
+            self,
+            _SITE,
+            Isolation(loopback_only=True),
+            [loaded],
+            gather_delay_ms=_LATE_GATHER_MS,
+        )
+        (result,) = measured.results
+        self.assertEqual(result.faults, ())
+        self.assertIn(GATHERED, result.findings["console_error"])
 
     def assert_other_port_refused(self, result: RenderingResult) -> None:
         """`result`'s requests to the other loopback port failed at the proxy, each named."""
