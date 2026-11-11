@@ -344,6 +344,11 @@ class ReadBackTests(ReportCase):
             self.read_back(probe, "storage"), {"last": "<home>/b.pdf", "mode": None}
         )
 
+    def test_a_read_storage_key_holding_a_home_path_is_scrubbed(self) -> None:
+        storage = ((f"{USERS_PATH}/key", "dark"),)
+        probe = dataclasses.replace(probe_result(), storage=storage)
+        self.assertEqual(self.read_back(probe, "storage"), {"<home>/key": "dark"})
+
     def test_each_image_says_whether_it_had_a_src_attribute(self) -> None:
         # One without is "never requested": the judge raises nothing for it, and this key
         # is how a reader of the report tells it from an image that loaded.

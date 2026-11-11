@@ -2,6 +2,37 @@
 
 Notable changes to this project, newest first.
 
+## 0.3.0 - 2026-11-10
+
+### Added
+
+- `print_pass` targets files take a `set_attribute` action, such as
+  `{ set_attribute = { selector = ":root", name = "data-print-theme" } }`. It sets one
+  attribute, with an optional `value` that defaults to empty, on the first element the
+  selector matches, once and without waiting. It is for a page whose own print button sets
+  an attribute and then calls `window.print()`: under Firefox, a WebDriver click on such a
+  button does not return while the print dialog is open, so the state takes that first
+  step itself. A selector that matches nothing stops the state with the same finding a
+  failed click gives, and an attribute name outside XML's Name production, restricted to
+  ASCII, is refused when the targets file is read. The report shows the action with its
+  value as a JSON string.
+
+### Changed
+
+- A targets file whose action selector or `set_attribute` value holds a control character,
+  a newline or tab included, is refused when it is read, naming the key and the character.
+- The report passes each action and each stored value through the same scrub as its
+  findings, so a home path in one reads as `~` or `<home>`.
+
+## 0.2.3 - 2026-11-10
+
+### Changed
+
+- The license is now two files. `LICENSE` holds the GNU AGPL v3 text exactly as the Free
+  Software Foundation publishes it, so GitHub and other tools recognize it. `NOTICE` holds
+  the copyright line and the "or any later version" grant. The terms are unchanged:
+  AGPL-3.0-or-later.
+
 ## 0.2.2 - 2026-11-09
 
 ### Added

@@ -55,8 +55,9 @@ _STORAGE_CALLS: Final = 3
 _SETTLE_POLL_CALLS: Final = 1
 
 # Calls one look of each action makes: a click's visibility, Find Element, then Element
-# Click; a wait for an element's visibility alone; and a wait of a set time, none.
-_LOOK_CALLS: Final = {"click": 3, "wait_for": 1, "wait_ms": 0}
+# Click; a wait for an element's visibility alone; a wait of a set time, none; and the one
+# script that sets an attribute, which looks once and never waits.
+_LOOK_CALLS: Final = {"click": 3, "wait_for": 1, "wait_ms": 0, "set_attribute": 1}
 
 
 def client_timeout(timeout_s: float) -> float:
@@ -108,6 +109,8 @@ def _action_window(action: Action, timeout_s: float) -> float:
     """
     if action.kind == "wait_ms":
         return _wait_seconds(action.ms or 0)
+    if action.kind == "set_attribute":
+        return 0.0  # one script, bounded as a call: it waits on nothing
     return timeout_s + PAGE_POLL_SECONDS
 
 

@@ -9,7 +9,7 @@ build-backend = "setuptools.build_meta"
 # The repository's name. package.json, package-lock.json's two top-level "name" fields and
 # the README's title carry it too, so a rename changes all four.
 name = "page-proofs"
-version = "0.2.2"
+version = "0.3.0"
 description = "Tools that check a built static site's pages on your own machine, with a pinned Lighthouse, pinned browser engines and PDF proofs."
 readme = "README.md"
 license = "AGPL-3.0-or-later"

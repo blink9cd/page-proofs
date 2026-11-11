@@ -22,8 +22,8 @@ and every other call at the timeout. The socket route's handler calls nothing on
 
 Entry point assumptions: `print_playwright`'s protocols stand for Playwright, which is never
 imported here, nor by the shared collector `print_csp` installs; what a state records is
-`print_record`'s, and what counts as a problem in it `print_judge`'s; `print_probe`,
-`print_targets` and `print_watchdog` are the tool's own.
+`print_record`'s, and what counts as a problem in it `print_judge`'s; `print_actions`,
+`print_probe`, `print_targets` and `print_watchdog` are the tool's own.
 """
 
 from __future__ import annotations
@@ -50,6 +50,7 @@ from print_playwright import (
     reduced_motion_emulated,
     request_label,
 )
+from print_actions import set_attribute
 from print_csp import CspWatch
 from print_judge import finding, state_problems, warning
 from print_probe import ProbeResult, run_probe
@@ -363,9 +364,7 @@ def _run_actions(page: PageLike, job: _Job) -> None:
             act()
         except Exception as error:
             # Playwright's error class is not importable here (see `engine_errors`).
-            argument = action.selector if action.selector is not None else action.ms
-            what = f'action did not complete: {action.kind} "{argument}"'
-            raise _Stopped(finding(what)) from error
+            raise _Stopped(finding(action.failure())) from error
 
 
 def _action_call(page: PageLike, action: Action, job: _Job) -> Callable[[], object]:
@@ -381,6 +380,8 @@ def _action_call(page: PageLike, action: Action, job: _Job) -> Callable[[], obje
             return lambda: _wait_for(page, job, selector)
         case Action(kind="wait_ms", ms=int(ms)):
             return lambda: _wait(page, job, ms)
+        case Action(kind="set_attribute", attribute=(str(), str())):
+            return lambda: _set_attribute(page, job, action)
         case _:
             raise ValueError(f"not an action a targets file can hold: {action!r}")
 
@@ -401,6 +402,12 @@ def _wait(page: PageLike, job: _Job, ms: float) -> None:
     """Wait `ms` on the page, in the watchdog: a wait takes no timeout of its own."""
     with job.bound("page.wait_for_timeout", waits_ms=ms):
         page.wait_for_timeout(ms)
+
+
+def _set_attribute(page: PageLike, job: _Job, action: Action) -> None:
+    """Set the action's attribute once, in the watchdog; no match raises to the action."""
+    with job.bound("page.evaluate"):
+        set_attribute(page, action)
 
 
 def _probe(page: PageLike, job: _Job) -> ProbeResult:

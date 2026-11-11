@@ -15,8 +15,8 @@ until the timeout, and each pause in steps of at most that. WebDriver's own call
 by the client, and the state's whole run by its watchdog bound.
 
 Entry point assumptions: the tool's own `gecko_budget`, `gecko_client` (its error),
-`gecko_job`, `gecko_page`, `print_judge`, `print_playwright`, `print_probe`, `print_record`
-and `print_targets` only.
+`gecko_job`, `gecko_page`, `print_judge`, `print_playwright`, `print_probe`, `print_record`,
+`print_actions` and `print_targets` only.
 """
 
 from __future__ import annotations
@@ -32,6 +32,7 @@ from print_judge import finding, warning
 from print_playwright import MS_PER_SECOND
 from print_probe import ProbeError, ProbeResult, run_probe
 from print_record import Problem, first_line
+from print_actions import ActionError, set_attribute
 from print_targets import Action
 
 #: The Element Click errors that mean the element cannot take a click yet (it has no box,
@@ -64,10 +65,8 @@ def run_actions(session: SessionLike, job: StateJob) -> None:
         act = _action_call(session, action, job)
         try:
             act()
-        except (WebDriverError, _NotInTime) as error:
-            argument = action.selector if action.selector is not None else action.ms
-            what = f'action did not complete: {action.kind} "{argument}"'
-            raise Stopped(finding(what)) from error
+        except (WebDriverError, _NotInTime, ActionError) as error:
+            raise Stopped(finding(action.failure())) from error
 
 
 def settle(session: SessionLike, job: StateJob, started: float) -> None:
@@ -125,6 +124,8 @@ def _action_call(
             return lambda: _wait_for(session, job, selector)
         case Action(kind="wait_ms", ms=int(ms)):
             return lambda: job.pause(ms / MS_PER_SECOND)
+        case Action(kind="set_attribute", attribute=(str(), str())):
+            return lambda: set_attribute(ProbePage(session), action)
         case _:
             raise ValueError(f"not an action a targets file can hold: {action!r}")
 

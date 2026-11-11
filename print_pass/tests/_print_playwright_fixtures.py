@@ -39,6 +39,7 @@ from playwright.sync_api import Browser, BrowserType, Page
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 import print_watchdog  # noqa: E402 - the tool's private src/, via the insert above
+from print_actions import SET_ATTRIBUTE_SOURCE  # noqa: E402 - as above
 
 #: The shared log every fake writes: one tuple per call, its name first, then its arguments.
 type CallLog = list[tuple[str, ...]]
@@ -276,7 +277,10 @@ class FakePage:
             raise RuntimeError("Target page, context or browser has been closed")
 
     def evaluate(self, expression: str, arg: object = None) -> object:
-        """Keep the argument and return the next scripted probe result."""
+        """Keep the argument; answer a `set_attribute`, else the next scripted probe."""
+        if expression == SET_ATTRIBUTE_SOURCE and isinstance(arg, list):
+            self._calls.append(call("page.evaluate", "set_attribute", *arg[:2]))
+            return arg[0] not in self._script.failing_selectors
         self._calls.append(call("page.evaluate"))
         self.evaluate_args.append(arg)
         return self._script.next_probe()

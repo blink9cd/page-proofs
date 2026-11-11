@@ -247,7 +247,8 @@ quietly:
 ### When a state cannot go on
 
 - **One finding, and the run goes on.** An action that does not complete (a `click` or
-  `wait_for` whose selector matches nothing within `--timeout`) or a probe that raises stops
+  `wait_for` whose selector matches nothing within `--timeout`, or a `set_attribute` whose
+  selector matches nothing when it runs) or a probe that raises stops
   its state with one finding and no PDF. What the steps before it found stands beside it, and
   the run goes on to the next state.
 - **Any other browser failure is exit 2.** Under Playwright, a launch (installed Chrome
@@ -367,7 +368,8 @@ listening on 127.0.0.1 at a port the system picks. Then each state, in file orde
 4. The page loads, waiting for its load event. The actions, the settle and the print moment
    run as under Playwright, with the same problem texts, and every wait is a poll in this
    process. A `click` that Firefox says is not interactable, or intercepted by an element over
-   it, is retried until `--timeout`, as Playwright's actionability wait would.
+   it, is retried until `--timeout`, as Playwright's actionability wait would. A
+   `set_attribute` is one script, run once.
 5. The same probe as under Playwright reads the page once more. Then the page's Resource
    Timing and the state's slice of geckodriver's log are read back into the network record
    (below), and a page whose isolation did not hold is refused.
@@ -575,8 +577,10 @@ print_at_ms = 3400                           # print this long after navigation 
 ```
 
 The constants in `src/print_targets.py` are the authority for every key and the values each
-takes, and those in `src/print_offsite.py` for what an expected host may be; the tables below
-mirror them.
+takes but an action's, those in `src/print_actions.py` (`_ACTION_KINDS`, `_SET_ATTRIBUTE_KEYS`
+and `_ATTRIBUTE_NAME`) for the action kinds and a `set_attribute` table's keys and names, and
+those in `src/print_offsite.py` for what an expected host may be; the tables below mirror
+them.
 
 | Key                      | Takes                                                                                                                                                                                                                                                                                 | Meaning                                                                                                                                                                                                                                                                                            |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -608,20 +612,40 @@ Each `[[target]]`:
 
 Each `[[target.state]]`:
 
-| Key              | Takes                                                                                                                                          | Meaning                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`           | a name (below); required, and unique in its target                                                                                             | Names the state's PDFs.                                                                                                                                                                                                                                                                                                                                                                                                       |
-| `color_scheme`   | `native` (the default), `light`, `dark` or `native-dark`                                                                                       | `native` emulates nothing and leaves the engine's own setting. Under Playwright, `light` and `dark` are Playwright's emulation, reported as emulated, and a `dark` state always carries a warning (see "Traps it guards against"), and `native-dark` prints in installed Chrome launched with a real dark setting. Under Firefox, each is a preference of Firefox's own, reported as not emulated (see "The Firefox engine"). |
-| `reduced_motion` | `native` (the default) or `reduce`                                                                                                             | `reduce` is Playwright's emulation, reported as emulated; under Firefox, a preference of Firefox's own, reported as not emulated.                                                                                                                                                                                                                                                                                             |
-| `storage`        | a table of strings to strings                                                                                                                  | Stored in `localStorage` for the served origin before the page loads.                                                                                                                                                                                                                                                                                                                                                         |
-| `actions`        | an array of tables, each holding exactly one of `click` (a selector), `wait_for` (a selector, until visible) or `wait_ms` (whole milliseconds) | Run in order after the load.                                                                                                                                                                                                                                                                                                                                                                                                  |
-| `print_at_ms`    | whole milliseconds                                                                                                                             | Print this long after navigation began.                                                                                                                                                                                                                                                                                                                                                                                       |
-| `page_width`     | whole CSS px, from `MIN_PAGE_WIDTH` (320) to a pixel under `LETTER_WIDTH_PX` (816)                                                             | Lay the page out this wide: the engine prints it with a margin of `(816 - page_width) / 2` CSS px on every side of Letter, in place of its own. Left out, the engine's own margin. See "Printing at a phone's width".                                                                                                                                                                                                         |
+| Key              | Takes                                                                                                                                                                            | Meaning                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`           | a name (below); required, and unique in its target                                                                                                                               | Names the state's PDFs.                                                                                                                                                                                                                                                                                                                                                                                                       |
+| `color_scheme`   | `native` (the default), `light`, `dark` or `native-dark`                                                                                                                         | `native` emulates nothing and leaves the engine's own setting. Under Playwright, `light` and `dark` are Playwright's emulation, reported as emulated, and a `dark` state always carries a warning (see "Traps it guards against"), and `native-dark` prints in installed Chrome launched with a real dark setting. Under Firefox, each is a preference of Firefox's own, reported as not emulated (see "The Firefox engine"). |
+| `reduced_motion` | `native` (the default) or `reduce`                                                                                                                                               | `reduce` is Playwright's emulation, reported as emulated; under Firefox, a preference of Firefox's own, reported as not emulated.                                                                                                                                                                                                                                                                                             |
+| `storage`        | a table of strings to strings                                                                                                                                                    | Stored in `localStorage` for the served origin before the page loads.                                                                                                                                                                                                                                                                                                                                                         |
+| `actions`        | an array of tables, each holding exactly one of `click` (a selector), `wait_for` (a selector, until visible), `wait_ms` (whole milliseconds) or `set_attribute` (a table, below) | Run in order after the load.                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `print_at_ms`    | whole milliseconds                                                                                                                                                               | Print this long after navigation began.                                                                                                                                                                                                                                                                                                                                                                                       |
+| `page_width`     | whole CSS px, from `MIN_PAGE_WIDTH` (320) to a pixel under `LETTER_WIDTH_PX` (816)                                                                                               | Lay the page out this wide: the engine prints it with a margin of `(816 - page_width) / 2` CSS px on every side of Letter, in place of its own. Left out, the engine's own margin. See "Printing at a phone's width".                                                                                                                                                                                                         |
 
 A `wait_ms` or a `print_at_ms` is at most `MAX_MS` milliseconds, a day: a ceiling far inside
 what the watchdog can wait. A wait's watchdog bound is its own length plus `--timeout`, so a
 wait long enough to pass the watchdog's limit would otherwise be refused only after the run
 had started; anything over a day is refused with its key when the targets file is read.
+
+A `set_attribute` is a table of a `selector`, an attribute's `name` and an optional
+`value`, empty by default as a bare attribute such as `hidden` is:
+`{ set_attribute = { selector = ":root", name = "data-print-theme" } }`. It sets that attribute
+on the first element the selector matches, once, without waiting and without printing. It
+exists for a page whose own button sets an attribute and then calls `window.print()`: under
+Firefox, WebDriver's click on such a button does not return while the real print dialog is
+open, so the state takes the button's first step itself. A name outside XML's Name
+production, restricted to ASCII, is refused when the file is read. HTML lowercases attribute
+names in `setAttribute`, so `data-printTheme` is set as `data-printtheme`, while the report
+shows the name as written. A selector that matches nothing when the action runs is the
+finding a failed click is, so put a `wait_for` before it for an element that arrives late.
+
+A selector, in any action, and a `set_attribute`'s value are refused when the file is read if
+they hold a control character, a newline or a tab included: each is written into the report
+on one line.
+
+A targets file is trusted as the page is. An attribute such as an `on*` handler or `srcdoc`
+can run script in the page, within the page's own loopback sandbox and its off-origin
+fences.
 
 A target or state name is lowercase letters and digits, runs of them joined by one dot or one
 hyphen each: no doubled or trailing separator. A PDF's name joins the two with `--`, so a name
@@ -731,12 +755,17 @@ Each state:
 | `engine`, `browser_version`         | The browser that printed it. Under a Playwright engine, a `native-dark` state is always `chrome`; a Firefox run never launches Chrome.                                                                                                                                                                                                                                                                                                                                  |
 | `viewport`                          | `width` and `height`, after the targets file's override.                                                                                                                                                                                                                                                                                                                                                                                                                |
 | `color_scheme`, `reduced_motion`    | Each as `requested`, and whether it was `emulated`: the emulation is stated every time.                                                                                                                                                                                                                                                                                                                                                                                 |
-| `storage`, `actions`, `print_at_ms` | What the state set, each action written as `click #start`, `wait_for #ready` or `wait_ms 300`.                                                                                                                                                                                                                                                                                                                                                                          |
+| `storage`, `actions`, `print_at_ms` | What the state set, each action written as `click #start`, `wait_for #ready`, `wait_ms 300` or `set_attribute :root data-print-theme=""`.                                                                                                                                                                                                                                                                                                                               |
 | `page_width`, `margin_px`           | The `page_width` the state asked for, `null` for none; and the margin on every side it was printed with, in CSS px to 4 places: half of what its page width leaves of Letter, else its engine's own (37.7953 for 1 cm, 48.0 for 0.5 in). A state stopped before it printed names the margin it would have printed with.                                                                                                                                                 |
 | `read_back`                         | What the page held when it printed: its `color_scheme`, `reduced_motion`, `ready_state`, `fonts_status` and `title`; every image's `src`, `has_src` (false for a never-requested image), `complete`, `loading` and `natural_width`; each animation still running, by `name` and `target`; each read's values, by name; and each storage read. `null` for a state stopped before its read-back.                                                                          |
 | `network`                           | `failed` requests, `http_errors`, `blocked` requests, `page_errors` and `csp_violations`, each list present even when empty. A request on the served origin is named by its path and query, never its port, and any other whole, another loopback port's included; a violation is the collector's line, with a refused URL named the same way. Under Firefox it is read back rather than listened for, and `csp_violations` is always empty (see "The Firefox engine"). |
 | `timings`                           | `load_ms`, and `printed_at_ms` after navigation began.                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | `pdfs`, `problems`                  | The state's PDFs, and its findings and warnings.                                                                                                                                                                                                                                                                                                                                                                                                                        |
+
+A `set_attribute`'s value is written as a JSON string, so a quote inside it cannot be
+read as its end; a non-ASCII character in it is written as itself, not escaped. Each action,
+and each stored key and value, passes through the scrub a finding does, since a targets file
+may name a home path in one.
 
 Each PDF:
 
@@ -928,8 +957,9 @@ Each is a guard, measured where it says so.
   - The scrub in `src/print_report_scrub.py` rewrites every problem, every network entry,
     each template of pdfminer's log, and each string the page supplied to the read-back: an
     image's source, an animation's name and target, each string a read returns, and each
-    stored value read back. The scrub writes the out dir as `<out>` and this account's home
-    as `~`, in any case, sought only when the home is an absolute path. It writes another
+    storage key and value read back. The scrub writes the out dir as `<out>` and this
+    account's home as `~`, in any case, sought only when the home is an absolute path. It
+    writes another
     account's home-rooted path as `<home>`, and this machine's hostname, where it stands
     alone, as `<hostname>`. A same-origin image is reported by its path, so no port is
     recorded.

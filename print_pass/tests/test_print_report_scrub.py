@@ -2,7 +2,8 @@
 
 The scrub is checked case by case and by a property: whatever text a library or a page hands
 it, no home-rooted path survives, no home directory in any case unless more of a name follows
-it, and no hostname the privacy matcher would find standing alone. The report's paths and
+it, and no hostname the privacy matcher would find standing alone. A make report's actions
+and stored values, which a targets file names, pass through it too. The report's paths and
 comparing two PDFs are the sibling `test_print_report_pdf_compare`'s.
 
 Entry point assumptions: run by `unittest` discovery from the tool folder, or by the tool's
@@ -19,7 +20,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
-from typing import Final
+from typing import Final, cast
 
 from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
@@ -28,7 +29,10 @@ _TOOL_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(_TOOL_DIR / "src"))
 
 import pdf_privacy  # noqa: E402 - the tool's private src/, via the insert above
+import print_report  # noqa: E402 - as above
 import print_report_scrub  # noqa: E402 - as above
+from _print_report_fixtures import read, state_record, targets  # noqa: E402 - beside it
+from print_actions import Action  # noqa: E402 - src/
 from _pdf_privacy_fixtures import (  # noqa: E402 - beside this module
     HOME,
     HOME_PATH,
@@ -371,6 +375,58 @@ class ScrubTests(unittest.TestCase):
         self.assertIsNone(re.search(home, scrubbed, re.IGNORECASE))
         # A hostname is judged by the privacy matcher itself, reading the text as a page's.
         self.assertFalse(_matcher_finds_hostname(scrubbed), scrubbed)
+
+
+class StateScrubTests(unittest.TestCase):
+    """What a state set, as the make report writes it, passes through the scrub too."""
+
+    def test_the_actions_and_storage_a_state_set_are_scrubbed(self) -> None:
+        # A targets file may name a home path in a selector, a value or a stored value.
+        actions = (
+            Action("click", f"[href='{HOME}/a']", None),
+            Action("set_attribute", ":root", None, ("data-x", f"{USERS_PATH}/b")),
+        )
+        storage = (("last", f"{HOME}/c.pdf"), ("mode", "dark"))
+        with tempfile.TemporaryDirectory() as folder:
+            out = Path(folder)
+            record = dataclasses.replace(
+                state_record(out), actions=actions, storage=storage
+            )
+            report = print_report.make_report(
+                [record],
+                {},
+                [],
+                out_dir=out,
+                targets=targets(read()),
+                engine="shell",
+                header_footer=False,
+                identity=IDENTITY,
+            )
+        (written,) = cast(list[dict[str, object]], report["states"])
+        self.assertEqual(
+            written["actions"],
+            ["click [href='~/a']", 'set_attribute :root data-x="<home>/b"'],
+        )
+        self.assertEqual(written["storage"], {"last": "~/c.pdf", "mode": "dark"})
+
+    def test_a_storage_key_holding_a_home_path_is_scrubbed(self) -> None:
+        # A key is named by the targets file just as its value is.
+        storage = ((f"{HOME}/key", "dark"),)
+        with tempfile.TemporaryDirectory() as folder:
+            out = Path(folder)
+            record = dataclasses.replace(state_record(out), storage=storage)
+            report = print_report.make_report(
+                [record],
+                {},
+                [],
+                out_dir=out,
+                targets=targets(read()),
+                engine="shell",
+                header_footer=False,
+                identity=IDENTITY,
+            )
+        (written,) = cast(list[dict[str, object]], report["states"])
+        self.assertEqual(written["storage"], {"~/key": "dark"})
 
 
 if __name__ == "__main__":

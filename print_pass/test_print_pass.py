@@ -79,6 +79,7 @@ _MIN_TESTS_BY_FILE: dict[str, int] = {
     "test_pdf_tools.py": 35,
     "test_pdf_tools_fuzz.py": 3,
     "test_pdf_tools_run.py": 10,
+    "test_print_actions.py": 17,
     "test_print_csp.py": 17,
     "test_print_engine.py": 28,
     "test_print_engine_blink.py": 1,

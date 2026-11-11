@@ -293,8 +293,9 @@ def _state_json(
             "requested": record.reduced_motion,
             "emulated": record.reduced_motion_emulated,
         },
-        "storage": dict(record.storage),
-        "actions": [_action_text(action) for action in record.actions],
+        # A targets file may name a home path in a selector, a value, or a stored key or value.
+        "storage": {clean(key): clean(value) for key, value in record.storage},
+        "actions": [clean(_action_text(action)) for action in record.actions],
         "print_at_ms": record.print_at_ms,
         "page_width": record.page_width,
         "margin_px": round(float(record.margin_inches * PX_PER_INCH), _PX_PLACES),
@@ -316,8 +317,8 @@ def _state_json(
 
 
 def _action_text(action: Action) -> str:
-    """`click #start`, `wait_for #ready` or `wait_ms 300`."""
-    return f"{action.kind} {action.selector if action.ms is None else action.ms}"
+    """`click #start`, `wait_for #ready`, `wait_ms 300` or `set_attribute :root a=""`."""
+    return action.text()
 
 
 def _read_back_json(
@@ -352,7 +353,8 @@ def _read_back_json(
             read.name: _read_values(read, first_match, clean) for read in probe.reads
         },
         "storage": {
-            key: None if value is None else clean(value) for key, value in probe.storage
+            clean(key): None if value is None else clean(value)
+            for key, value in probe.storage
         },
     }
 

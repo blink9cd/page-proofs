@@ -17,14 +17,17 @@ the reader may be running Firefox.
 
 The page asks for an image at an RFC 5737 address and one at an RFC 6761 `.invalid` name,
 asks a server of the suite's own on another loopback port for an image, a POST and a
-WebSocket, holds a lazy image below a spacer taller than the window, writes a marker word into itself
-at `beforeprint`, and links no icon. The cases check that the off-site images and the other
-port's alone fail the state, blocked, and that the other port's server was never reached; that no `/favicon.ico` was fetched, which guards the site-icon pref; that the
-lazy image arrived, which guards the lazy-load margin prefs, whose names Firefox has changed
-before and whose rename would otherwise pass in silence; that the marker reached the PDF, so
-Firefox's own print path ran; that Firefox's host-resolver log names no host off loopback, so
-the layers inside Firefox held and not the fence alone; that nothing the run started is still
-running; and that the scratch folder is gone, and named nowhere in the report.
+WebSocket, holds a lazy image below a spacer taller than the window, writes a marker word
+into itself at `beforeprint`, and links no icon; the state's one action sets an attribute on
+the root. The cases check that the off-site images and the other port's alone fail the
+state, blocked, and that the other port's server was never reached; that no `/favicon.ico`
+was fetched, which guards the site-icon pref; that the lazy image arrived, which guards the
+lazy-load margin prefs, whose names Firefox has changed before and whose rename would
+otherwise pass in silence; that the marker reached the PDF, so Firefox's own print path ran;
+that the attribute was read back, so the action's script ran through WebDriver; that
+Firefox's host-resolver log names no host off loopback, so the layers inside Firefox held
+and not the fence alone; that nothing the run started is still running; and that the scratch
+folder is gone, and named nowhere in the report.
 
 It SKIPS, naming what is missing in the skip and in one line on stderr, off macOS or without
 geckodriver, Firefox or `sandbox-exec`, even with `PAGE_PROOFS_REQUIRE_BROWSERS=1`, which
@@ -99,6 +102,23 @@ _SERVER_STOP_S: Final = 10.0
 
 #: The word the page writes into itself at `beforeprint`, and nowhere else it renders.
 _MARKER: Final = "Beforeprintmarker"
+
+#: The targets file the run prints: the one page, in its one state, whose one action sets an
+#: attribute on the root, read back by name. The target's name is the one a run given no file
+#: would give the page, so the PDFs are named as they would be without it.
+_TARGETS: Final = """[[read]]
+name = "set-by-action"
+selector = ":root"
+attribute = "data-print-pass"
+
+[[target]]
+name = "page-1"
+page = "/"
+
+[[target.state]]
+name = "default"
+actions = [{ set_attribute = { selector = ":root", name = "data-print-pass", value = "set" } }]
+"""
 
 #: The spacer above the lazy image: taller than the run's window, so the image starts out
 #: outside it, beyond the margin Firefox loads a lazy image within by default.
@@ -247,6 +267,8 @@ class LiveFirefoxTest(unittest.TestCase):
         site = served_pages(root, {"index.html": _page(cls.other_port)})
         (site / PIXEL_NAME).write_bytes(pixel_png())
         cls.out = root / "out"
+        targets = root / "targets.toml"
+        targets.write_text(_TARGETS, encoding="utf-8", newline="\n")
         cls.watcher = GroupWatcher(
             cls.fence.pid_file, bound_seconds=FIREFOX_RUN_BOUND_SECONDS
         )
@@ -256,6 +278,8 @@ class LiveFirefoxTest(unittest.TestCase):
                 site,
                 cls.out,
                 *_FIREFOX_OPTIONS,
+                "--targets",
+                str(targets),
                 env=env,
                 timeout=FIREFOX_RUN_BOUND_SECONDS,
             )
@@ -336,6 +360,11 @@ class LiveFirefoxTest(unittest.TestCase):
             with self.subTest(pdf=file):
                 text = "".join(read_text(self.out / file).pages)
                 self.assertIn(_MARKER, text)
+
+    def test_the_attribute_the_action_set_was_read_back(self) -> None:
+        """The `set_attribute` script ran in Firefox, through WebDriver, before the print."""
+        reads = cast(dict[str, object], at(self.state(), "read_back", "reads"))
+        self.assertEqual(reads["set-by-action"], ["set"])
 
     def test_firefox_looked_up_no_host_off_loopback(self) -> None:
         """The layers inside Firefox held, not only the fence: no lookup left loopback.

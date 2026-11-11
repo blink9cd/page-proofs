@@ -50,6 +50,12 @@ _STORAGE_CALLS = 3
 #: Calls one look of a click makes: the visibility script, Find Element, Element Click.
 _CLICK_CALLS = 3
 
+#: Calls a `set_attribute` makes: its one script, which never looks again.
+_SET_ATTRIBUTE_CALLS = 1
+
+#: A `set_attribute` on the root, as the budget counts it.
+_SET_ATTRIBUTE = Action("set_attribute", ":root", None, ("data-x", ""))
+
 
 def _call() -> float:
     """One WebDriver call's bound under `_T`."""
@@ -121,6 +127,8 @@ class StateTests(unittest.TestCase):
                 _T + _poll() + _CLICK_CALLS * _call(),
             ),
             (Action(kind="wait_ms", selector=None, ms=1500), 1.5 + _poll()),
+            # One script, bounded as a call, with no wait window around it.
+            (_SET_ATTRIBUTE, _SET_ATTRIBUTE_CALLS * _call()),
         )
         for action, added in cases:
             with self.subTest(kind=action.kind):
@@ -198,10 +206,25 @@ class CallCountTests(StateCase):
             Action(kind="click", selector="#a", ms=None): _CLICK_CALLS,
             Action(kind="wait_for", selector="#a", ms=None): 1,
             Action(kind="wait_ms", selector=None, ms=1500): 0,
+            _SET_ATTRIBUTE: _SET_ATTRIBUTE_CALLS,
         }
         for action, calls in looks.items():
             with self.subTest(kind=action.kind):
                 self.assertEqual(gecko_budget.look_calls(action), calls)
+
+    def test_a_set_attribute_makes_the_one_call_the_budget_counts(self) -> None:
+        setting = state(actions=(_SET_ATTRIBUTE,))
+        # A first viewport off by the window's chrome, so the correcting calls are made too.
+        asked = [VIEWPORT.width, VIEWPORT.height]
+        session = self.session(
+            viewports=[[VIEWPORT.width, VIEWPORT.height - 124], asked]
+        )
+        job = self.job(the_target=target(states=(setting,)))
+        record = self.run_state(session, job)
+        self.assertEqual(len(record.pdfs), 1)
+        counted = _WEBDRIVER_CALLS | {"execute set_attribute"}
+        made = [entry for entry in self.log if entry[0] in counted]
+        self.assertEqual(len(made), gecko_budget.state_calls(setting, prints=1))
 
 
 if __name__ == "__main__":

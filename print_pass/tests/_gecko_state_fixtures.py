@@ -29,6 +29,7 @@ sys.path.insert(0, str(_TOOL_DIR / "src"))
 
 import gecko_page  # noqa: E402 - the tool's private src/, via the insert above
 import gecko_state  # noqa: E402 - as above
+import print_actions  # noqa: E402 - as above
 from _print_engine_fixtures import (  # noqa: E402 - beside this module
     BASE_URL,
     VIEWPORT,
@@ -93,6 +94,12 @@ def _next[T](answers: list[T]) -> T:
     return answers.pop(0) if len(answers) > 1 else answers[0]
 
 
+def _first(args: Sequence[object]) -> object:
+    """The selector a `set_attribute` script is handed: the first of its one list argument."""
+    (handed,) = args
+    return handed[0] if isinstance(handed, list) else None
+
+
 def _nothing() -> None:
     """What a call does in the browser by default: nothing a case can see."""
 
@@ -115,6 +122,7 @@ class FakeSession:
         visible: Mapping[str, Sequence[object]] | None = None,
         elements: Mapping[str, Sequence[str | None]] | None = None,
         clicks: Sequence[Exception | None] = (None,),
+        unmatched: frozenset[str] = frozenset(),
         fail: Mapping[str, BaseException] | None = None,
         process_id: int | None = FIREFOX_PID,
         on_navigate: Callable[[str], None] | None = None,
@@ -131,6 +139,7 @@ class FakeSession:
         self._visible = {key: list(value) for key, value in (visible or {}).items()}
         self._elements = {key: list(value) for key, value in (elements or {}).items()}
         self._clicks = list(clicks)
+        self._unmatched = unmatched  # selectors a `set_attribute` matches nothing for
         self._fail = dict(fail or {})
         self._on_navigate = on_navigate
         self._on_delete = on_delete
@@ -171,6 +180,7 @@ class FakeSession:
             "probe": lambda: _next(self._probes),
             "timing": lambda: self._timing,
             "visible": lambda: _next(self._visible.get(str(args[0]), [True])),
+            "set_attribute": lambda: _first(args) not in self._unmatched,
         }
         return answers[kind]()
 
@@ -205,6 +215,7 @@ _SCRIPT_KINDS: Final = {
     gecko_page.PROBE_SCRIPT: "probe",
     gecko_page.TIMING_SCRIPT: "timing",
     gecko_page.VISIBLE_SCRIPT: "visible",
+    gecko_page.probe_script(print_actions.SET_ATTRIBUTE_SOURCE): "set_attribute",
 }
 
 

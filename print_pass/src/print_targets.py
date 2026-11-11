@@ -1,12 +1,13 @@
 """The targets file: the pages to print, the states to print each in, and what to read back.
 
 A targets file is TOML, and it is the only knowledge of any one site the engine is ever
-given, so every key is known here and an unknown one is refused: a misspelled key must
-fail loudly rather than pass as its default. Each refusal is a `TargetsError` whose message
-opens with the path to the bad key (`target[1].state[2].color_scheme`, arrays counted from
-zero in file order), because that path is the whole of what an operator is shown. What a
-value must be, whatever key holds it, is checked by `print_targets_checks`, which raises
-that error and knows no key; what an expected off-loopback host may be, by `print_offsite`.
+given, so every key but an action's is known here (`print_actions` is the authority for
+those), and an unknown one is refused: a misspelled key must fail loudly rather than pass as
+its default. Each refusal is a `TargetsError` whose message opens with the path to the bad
+key (`target[1].state[2].color_scheme`, arrays counted from zero in file order), because
+that path is the whole of what an operator is shown. What a value must be, whatever key
+holds it, is checked by `print_targets_checks`, which raises that error and knows no key;
+what an expected off-loopback host may be, by `print_offsite`.
 
 Entry point assumptions: `load_targets` reads one file the caller names, `parse_targets`
 takes what `tomllib` made of one, and `adhoc_targets` / `parse_viewport` take command-line
@@ -24,10 +25,10 @@ from pathlib import Path
 from typing import Final, Literal
 
 import print_targets_checks as checks
+from print_actions import Action, parse_action
 from print_offsite import expected_hosts
 from print_targets_checks import TargetsError
 
-type ActionKind = Literal["click", "wait_for", "wait_ms"]
 type ReadKind = Literal["attribute", "property", "text"]
 
 #: The requested color scheme installed Chrome shows through a real dark setting it is
@@ -68,11 +69,6 @@ LETTER_WIDTH_PX: Final = 816
 #: phone lays a page out narrower; it also keeps each margin under 2.6 in, so Letter's height
 #: is never all margin.
 MIN_PAGE_WIDTH: Final = 320
-
-# An action waits on, or clicks, the element a selector matches, or waits a set time.
-_SELECTOR_ACTIONS: Final[tuple[ActionKind, ...]] = ("click", "wait_for")
-_WAIT_ACTION: Final[ActionKind] = "wait_ms"
-_ACTION_KINDS: Final = (*_SELECTOR_ACTIONS, _WAIT_ACTION)
 
 # The read kind that names no key: an element's text is read whole.
 _TEXT_KIND: Final[ReadKind] = "text"
@@ -129,15 +125,6 @@ class Viewport:
 
     width: int
     height: int
-
-
-@dataclass(frozen=True)
-class Action:
-    """One step run after load: click or wait for a selector, or wait a set time."""
-
-    kind: ActionKind
-    selector: str | None  # click / wait_for
-    ms: int | None  # wait_ms
 
 
 @dataclass(frozen=True)
@@ -390,14 +377,8 @@ def _read_key(value: object, where: str, kind: ReadKind) -> str | None:
 
 
 def _action(value: object, where: str) -> Action:
-    """One action: a table holding exactly one of `click`, `wait_for`, `wait_ms`."""
-    table = checks.table(value, where)
-    checks.require_keys(table, where, required=(), allowed=_ACTION_KINDS)
-    kind = checks.exactly_one(table, where, _ACTION_KINDS)
-    argument, at = table[kind], checks.at(where, kind)
-    if kind == _WAIT_ACTION:
-        return Action(kind, None, _ms(argument, at))
-    return Action(kind, checks.text(argument, at), None)
+    """One action, as `print_actions` parses it, its times refused as every other is."""
+    return parse_action(value, where, ms=_ms)
 
 
 def _storage(value: object, where: str) -> tuple[tuple[str, str], ...]:

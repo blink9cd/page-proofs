@@ -406,7 +406,8 @@ _TABLE_KEYS: dict[str, tuple[str, ...]] = {
         "page_width",
     ),
     "read": ("name", "selector", "attribute", "property", "text", "all"),
-    "action": ("click", "wait_for", "wait_ms"),
+    "action": ("click", "wait_for", "wait_ms", "set_attribute"),
+    "set_attribute": ("selector", "name", "value"),
 }
 
 # Every key a targets file holds at any depth, drawn as a table's keys beside arbitrary
@@ -417,6 +418,9 @@ _KNOWN_KEYS = tuple(sorted({key for keys in _TABLE_KEYS.values() for key in keys
 # A read's kind is checked before its name, so only a read with one kind reaches the rest.
 _KINDLESS_READ = {"name": "m", "selector": "h1"}
 _TEXT_READ = {**_KINDLESS_READ, "text": True}
+
+# A whole `set_attribute` table, a drawn value replacing each of its keys in turn.
+_SET_ATTRIBUTE = {"selector": ":root", "name": "data-x"}
 
 # Values some key accepts (a name, a page, a selector, an enum value, or a whole state,
 # target or read table), drawn beside arbitrary ones, so a drawn value often passes its
@@ -461,6 +465,10 @@ def _placements(drawn: object) -> list[Mapping[str, object]]:
         *(doc(**{key: drawn}) for key in _TABLE_KEYS["target"]),
         *(state_doc(**{key: drawn}) for key in _TABLE_KEYS["state"]),
         *(state_doc(actions=[{key: drawn}]) for key in _TABLE_KEYS["action"]),
+        *(
+            state_doc(actions=[{"set_attribute": {**_SET_ATTRIBUTE, key: drawn}}])
+            for key in _TABLE_KEYS["set_attribute"]
+        ),
         *(read_doc({**_KINDLESS_READ, key: drawn}) for key in own_kind),
         *(
             read_doc({**_TEXT_READ, key: drawn})
